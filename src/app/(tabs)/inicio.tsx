@@ -119,7 +119,8 @@ export default function Inicio() {
           ))}
         </ScrollView>
 
-        {/* ---------- Carrossel de banners ---------- */}
+        {/* ---------- Destaques (carrossel de banners) ---------- */}
+        <SectionHead title="Destaques" />
         <Carousel items={banners} />
 
         {/* ---------- Entrar (só para quem ainda não entrou) ---------- */}
@@ -245,7 +246,7 @@ function Carousel({ items }: { items: Banner[] }) {
   }, [w, step, items.length, prefs.reduzirAnim]);
 
   return (
-    <View style={{ marginTop: 20 }} onLayout={(e) => setW(e.nativeEvent.layout.width)} accessibilityLabel="Destaques" accessibilityRole="adjustable">
+    <View onLayout={(e) => setW(e.nativeEvent.layout.width)} accessibilityLabel="Destaques" accessibilityRole="adjustable">
       {w ? (
         <ScrollView
           ref={ref}
