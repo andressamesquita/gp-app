@@ -418,11 +418,8 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
           </Pressable>
         )}
       </View>
-      <T v="h3" numberOfLines={2} style={{ minHeight: 40 }}>
+      <T v="bodyStrong" numberOfLines={2} style={{ minHeight: 40 }}>
         {s.t}
-      </T>
-      <T v="small" c={color.muted} numberOfLines={2} style={{ minHeight: 36 }}>
-        {s.d}
       </T>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 2, gap: 6 }}>
         <View style={[styles.org, { flexShrink: 1 }]}>

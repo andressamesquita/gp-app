@@ -168,7 +168,7 @@ export default function Inicio() {
               right={<Icon name="ext" size={18} color={color.muted} />}
               onPress={() => router.push('/whatsapp')}
             />
-            <Row icon="prism" title="Seja um tester do Gov.pi" sub="Prisma Lab · teste novidades" onPress={() => router.push('/ajuda')} last />
+            <Row icon="prism" title="Contribua com o Gov.pi" sub="Prisma Lab, teste novidades" onPress={() => router.push('/ajuda')} last />
           </View>
         </View>
       </Animated.ScrollView>
