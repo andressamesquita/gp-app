@@ -7,7 +7,7 @@ import { ServiceCardCompact } from '@/components/blocks';
 import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
-import { ask } from '@/components/nav';
+import { ask, askVoice } from '@/components/nav';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
@@ -199,10 +199,21 @@ function SearchField({ flat }: { flat?: boolean }) {
         ask();
       }}
       style={({ pressed }) => [styles.search, flat && styles.searchFlat, pressed && { borderColor: color.brand }]}>
-      <Robot size={30} />
+      <Robot size={28} />
       <T v="body" c={color.muted} style={{ flex: 1, fontSize: 14, lineHeight: 20 }} numberOfLines={1}>
         O que você precisa resolver?
       </T>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Falar com o Assistente Gov.pi"
+        hitSlop={6}
+        onPress={() => {
+          tap();
+          askVoice();
+        }}
+        style={({ pressed }) => [styles.searchMic, pressed && { backgroundColor: color.surface2 }]}>
+        <Icon name="mic" size={22} color={color.ink} />
+      </Pressable>
       <View style={styles.searchSend}>
         <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
       </View>
@@ -314,8 +325,8 @@ const styles = StyleSheet.create({
     minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingLeft: 16,
+    gap: 8,
+    paddingLeft: 12,
     paddingRight: 8,
     backgroundColor: color.surface,
     borderRadius: radius.sm,
@@ -329,6 +340,7 @@ const styles = StyleSheet.create({
   },
   searchFlat: { marginTop: 0, borderColor: 'transparent', shadowOpacity: 0, elevation: 0 },
   stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: color.brand, paddingBottom: 10, zIndex: 10 },
+  searchMic: { width: 36, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   searchSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   suggest: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface, justifyContent: 'center' },
   banner: { aspectRatio: 2.23, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: color.surface2, borderWidth: 1, borderColor: color.line },
