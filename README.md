@@ -75,7 +75,7 @@ src/
     (tabs)/index        Assistente Gov.pi — tela de entrada (rota "/")
     (tabs)/inicio       Início: busca que abre o Assistente, banners (assets/banners), entrar, mais acessados, Prisma Lab
     (tabs)/jornada, servicos, perfil (Área do cidadão)
-    configuracoes, meu-perfil, feed, ajuda
+    configuracoes, meu-perfil, feed, ajuda, conquistas
     atividade, carteira, avisos, por-que, conversas, compartilhar
     entrar, cadastro, recuperar-senha
     whatsapp, continua-no-app, continua-no-whats, faltam-dados, erro

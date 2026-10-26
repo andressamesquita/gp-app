@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { Animated, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ForMeCard, MedalGrid, RequestCard, WalletStack } from '@/components/blocks';
@@ -41,6 +41,10 @@ function AreaLogada() {
   const [after, setAfter] = useState<'qr' | 'share'>('qr');
   const [net, setNet] = useState<'WhatsApp' | 'Instagram'>('WhatsApp');
   const [filter, setFilter] = useState<F>('andamento');
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [stuck, setStuck] = useState(false);
+  // a faixa compacta entra assim que o título rola para cima; o bloco de conquistas passa por baixo dela e some
+  const stickAt = 44;
   const docs = useMemo(() => walletDocs(scenario), [scenario]);
   const [front, setFront] = useState<string | undefined>(undefined);
   const frontDoc: WalletDoc | undefined = docs.find((d) => d.id === front) ?? docs[0];
@@ -77,7 +81,14 @@ function AreaLogada() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ paddingBottom: 32 }}>
+      <Animated.ScrollView
+        style={{ flex: 1, backgroundColor: color.bg }}
+        contentContainerStyle={{ paddingBottom: 44 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: false,
+          listener: (e: { nativeEvent: { contentOffset: { y: number } } }) => setStuck(e.nativeEvent.contentOffset.y > stickAt),
+        })}>
         {/* ---------- Topo: a pessoa ---------- */}
         <View style={{ paddingTop: insets.top + 10, paddingHorizontal: 18, paddingBottom: 40, gap: 16 }}>
           <BlueBackdrop />
@@ -94,12 +105,14 @@ function AreaLogada() {
             <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-            <Pressable accessibilityRole="button" accessibilityLabel="Alterar foto de perfil" onPress={() => router.push('/meu-perfil')}>
-              <Avatar initials={PERSON.initials} light size={60} uri={app.photo} />
-              <View style={styles.camBadge}>
+            <View>
+              <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
+                <Avatar initials={PERSON.initials} light size={60} uri={app.photo} />
+              </Pressable>
+              <Pressable accessibilityRole="button" accessibilityLabel="Alterar foto de perfil" hitSlop={8} onPress={() => router.push('/meu-perfil')} style={styles.camBadge}>
                 <Icon name="camera" size={13} color={color.brand} />
-              </View>
-            </Pressable>
+              </Pressable>
+            </View>
             <View style={{ flex: 1, gap: 4 }}>
               <T v="h2" c={color.white}>
                 {PERSON.name}
@@ -112,7 +125,7 @@ function AreaLogada() {
               </View>
             </View>
           </View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Conquistas: ${earned.length} de ${MEDALS.length}. Ver conquistas`} onPress={() => setSheet('conquistas')} style={styles.conq}>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Conquistas: ${earned.length} de ${MEDALS.length}. Ver conquistas`} onPress={() => router.push('/conquistas')} style={styles.conq}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <T v="small" c="rgba(255,255,255,0.9)">
                 Conquistas
@@ -399,7 +412,29 @@ function AreaLogada() {
             }}
           />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      {/* ---------- Faixa fixa ao rolar: some o bloco de conquistas, fica a foto (abre as conquistas) ---------- */}
+      <Animated.View
+        pointerEvents={stuck ? 'auto' : 'none'}
+        accessibilityElementsHidden={!stuck}
+        importantForAccessibility={stuck ? 'auto' : 'no-hide-descendants'}
+        style={[styles.stickyBar, { paddingTop: insets.top + 8, opacity: scrollY.interpolate({ inputRange: [stickAt - 10, stickAt], outputRange: [0, 1], extrapolate: 'clamp' }) }]}>
+        <BlueBackdrop />
+        <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
+          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
+        </Pressable>
+        <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
+          Área do cidadão
+        </T>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
+          <Icon name="coins" size={16} color={color.white} />
+          <T v="smallStrong" c={color.white}>
+            {SALDO.valor}
+          </T>
+        </Pressable>
+        <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
+      </Animated.View>
 
       {/* ---------- Folhas inferiores ---------- */}
       <Sheet visible={sheet === 'saldo'} onClose={() => setSheet(null)} title="Nota Piauiense" sub="Créditos das suas compras com CPF na nota.">
@@ -553,6 +588,7 @@ const styles = StyleSheet.create({
   conq: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radius.md, padding: 14, gap: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' },
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
+  stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden', zIndex: 10 },
   sheetBody: { marginTop: -24, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, backgroundColor: color.bg, padding: 16, paddingTop: 20, gap: 16 },
   // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 8 },
