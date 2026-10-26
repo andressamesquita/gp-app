@@ -199,7 +199,6 @@ export function RequestCard({ r, open: openInit = false, showActions = true }: {
   const [open, setOpen] = useState(openInit);
   const { showToast: toast } = useApp();
   const fin = /conclu/i.test(r.status);
-  const doneN = r.steps.filter((s) => s.s === 'done').length;
   return (
     <View style={[styles.rq, open && { borderColor: fin ? color.good : color.brand, borderWidth: 1.5 }]}>
       <Pressable
@@ -221,11 +220,6 @@ export function RequestCard({ r, open: openInit = false, showActions = true }: {
           <T v="small" c={open ? color.brand : color.muted} style={open ? { fontFamily: font.semibold } : undefined}>
             {r.summary}
           </T>
-          {!open && <View style={styles.progress} accessibilityLabel={`${doneN} de ${r.steps.length} etapas`}>
-            {r.steps.map((s, i) => (
-              <View key={i} style={[styles.pbar, { backgroundColor: s.s === 'done' ? (fin ? color.good : color.brand) : s.s === 'current' ? color.waveYellow : color.line }]} />
-            ))}
-          </View>}
         </View>
         <View style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}>
           <Icon name="down" size={20} color={color.muted} />
@@ -236,7 +230,6 @@ export function RequestCard({ r, open: openInit = false, showActions = true }: {
           <T v="caption" c={color.muted}>
             Protocolo {r.protocol}
           </T>
-          <StepBar steps={r.steps} fin={fin} />
           {r.fields && (
             <View>
               {r.fields.map(([k, v]) => (
