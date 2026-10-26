@@ -16,12 +16,18 @@ export function Sheet({
   title,
   sub,
   children,
+  center,
+  footer,
 }: {
   visible: boolean;
   onClose: () => void;
   title?: string;
   sub?: string;
   children: ReactNode;
+  /** Título centralizado, sem X (fecha arrastando/tocando fora ou no voltar), como nos filtros do iFood. */
+  center?: boolean;
+  /** Ação fixa no rodapé (ex.: "Aplicar"). */
+  footer?: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
   const body = (
@@ -29,7 +35,11 @@ export function Sheet({
       <Pressable style={{ flex: 1, backgroundColor: color.scrim }} onPress={onClose} accessibilityLabel="Fechar" />
       <View style={[styles.sheet, { paddingBottom: insets.bottom + 18 }]} accessibilityViewIsModal>
         <View style={styles.grab} />
-        {title ? (
+        {title && center ? (
+          <T v="h2" accessibilityRole="header" style={{ textAlign: 'center', paddingVertical: 8 }}>
+            {title}
+          </T>
+        ) : title ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
             <View style={{ flex: 1, gap: 2, paddingTop: 6 }}>
               <T v="h2" accessibilityRole="header">
@@ -47,6 +57,7 @@ export function Sheet({
         <ScrollView style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 12, paddingBottom: 4 }} keyboardShouldPersistTaps="handled">
           {children}
         </ScrollView>
+        {footer}
       </View>
     </>
   );

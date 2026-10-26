@@ -8,7 +8,7 @@ import { TabTop } from '@/components/page';
 import { Robot } from '@/components/Robot';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
-import { LinkText, T, tap } from '@/components/ui';
+import { Button, LinkText, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
 import { norm } from '@/state/assistant';
 import { color, font, radius } from '@/theme/tokens';
@@ -24,23 +24,27 @@ export default function Servicos() {
   useStatusBar('light', color.brand);
   const [q, setQ] = useState('');
   const [cat, setCat] = useState<CategoryId | null>(null);
-  const [org, setOrg] = useState<string | null>(null);
+  const [orgsSel, setOrgsSel] = useState<string[]>([]);
+  const [draft, setDraft] = useState<string[]>([]);
+  const [orgQ, setOrgQ] = useState('');
   const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
   const open = useServiceOpen();
 
   const list = useMemo(() => {
     const n = norm(q.trim());
-    return SERVICES.filter((s) => (!cat || s.c === cat) && (!org || s.o === org) && (!n || norm(`${s.t} ${s.d} ${s.o} ${s.k}`).includes(n)));
-  }, [q, cat, org]);
+    return SERVICES.filter((s) => (!cat || s.c === cat) && (!orgsSel.length || orgsSel.includes(s.o)) && (!n || norm(`${s.t} ${s.d} ${s.o} ${s.k}`).includes(n)));
+  }, [q, cat, orgsSel]);
 
   const counts = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.id, SERVICES.filter((s) => s.c === c.id).length])), []);
   const orgs = useMemo(() => [...new Set(SERVICES.map((s) => s.o))].sort((a, b) => a.localeCompare(b, 'pt-BR')), []);
 
   const quickCat = QUICK.some((x) => x.cat && x.cat === cat);
-  const quickOrg = QUICK.some((x) => x.org && x.org === org);
+  const quickOrgs = QUICK.filter((x) => x.org).map((x) => x.org as string);
+  const otherOrgs = orgsSel.filter((o) => !quickOrgs.includes(o));
   const catLabel = cat && !quickCat ? CATEGORIES.find((c) => c.id === cat)?.t ?? 'Categoria' : 'Categoria';
-  const orgLabel = org && !quickOrg ? org : 'Órgão';
-  const any = !!(cat || org);
+  const orgLabel = otherOrgs.length === 1 ? otherOrgs[0] : otherOrgs.length > 1 ? `Órgão (${otherOrgs.length})` : 'Órgão';
+  const any = !!(cat || orgsSel.length);
+  const orgsShown = orgs.filter((o) => !orgQ.trim() || norm(o).includes(norm(orgQ.trim())));
 
   return (
     <View style={{ flex: 1, backgroundColor: color.bg }}>
@@ -81,7 +85,7 @@ export default function Servicos() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
             <FilterChip label={catLabel} on={!!cat && !quickCat} caret onPress={() => setSheet('cat')} />
             {QUICK.map((x) => {
-              const on = x.cat ? cat === x.cat : org === x.org;
+              const on = x.cat ? cat === x.cat : orgsSel.includes(x.org as string);
               return (
                 <FilterChip
                   key={x.label}
@@ -89,19 +93,28 @@ export default function Servicos() {
                   on={on}
                   onPress={() => {
                     if (x.cat) setCat(on ? null : x.cat);
-                    if (x.org) setOrg(on ? null : x.org);
+                    if (x.org) setOrgsSel((cur) => (on ? cur.filter((o) => o !== x.org) : [...cur, x.org as string]));
                   }}
                 />
               );
             })}
-            <FilterChip label={orgLabel} on={!!org && !quickOrg} caret onPress={() => setSheet('org')} />
+            <FilterChip
+              label={orgLabel}
+              on={otherOrgs.length > 0}
+              caret
+              onPress={() => {
+                setDraft(orgsSel);
+                setOrgQ('');
+                setSheet('org');
+              }}
+            />
             {any ? (
               <FilterChip
                 label="Limpar filtros"
                 icon="close"
                 onPress={() => {
                   setCat(null);
-                  setOrg(null);
+                  setOrgsSel([]);
                 }}
               />
             ) : null}
@@ -111,7 +124,7 @@ export default function Servicos() {
         <View style={{ padding: 16, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
-              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : org ? (QUICK.find((x) => x.org === org)?.label ?? org) : 'Mais procurados'}
+              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length === 1 ? (QUICK.find((x) => x.org === orgsSel[0])?.label ?? orgsSel[0]) : orgsSel.length ? 'Órgãos selecionados' : 'Mais procurados'}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
               {list.length} {list.length === 1 ? 'serviço' : 'serviços'}
@@ -134,36 +147,97 @@ export default function Servicos() {
         </View>
       </ScrollView>
 
-      <Sheet visible={sheet === 'cat'} onClose={() => setSheet(null)} title="Categoria">
-        {CATEGORIES.filter((c) => counts[c.id]).map((c) => (
-          <Option
-            key={c.id}
-            icon={c.icon as IconName}
-            label={c.t}
-            count={counts[c.id]}
-            on={cat === c.id}
-            onPress={() => {
-              setCat(cat === c.id ? null : c.id);
-              setSheet(null);
-            }}
-          />
-        ))}
+      {/* Categoria: grade de opções em círculo, escolha única (referência: "Ordenação por" do iFood) */}
+      <Sheet visible={sheet === 'cat'} onClose={() => setSheet(null)} title="Escolha a categoria" center>
+        <View style={styles.catGrid} accessibilityRole="radiogroup">
+          {[{ id: null as CategoryId | null, t: 'Todas', icon: 'menu' }, ...CATEGORIES].map((c) => {
+            const on = cat === c.id;
+            return (
+              <Pressable
+                key={c.t}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: on }}
+                accessibilityLabel={c.t}
+                onPress={() => {
+                  tap();
+                  setCat(c.id);
+                  setSheet(null);
+                }}
+                style={styles.catItem}>
+                <View style={[styles.catCircle, on && styles.catCircleOn]}>
+                  <Icon name={c.icon as IconName} size={24} color={on ? color.brand : color.ink} />
+                </View>
+                <T v={on ? 'smallStrong' : 'small'} c={on ? color.brand : color.ink} numberOfLines={2} style={{ textAlign: 'center', fontFamily: on ? font.semibold : font.regular }}>
+                  {c.t}
+                </T>
+              </Pressable>
+            );
+          })}
+        </View>
       </Sheet>
 
-      <Sheet visible={sheet === 'org'} onClose={() => setSheet(null)} title="Órgão">
-        {orgs.map((o) => (
-          <Option
-            key={o}
-            icon="badge"
-            label={o}
-            count={SERVICES.filter((s) => s.o === o).length}
-            on={org === o}
+      {/* Órgão: busca + lista com caixas de seleção e "Ver resultados" (referência: "Vale-refeição" do iFood) */}
+      <Sheet
+        visible={sheet === 'org'}
+        onClose={() => setSheet(null)}
+        title="Escolha o órgão"
+        center
+        footer={
+          <Button
+            label={draft.length ? `Ver resultados (${SERVICES.filter((s) => draft.includes(s.o) && (!cat || s.c === cat)).length})` : 'Ver todos os serviços'}
             onPress={() => {
-              setOrg(org === o ? null : o);
+              setOrgsSel(draft);
               setSheet(null);
             }}
           />
-        ))}
+        }>
+        <View style={styles.orgSearch}>
+          <Icon name="search" size={18} color={color.muted} />
+          <TextInput
+            accessibilityLabel="Buscar órgão"
+            value={orgQ}
+            onChangeText={setOrgQ}
+            placeholder="Buscar órgão"
+            placeholderTextColor={color.muted}
+            style={styles.orgInput}
+          />
+        </View>
+        <View>
+          {orgsShown.map((o, i) => {
+            const on = draft.includes(o);
+            const n = SERVICES.filter((s) => s.o === o).length;
+            return (
+              <Pressable
+                key={o}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: on }}
+                accessibilityLabel={`${o}, ${n} ${n === 1 ? 'serviço' : 'serviços'}`}
+                onPress={() => {
+                  tap();
+                  setDraft((cur) => (on ? cur.filter((x) => x !== o) : [...cur, o]));
+                }}
+                style={[styles.orgRow, i < orgsShown.length - 1 && styles.orgLine]}>
+                <View style={[styles.orgBadge, on && { backgroundColor: color.brandTint }]}>
+                  <Icon name="badge" size={18} color={on ? color.brand : color.muted} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <T v="h3" style={{ fontFamily: on ? font.semibold : font.medium }}>
+                    {o}
+                  </T>
+                  <T v="caption" c={color.muted}>
+                    {n} {n === 1 ? 'serviço' : 'serviços'}
+                  </T>
+                </View>
+                <View style={[styles.check, on && styles.checkOn]}>{on ? <Icon name="check" size={16} color={color.white} strokeWidth={2.6} /> : null}</View>
+              </Pressable>
+            );
+          })}
+          {!orgsShown.length && (
+            <T v="small" c={color.muted} style={{ paddingVertical: 16, textAlign: 'center' }}>
+              Nenhum órgão encontrado.
+            </T>
+          )}
+        </View>
       </Sheet>
     </View>
   );
@@ -189,24 +263,6 @@ function FilterChip({ label, on, caret, icon, onPress }: { label: string; on?: b
   );
 }
 
-function Option({ icon, label, count, on, onPress }: { icon: IconName; label: string; count: number; on: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      accessibilityRole="radio"
-      accessibilityState={{ checked: on }}
-      onPress={() => {
-        tap();
-        onPress();
-      }}
-      style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
-      <Icon name={icon} size={20} color={on ? color.brand : color.muted} />
-      <T v="bodyStrong" style={{ flex: 1, fontFamily: on ? font.semibold : font.medium }}>{label}</T>
-      <T v="caption" c={color.muted}>
-        {count}
-      </T>
-    </Pressable>
-  );
-}
 
 const styles = StyleSheet.create({
   search: {
@@ -233,6 +289,16 @@ const styles = StyleSheet.create({
   cats: { backgroundColor: color.bg, paddingTop: 14, paddingBottom: 10 },
   chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 42, paddingHorizontal: 18, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },
   chipOn: { backgroundColor: color.brand, borderColor: color.brand },
-  opt: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 52, paddingHorizontal: 14, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line },
+  catGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 18, paddingTop: 4, paddingBottom: 8 },
+  catItem: { width: '33.33%', alignItems: 'center', gap: 8, paddingHorizontal: 4 },
+  catCircle: { width: 72, height: 72, borderRadius: 36, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
+  catCircleOn: { borderWidth: 1.5, borderColor: color.brand, backgroundColor: color.brandTint },
+  orgSearch: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 14, borderRadius: radius.sm, borderWidth: 1, borderColor: color.lineStrong },
+  orgInput: { flex: 1, height: '100%', fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
+  orgRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 60, paddingVertical: 8 },
+  orgLine: { borderBottomWidth: 1, borderBottomColor: color.line },
+  orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
+  check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
+  checkOn: { backgroundColor: color.brand, borderColor: color.brand },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });
