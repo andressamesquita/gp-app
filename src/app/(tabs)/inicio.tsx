@@ -24,7 +24,6 @@ const SUGESTOES = ['Renovar minha CNH', 'Meu remédio acabou', 'Nota Piauiense']
 
 /* ---------------- Mais acessados ---------------- */
 const MAIS_ACESSADOS = [
-  'Medicamentos Especializados · Farmácia do Povo',
   'Renovar CNH',
   'Emitir CRLV digital do veículo',
   'Resgatar créditos da Nota Piauiense',

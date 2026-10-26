@@ -421,7 +421,7 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
       <T v="bodyStrong" numberOfLines={2} style={{ minHeight: 40 }}>
         {s.t}
       </T>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 2, gap: 6 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, gap: 6 }}>
         <View style={[styles.org, { flexShrink: 1 }]}>
           <T v="caption" numberOfLines={1} style={{ fontFamily: font.medium, fontSize: 10, letterSpacing: 0.3 }}>
             {s.o}
