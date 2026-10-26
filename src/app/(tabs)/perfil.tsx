@@ -151,7 +151,7 @@ function AreaLogada() {
                       </View>
                     ) : null}
                   </View>
-                  <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', fontSize: 11, lineHeight: 14, letterSpacing: -0.2, marginHorizontal: -6, alignSelf: 'stretch' }}>
+                  <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16, marginHorizontal: -4, alignSelf: 'stretch' }}>
                     {s.label}
                   </T>
                 </Pressable>
@@ -547,7 +547,8 @@ const styles = StyleSheet.create({
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
   sheetBody: { marginTop: -24, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, backgroundColor: color.bg, padding: 16, paddingTop: 20, gap: 16 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 16, backgroundColor: color.surface, borderRadius: radius.xl, paddingVertical: 16, paddingHorizontal: 6, borderWidth: 1, borderColor: color.line, ...shadow.card },
+  // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
+  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 8 },
   tile: { width: '25%', alignItems: 'center', gap: 8, paddingHorizontal: 2 },
   tileIco: { width: 62, height: 62, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
