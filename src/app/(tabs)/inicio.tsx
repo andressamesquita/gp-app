@@ -9,7 +9,7 @@ import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, IconButton, LinkText, Logo, Row, Section, T, tap } from '@/components/ui';
+import { Avatar, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -151,7 +151,8 @@ export default function Inicio() {
         </ScrollView>
 
         {/* ---------- Você no centro do Gov.pi: canais para participar (lista com título, como "Como podemos ajudar?") ---------- */}
-        <Section title="Você no centro do Gov.pi" style={{ marginHorizontal: 16, marginTop: 32 }}>
+        <SectionHead title="Você no centro do Gov.pi" />
+        <View style={styles.listCard}>
           <View>
             <Row
               icon="whats"
@@ -163,7 +164,7 @@ export default function Inicio() {
             />
             <Row icon="prism" title="Seja um tester do Gov.pi" sub="Prisma Lab · teste novidades" onPress={() => router.push('/ajuda')} last />
           </View>
-        </Section>
+        </View>
       </Animated.ScrollView>
 
       {/* Barra fixa: aparece quando o campo de busca chega ao topo */}
@@ -327,5 +328,6 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.lineStrong },
   dotOn: { width: 22, backgroundColor: color.brand },
   login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm, ...shadow.card },
+  listCard: { marginHorizontal: 16, paddingHorizontal: 16, paddingVertical: 2, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, ...shadow.card },
   secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 32, marginBottom: 14 },
 });
