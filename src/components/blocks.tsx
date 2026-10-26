@@ -500,8 +500,8 @@ export function ForMeCard({
   bar: string;
 }) {
   return (
-    <View style={[styles.mine, urgent && { borderColor: color.waveYellow, borderWidth: 1.5 }]}>
-      <View style={[styles.mineBar, { backgroundColor: bar }]} />
+    // Mesmo contorno dos outros cards; o destaque fica só na etiqueta amarela "Precisa de você"
+    <View style={styles.mine}>
       {urgent && (
         <View style={styles.utag}>
           <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: color.waveOrange }} />
@@ -516,7 +516,7 @@ export function ForMeCard({
       <T v="small" c={color.muted} style={{ flex: 1 }}>
         {text}
       </T>
-      <Button small kind={urgent ? 'primary' : 'ghost'} label={cta} iconRight="right" onPress={onPress} style={{ alignSelf: 'flex-start', marginTop: 6 }} />
+      <Button small kind="ghost" label={cta} iconRight="right" onPress={onPress} style={{ alignSelf: 'flex-start', marginTop: 6 }} />
     </View>
   );
 }
@@ -562,14 +562,12 @@ const styles = StyleSheet.create({
   mine: {
     width: 220,
     backgroundColor: color.surface,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: color.line,
     padding: 14,
-    paddingTop: 18,
     gap: 6,
     overflow: 'hidden',
   },
-  mineBar: { position: 'absolute', left: 0, right: 0, top: 0, height: 4 },
   utag: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.warnBg, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
 });
