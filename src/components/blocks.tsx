@@ -326,7 +326,7 @@ export function Timeline({ steps, fin }: { steps: Request['steps']; fin?: boolea
    Cartão de serviço (catálogo)
    ========================================================= */
 export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void }) {
-  const { favorites, toggleFavorite, showToast } = useApp();
+  const { favorites, toggleFavorite, showToast, logged } = useApp();
   const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s.c));
   const cat = CATEGORIES[ci];
   const k = kind[ci % 4];
@@ -347,18 +347,21 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
         <T v="caption" c={color.muted} style={{ flex: 1 }} numberOfLines={1}>
           {cat?.t}
         </T>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={fav ? `Remover dos favoritos: ${s.t}` : `Favoritar: ${s.t}`}
-          hitSlop={10}
-          onPress={() => {
-            tap();
-            toggleFavorite(s.t);
-            showToast(fav ? 'Removido dos favoritos.' : 'Adicionado aos favoritos.');
-          }}
-          style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: -8 }}>
-          <Icon name={fav ? 'starFill' : 'star'} size={20} color={fav ? color.waveYellow : color.muted} />
-        </Pressable>
+        {/* Favoritar só com login */}
+        {logged && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={fav ? `Remover dos favoritos: ${s.t}` : `Favoritar: ${s.t}`}
+            hitSlop={10}
+            onPress={() => {
+              tap();
+              toggleFavorite(s.t);
+              showToast(fav ? 'Removido dos favoritos.' : 'Adicionado aos favoritos.');
+            }}
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: -8 }}>
+            <Icon name={fav ? 'starFill' : 'star'} size={20} color={fav ? color.waveYellow : color.muted} />
+          </Pressable>
+        )}
       </View>
       <T v="h3">
         {s.t}
@@ -388,7 +391,7 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
  * Hierarquia: 1) nome do serviço, 2) o que resolve, 3) órgão e ação.
  */
 export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => void }) {
-  const { favorites, toggleFavorite, showToast } = useApp();
+  const { favorites, toggleFavorite, showToast, logged } = useApp();
   const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s.c));
   const cat = CATEGORIES[ci];
   const k = kind[ci % 4];
@@ -406,18 +409,21 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
         <View style={[styles.svcIcoC, { backgroundColor: k.bg }]}>
           <Icon name={(cat?.icon ?? 'grid') as IconName} size={18} color={k.fg} />
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={fav ? `Remover dos favoritos: ${s.t}` : `Favoritar: ${s.t}`}
-          hitSlop={8}
-          onPress={() => {
-            tap();
-            toggleFavorite(s.t);
-            showToast(fav ? 'Removido dos favoritos.' : 'Adicionado aos favoritos.');
-          }}
-          style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center', marginRight: -8 }}>
-          <Icon name={fav ? 'starFill' : 'star'} size={18} color={fav ? color.waveYellow : color.muted} />
-        </Pressable>
+        {/* Favoritar só com login */}
+        {logged && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={fav ? `Remover dos favoritos: ${s.t}` : `Favoritar: ${s.t}`}
+            hitSlop={8}
+            onPress={() => {
+              tap();
+              toggleFavorite(s.t);
+              showToast(fav ? 'Removido dos favoritos.' : 'Adicionado aos favoritos.');
+            }}
+            style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center', marginRight: -8 }}>
+            <Icon name={fav ? 'starFill' : 'star'} size={18} color={fav ? color.waveYellow : color.muted} />
+          </Pressable>
+        )}
       </View>
       <T v="h3" numberOfLines={2} style={{ minHeight: 40 }}>
         {s.t}
