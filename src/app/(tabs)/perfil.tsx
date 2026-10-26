@@ -29,6 +29,14 @@ const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
  */
 const TILE_BG: 'branco' | 'azul' = 'azul';
 
+/**
+ * Blocos ocultos por enquanto. Para mostrar de novo, troque para true.
+ *   MOSTRAR_BEM_VINDA: "Bem-vinda, Ana Souza!" com o campo "O que você precisa resolver?"
+ *   MOSTRAR_ZAP: card azul "Zap do Cidadão · Seus avisos no WhatsApp"
+ */
+const MOSTRAR_BEM_VINDA = false;
+const MOSTRAR_ZAP = false;
+
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
 
@@ -171,7 +179,8 @@ function AreaLogada() {
             })}
           </View>
 
-          {/* ---------- Bem-vinda + campo de conversa ---------- */}
+          {/* ---------- Bem-vinda + campo de conversa (oculto: MOSTRAR_BEM_VINDA) ---------- */}
+          {MOSTRAR_BEM_VINDA && (
           <View style={styles.welcome}>
             <T v="bodyStrong" c={color.brand}>
               Bem-vinda, {PERSON.name}!
@@ -185,6 +194,7 @@ function AreaLogada() {
               </View>
             </Pressable>
           </View>
+          )}
 
           {/* ---------- Compartilhe suas conquistas (após concluir) ---------- */}
           {scenario === 'concluida' && (
@@ -251,7 +261,8 @@ function AreaLogada() {
             </Section>
           )}
 
-          {/* ---------- Zap do Cidadão ---------- */}
+          {/* ---------- Zap do Cidadão (oculto: MOSTRAR_ZAP) ---------- */}
+          {MOSTRAR_ZAP && (
           <View style={styles.zap}>
             <BlueBackdrop />
             <T v="eyebrow" c="rgba(255,255,255,0.85)">
@@ -274,6 +285,7 @@ function AreaLogada() {
               <Button kind="onBrand" label="Receber avisos no Zap" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
             )}
           </View>
+          )}
 
           {/* ---------- Para mim ---------- */}
           <Section title="Para mim" action={cards.length ? { label: `Ver todos (${cards.length})`, href: '/avisos' } : undefined}>
@@ -297,7 +309,7 @@ function AreaLogada() {
           </Section>
 
           {/* ---------- Acompanhamento ---------- */}
-          <Section title="Acompanhamento de solicitações" action={andamento.length ? { label: `${andamento.length} em andamento`, href: '/atividade' } : undefined}>
+          <Section title="Acompanhamento de solicitações">
             {all.length ? (
               <>
                 <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
