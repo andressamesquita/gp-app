@@ -22,6 +22,13 @@ const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
   { id: 'concluida', t: 'Após concluir', d: 'CNH renovada e conquista para compartilhar' },
 ];
 
+/**
+ * Fundo dos quadrados dos atalhos (teste A/B).
+ * 'branco' = quadrado branco com contorno fino · 'azul' = azul-claro (versão anterior).
+ * Para voltar ao azul, troque para 'azul'.
+ */
+const TILE_BG: 'branco' | 'azul' = 'branco';
+
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'carteiras' | 'auth' | 'qr' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
 
@@ -130,7 +137,7 @@ function AreaLogada() {
           {/* ---------- Atalhos em grade ---------- */}
           <View style={styles.grid} accessibilityLabel="Atalhos da área do cidadão">
             {SHORTCUTS.map((s) => {
-              const k = kind[0]; // todos os atalhos no mesmo azul-claro
+              const k = kind[0]; // ícones no azul da marca; o fundo segue TILE_BG
               return (
                 <Pressable
                   key={s.label}
@@ -141,7 +148,7 @@ function AreaLogada() {
                     s.onPress();
                   }}
                   style={({ pressed }) => [styles.tile, pressed && { transform: [{ scale: 0.95 }] }]}>
-                  <View style={[styles.tileIco, { backgroundColor: k.bg }]}>
+                  <View style={[styles.tileIco, TILE_BG === 'branco' ? styles.tileWhite : { backgroundColor: k.bg }]}>
                     <Icon name={s.icon} size={26} color={k.fg} strokeWidth={2} />
                     {s.badge ? (
                       <View style={[styles.badge, s.badge === 'NOVO' && { backgroundColor: color.waveOrange }]}>
@@ -551,6 +558,7 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 8 },
   tile: { width: '25%', alignItems: 'center', gap: 8, paddingHorizontal: 2 },
   tileIco: { width: 62, height: 62, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
+  tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line, ...shadow.card },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
   welcome: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 16, gap: 10 },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
