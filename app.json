@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "Gov.pi Cidadão",
+    "slug": "govpi-cidadao",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "govpi",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "br.gov.pi.cidadao.prototipo"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#034EA2",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "br.gov.pi.cidadao.prototipo"
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "asyncRoutes": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#034EA2",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O Gov.pi usa suas fotos para você escolher uma foto de perfil.",
+          "cameraPermission": "O Gov.pi usa a câmera para você tirar uma foto de perfil ou fotografar documentos."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false,
+      "reactCompiler": false
+    },
+    "description": "Protótipo navegável do app Gov.pi Cidadão (React Native + Expo)."
+  }
+}
