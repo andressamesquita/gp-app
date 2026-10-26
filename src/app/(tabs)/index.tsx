@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   hero: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 24, gap: 6 },
   question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 24, lineHeight: 30, marginTop: 4, maxWidth: 320 },
   glow: { position: 'absolute', left: 0, right: 0, bottom: -40, height: 300 },
-  chip: { minHeight: 46, paddingHorizontal: 20, borderRadius: radius.pill, backgroundColor: color.white, borderWidth: 1, borderColor: color.line, justifyContent: 'center', ...shadow.card, shadowOpacity: 0.05 },
+  chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, backgroundColor: color.white, borderWidth: 1, borderColor: color.lineStrong, justifyContent: 'center' },
   composer: { backgroundColor: color.white, borderRadius: 24, borderWidth: 1, borderColor: color.line, paddingHorizontal: 14, paddingTop: 6, paddingBottom: 12, gap: 6, ...shadow.card },
   input: { minHeight: 50, maxHeight: 120, paddingHorizontal: 6, paddingTop: 12, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   attach: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 42, paddingHorizontal: 14, borderRadius: radius.pill, backgroundColor: color.surface2 },

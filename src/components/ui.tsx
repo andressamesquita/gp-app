@@ -217,7 +217,7 @@ export function Chip({
           ? { backgroundColor: 'rgba(255,255,255,0.14)', borderColor: 'rgba(255,255,255,0.45)' }
           : on
             ? { backgroundColor: color.brand, borderColor: color.brand }
-            : { backgroundColor: color.surface, borderColor: color.line },
+            : { backgroundColor: color.surface, borderColor: color.lineStrong },
         pressed && { opacity: 0.75 },
       ]}>
       {on && !glass && <Icon name="check" size={16} color={fg} strokeWidth={2.4} />}
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   },
   badge: { position: 'absolute', top: 11, right: 12, width: 10, height: 10, borderRadius: 5, backgroundColor: '#FF5A4D', borderWidth: 2 },
   chip: {
-    minHeight: 40,
+    minHeight: 36,
     paddingHorizontal: 14,
     borderRadius: radius.pill,
     borderWidth: 1,

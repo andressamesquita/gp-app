@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   input: { flex: 1, minHeight: 54, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   searchBot: { width: 42, height: 42, borderRadius: radius.sm, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   cats: { backgroundColor: color.bg, paddingTop: 14, paddingBottom: 10 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 42, paddingHorizontal: 18, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },
   chipOn: { backgroundColor: color.brand, borderColor: color.brand },
   catGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 18, paddingTop: 4, paddingBottom: 8 },
   catItem: { width: '33.33%', alignItems: 'center', gap: 8, paddingHorizontal: 4 },
