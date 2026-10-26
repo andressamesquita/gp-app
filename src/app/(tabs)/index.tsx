@@ -188,7 +188,7 @@ export default function Assistente() {
           />
         </View>
         {empty ? (
-          <T v="caption" c={color.muted} style={{ textAlign: 'center', marginTop: 10 }}>
+          <T v="caption" c={color.muted} style={{ textAlign: 'center', marginTop: 10, marginBottom: 22 }}>
             Conheça nossa <T v="caption" c={color.ink} style={{ fontFamily: font.semibold, textDecorationLine: 'underline' }}>Política de Privacidade</T>.
           </T>
         ) : (

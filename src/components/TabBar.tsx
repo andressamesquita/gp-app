@@ -45,10 +45,10 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
               android_ripple={{ color: color.surface2, borderless: true }}
               onPress={() => go(t.name, focused)}
               style={styles.item}>
-              <View style={[styles.pill, { width: 60, backgroundColor: color.brandTint }, focused && { borderWidth: 1.5, borderColor: color.brand }]}>
-                <Robot size={28} />
+              {/* Botão elevado: o Assistente é o caminho principal do app (referência: botão "Chat" do Gov.pi atual) */}
+              <View style={[styles.fab, focused && styles.fabOn]}>
+                <Robot size={34} mono />
               </View>
-              {/* Sempre em destaque: é o caminho principal do app */}
               <T v="caption" c={color.brand} numberOfLines={2} style={styles.label(true)}>
                 {t.label}
               </T>
@@ -82,5 +82,23 @@ const styles = {
   bar: { flexDirection: 'row', backgroundColor: color.surface, borderTopWidth: 1, borderTopColor: color.line, paddingTop: 6, paddingHorizontal: 2 },
   item: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', gap: 3, minHeight: 62 },
   pill: { width: 52, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  fab: {
+    width: 60,
+    height: 60,
+    marginTop: -26,
+    marginBottom: -2,
+    borderRadius: 30,
+    backgroundColor: color.brand,
+    borderWidth: 4,
+    borderColor: color.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#001946',
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  fabOn: { borderColor: color.brandTint },
 }),
 };
