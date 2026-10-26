@@ -25,7 +25,7 @@ ao Assistente; compartilhar conquistas, Zap do Cidadão, Para mim, acompanhament
 (QR e compartilhar) e serviços favoritos. Em Meu perfil a pessoa escolhe a foto de perfil (galeria ou câmera, via expo-image-picker);
 em Configurações ajusta privacidade, tamanho do texto e contraste.
 Serviços: busca igual à do Início (o robô abre o Assistente) e filtros em chips: Categoria, Detran, Empresas, Servidor e Órgão.
-Menu inferior: Início, Assistente Gov.pi, Serviços e Área do cidadão (a Jornada fica nos atalhos).
+Menu inferior: Início, Carteira, Assistente Gov.pi (centro), Serviços e Área do cidadão (a Jornada fica nos atalhos).
 Tipografia compacta: títulos de seção 16 semi-negrito, corpo e subtítulos 12 normal, botões 12; telas 20, cards 14, legendas 11 (`components/ui.tsx`, componente `T`).
 Raios iguais aos da web: 8 px em itens e campos, 10 px em botões, 12 px em blocos e 22 px em folhas.
 Ajuda traz o atalho para o Prisma Lab.

@@ -3,16 +3,16 @@ import { useMemo, useRef, useState } from 'react';
 import { Animated, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ForMeCard, MedalGrid, RequestCard, WalletStack } from '@/components/blocks';
+import { ForMeCard, MedalGrid, RequestCard } from '@/components/blocks';
 import { BlueBackdrop } from '@/components/hero';
-import { FakeQR, Icon, type IconName } from '@/components/Icon';
+import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, walletDocs, type Scenario, type WalletDoc } from '@/data/mock';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius, shadow } from '@/theme/tokens';
 
@@ -29,7 +29,7 @@ const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
  */
 const TILE_BG: 'branco' | 'azul' = 'branco';
 
-type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'carteiras' | 'auth' | 'qr' | 'publicar';
+type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
 
 /** Área do cidadão (logado): painel com os blocos da versão mobile da web. */
@@ -38,16 +38,12 @@ function AreaLogada() {
   const app = useApp();
   const { scenario, cnhStarted } = app;
   const [sheet, setSheet] = useState<SheetName>(null);
-  const [after, setAfter] = useState<'qr' | 'share'>('qr');
   const [net, setNet] = useState<'WhatsApp' | 'Instagram'>('WhatsApp');
   const [filter, setFilter] = useState<F>('andamento');
   const scrollY = useRef(new Animated.Value(0)).current;
   const [stuck, setStuck] = useState(false);
   // a faixa compacta entra assim que o título rola para cima; o bloco de conquistas passa por baixo dela e some
   const stickAt = 44;
-  const docs = useMemo(() => walletDocs(scenario), [scenario]);
-  const [front, setFront] = useState<string | undefined>(undefined);
-  const frontDoc: WalletDoc | undefined = docs.find((d) => d.id === front) ?? docs[0];
   const earned = useMemo(() => {
     const e = earnedMedals(scenario);
     if (app.prefs.zapAvisos) e.push('zap');
@@ -74,10 +70,6 @@ function AreaLogada() {
     { label: 'Ajuda', icon: 'help', k: 2, onPress: () => router.push('/ajuda') },
   ];
 
-  const openWalletAction = (a: 'qr' | 'share') => {
-    setAfter(a);
-    setSheet('auth');
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -329,24 +321,6 @@ function AreaLogada() {
             )}
           </Section>
 
-          {/* ---------- Carteiras ---------- */}
-          <Section title="Carteiras" action={docs.length ? { label: `Ver todas (${docs.length})`, onPress: () => setSheet('carteiras') } : undefined}>
-            {docs.length ? (
-              <>
-                <WalletStack docs={docs} front={front} onFront={setFront} onOpen={(d) => router.push({ pathname: '/carteira', params: { doc: d.id } })} />
-                <T v="caption" c={color.muted}>
-                  Toque numa carteira de trás para torná-la a principal.
-                </T>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  <Button kind="secondary" icon="qr" label="Mostrar QR" onPress={() => openWalletAction('qr')} style={{ flex: 1 }} />
-                  <Button kind="secondary" icon="share" label="Compartilhar" onPress={() => openWalletAction('share')} style={{ flex: 1 }} />
-                </View>
-              </>
-            ) : (
-              <Empty icon="wallet" title="Sua carteira ainda está vazia" text="Carteiras emitidas pelo Gov.pi, como a do Hemopi e a CIN, aparecem aqui." />
-            )}
-          </Section>
-
           {/* ---------- Serviços favoritos ---------- */}
           <Section title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
             {favs.length ? (
@@ -378,7 +352,6 @@ function AreaLogada() {
                   onPress={() => {
                     tap();
                     app.setScenario(s.id);
-                    setFront(undefined);
                     app.showToast(`Estado: ${s.t}`);
                   }}
                   style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
@@ -484,70 +457,6 @@ function AreaLogada() {
 
       <Sheet visible={sheet === 'conquistas'} onClose={() => setSheet(null)} title="Minhas conquistas" sub={`${earned.length} de ${MEDALS.length} conquistadas. Complete serviços para ganhar mais.`}>
         <MedalGrid medals={MEDALS} earned={earned} onPress={(m) => app.showToast(earned.includes(m.id) ? `${m.t}: conquistada!` : `Como ganhar: ${m.how}`)} />
-      </Sheet>
-
-      <Sheet visible={sheet === 'carteiras'} onClose={() => setSheet(null)} title="Minhas carteiras" sub="Escolha uma carteira para torná-la a principal.">
-        {docs.map((d) => {
-          const on = d.id === frontDoc?.id;
-          return (
-            <Pressable
-              key={d.id}
-              accessibilityRole="radio"
-              accessibilityState={{ checked: on }}
-              onPress={() => {
-                tap();
-                setFront(d.id);
-                setSheet(null);
-              }}
-              style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
-              <View style={[styles.radio, on && { borderColor: color.brand }]}>{on && <View style={styles.radioIn} />}</View>
-              <View style={{ flex: 1 }}>
-                <T v="bodyStrong">
-                  {d.title}
-                </T>
-                <T v="caption" c={color.muted}>
-                  {d.kicker} · •••• {d.number}
-                </T>
-              </View>
-            </Pressable>
-          );
-        })}
-      </Sheet>
-
-      <Sheet visible={sheet === 'auth'} onClose={() => setSheet(null)}>
-        <View style={{ alignItems: 'center', gap: 12 }}>
-          <View style={styles.finger}>
-            <Icon name="finger" size={40} color={color.brand} />
-          </View>
-          <T v="h2">Confirme que é você</T>
-          <T v="small" c={color.muted} style={{ textAlign: 'center' }}>
-            Use sua digital ou o reconhecimento de rosto do celular.
-          </T>
-        </View>
-        <Button
-          label="Usar biometria"
-          icon="finger"
-          onPress={() => {
-            if (after === 'qr') setSheet('qr');
-            else {
-              setSheet(null);
-              app.showToast(`${frontDoc?.title} pronta para compartilhar (simulação).`);
-            }
-          }}
-        />
-        <Button kind="secondary" label="Usar senha" onPress={() => setSheet(after === 'qr' ? 'qr' : null)} />
-      </Sheet>
-
-      <Sheet visible={sheet === 'qr'} onClose={() => setSheet(null)} title={frontDoc?.title ?? 'Carteira'} sub="Apresente este QR code para validar sua carteira.">
-        <View style={{ alignItems: 'center', gap: 10 }}>
-          <View style={styles.qr}>
-            <FakeQR size={210} />
-          </View>
-          <T v="caption" c={color.muted}>
-            QR ilustrativo do protótipo. Ele muda a cada 60 segundos.
-          </T>
-        </View>
-        <Button label="Fechar" onPress={() => setSheet(null)} />
       </Sheet>
 
       <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title={`Publicar no ${net}?`} sub="Confira o que será publicado antes de confirmar.">

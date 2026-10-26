@@ -20,6 +20,12 @@ const COPY: Record<string, { title: string; icon: IconName; text: string; perks:
     text: 'Entre para ver os serviços do Governo ligados aos seus momentos de vida.',
     perks: ['Condutora, estudante, gestante e outros momentos', 'O que já foi feito e o que falta', 'Conquistas a cada serviço concluído'],
   },
+  carteira: {
+    title: 'Carteira',
+    icon: 'wallet',
+    text: 'Entre para ter seus documentos digitais no celular e mostrá-los com QR Code quando precisar.',
+    perks: ['CNH Digital, CIN e carteiras do Hemopi, do Estudante e do Idoso', 'Validação por QR Code, mesmo sem internet', 'Compartilhamento seguro com confirmação de identidade'],
+  },
   perfil: {
     title: 'Área do cidadão',
     icon: 'user',

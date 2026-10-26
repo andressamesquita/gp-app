@@ -11,7 +11,7 @@ import { T, tap } from './ui';
 
 /**
  * Barra de abas com rótulos sempre visíveis.
- * Ordem: Início, Assistente Gov.pi (rota "index"), a tela de entrada do app.
+ * Ordem: Início, Carteira, Assistente Gov.pi (centro), Serviços, Área do cidadão (rota "index"), a tela de entrada do app.
  */
 export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -20,6 +20,7 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
 
   const TABS: { name: string; label: string; icon: IconName }[] = [
     { name: 'inicio', label: 'Início', icon: 'home' },
+    { name: 'carteira', label: 'Carteira', icon: 'wallet' },
     { name: 'index', label: 'Assistente\nGov.pi', icon: 'chat' },
     { name: 'servicos', label: 'Serviços', icon: 'grid' },
     { name: 'perfil', label: 'Área do\ncidadão', icon: 'user' },

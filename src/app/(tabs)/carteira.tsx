@@ -4,28 +4,36 @@ import { useMemo, useState } from 'react';
 import { Modal, Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { WalletCard } from '@/components/blocks';
+import { WalletCard, WalletStack } from '@/components/blocks';
 import { FakeQR, Icon } from '@/components/Icon';
-import { Page } from '@/components/page';
-import { Button, Chip, Empty, LinkText, T, tap } from '@/components/ui';
+import { LoginInvite } from '@/components/login-invite';
+import { TabTop } from '@/components/page';
+import { Sheet as BottomSheet } from '@/components/sheet';
+import { useStatusBar } from '@/components/statusbar';
+import { Button, Empty, LinkText, T, tap } from '@/components/ui';
 import { WALLET_TONES, walletDocs, type WalletDoc } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, radius } from '@/theme/tokens';
 
 type Pending = null | { action: 'qr' | 'share' | 'pdf'; step: 'auth' | 'qr' };
 
-export default function Carteira() {
+export default function CarteiraTab() {
+  const { logged } = useApp();
+  useStatusBar('light', color.brand);
+  return logged ? <Carteira /> : <LoginInvite kind="carteira" />;
+}
+
+/** Carteira de documentos: carteiras em pilha (toque numa de trás para trazê-la à frente; toque na da frente para ver os dados). */
+function Carteira() {
   const { doc: docParam } = useLocalSearchParams<{ doc?: string }>();
   const { scenario, cnhStarted, showToast } = useApp();
   const insets = useSafeAreaInsets();
   const docs = useMemo(() => walletDocs(scenario), [scenario]);
-  const [org, setOrg] = useState<string | null>(null);
   const [sel, setSel] = useState(docParam ?? docs[0]?.id);
   const [pending, setPending] = useState<Pending>(null);
+  const [detail, setDetail] = useState(false);
 
-  const filtered = docs.filter((d) => !org || d.org === org);
-  const current = docs.find((d) => d.id === sel) ?? filtered[0];
-  const orgs = [...new Set(docs.map((d) => d.org))];
+  const current = docs.find((d) => d.id === sel) ?? docs[0];
 
   const afterAuth = (p: NonNullable<Pending>) => {
     if (p.action === 'qr') return setPending({ ...p, step: 'qr' });
@@ -36,24 +44,25 @@ export default function Carteira() {
 
   if (!docs.length)
     return (
-      <Page title="Carteira de documentos">
-        <Empty icon="wallet" title="Sua carteira ainda está vazia" text="Documentos emitidos pelo Gov.pi, como a CNH Digital e a carteira do doador, aparecem aqui." action={{ label: 'Pedir um documento', onPress: () => ask() }} />
-      </Page>
+      <ScrollView style={{ flex: 1, backgroundColor: color.bg }}>
+        <TabTop title="Carteira" />
+        <View style={{ padding: 16 }}>
+          <Empty icon="wallet" title="Sua carteira ainda está vazia" text="Documentos emitidos pelo Gov.pi, como a CNH Digital e a carteira do doador, aparecem aqui." action={{ label: 'Pedir um documento', onPress: () => ask() }} />
+        </View>
+      </ScrollView>
     );
 
   return (
-    <View style={{ flex: 1 }}>
-    <Page title="Carteira de documentos" sub={`${docs.length} documentos`}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-        <Chip label={`Todas (${docs.length})`} on={!org} onPress={() => setOrg(null)} />
-        {orgs.map((o) => (
-          <Chip key={o} label={o} on={org === o} onPress={() => setOrg(org === o ? null : o)} />
-        ))}
-      </ScrollView>
-
+    <View style={{ flex: 1, backgroundColor: color.bg }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
+      <TabTop title="Carteira" sub={`${docs.length} documentos digitais`} />
+      <View style={{ padding: 16, gap: 16 }}>
       {current && (
         <View style={{ gap: 12 }}>
-          <WalletCard doc={current} />
+          <WalletStack docs={docs} front={current.id} onFront={setSel} onOpen={() => setDetail(true)} />
+          <T v="caption" c={color.muted}>
+            Toque numa carteira de trás para trazê-la à frente. Toque na da frente para ver os dados.
+          </T>
           <View style={styles.actions}>
             <Action icon="qr" label="Mostrar QR Code" onPress={() => setPending({ action: 'qr', step: 'auth' })} />
             <Action icon="share" label="Compartilhar" onPress={() => setPending({ action: 'share', step: 'auth' })} />
@@ -85,14 +94,27 @@ export default function Carteira() {
 
       <T v="h2">Todos os documentos</T>
       <View style={{ gap: 8 }}>
-        {filtered.map((d) => (
+        {docs.map((d) => (
           <DocRow key={d.id} d={d} on={d.id === current?.id} onPress={() => setSel(d.id)} />
         ))}
       </View>
 
       <LinkText label="Não achou um documento? Descreva o que precisa." icon="right" onPress={() => ask('Não encontrei um documento na carteira')} />
+      </View>
+    </ScrollView>
 
-    </Page>
+      {/* Dados da carteira da frente (visualização grande) */}
+      <BottomSheet visible={detail} onClose={() => setDetail(false)} title={current?.title} sub={current?.org}>
+        {current ? <WalletCard doc={current} /> : null}
+        <Button
+          icon="qr"
+          label="Mostrar QR Code"
+          onPress={() => {
+            setDetail(false);
+            setPending({ action: 'qr', step: 'auth' });
+          }}
+        />
+      </BottomSheet>
       {/* Confirmação de identidade e QR Code */}
       <Sheet visible={!!pending} onClose={() => setPending(null)}>
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
