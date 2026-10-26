@@ -130,7 +130,7 @@ function AreaLogada() {
           {/* ---------- Atalhos em grade ---------- */}
           <View style={styles.grid} accessibilityLabel="Atalhos da área do cidadão">
             {SHORTCUTS.map((s) => {
-              const k = kind[s.k];
+              const k = kind[0]; // todos os atalhos no mesmo azul-claro
               return (
                 <Pressable
                   key={s.label}
