@@ -172,7 +172,7 @@ export default function Assistente() {
                   else app.send(CHIP_Q[c] ?? c);
                 }}
                 style={({ pressed }) => [styles.chip, pressed && { borderColor: color.brand }]}>
-                <T v="bodyStrong" style={{ fontFamily: font.medium, fontSize: 14.5 }}>
+                <T v="smallStrong">
                   {c}
                 </T>
               </Pressable>
@@ -206,7 +206,7 @@ function Bubble({ m, onAction }: { m: Msg; onAction: (a: Action) => void }) {
   if (m.from === 'user')
     return (
       <View style={styles.user} accessibilityLabel={`Você: ${m.text}`}>
-        <T v="body" style={{ fontSize: 15.5 }}>
+        <T v="body">
           {m.text}
         </T>
       </View>
@@ -215,7 +215,7 @@ function Bubble({ m, onAction }: { m: Msg; onAction: (a: Action) => void }) {
     <View style={{ gap: 10, alignItems: 'flex-start' }}>
       {m.text ? (
         <View style={styles.bot} accessibilityLabel={`Assistente: ${m.text}`}>
-          <T v="body" style={{ fontSize: 15.5 }}>
+          <T v="body">
             {m.text}
           </T>
         </View>
@@ -356,7 +356,7 @@ function AssistantComposer({
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
         <Pressable accessibilityRole="button" accessibilityLabel="Anexar foto ou arquivo" disabled={disabled} onPress={onAttach} style={styles.attach}>
           <Icon name="plus" size={18} color={color.ink} />
-          <T v="smallStrong" style={{ fontFamily: font.medium, fontSize: 14 }}>
+          <T v="smallStrong">
             Anexar
           </T>
         </Pressable>
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   side: { width: 96 },
   namePill: { flex: 0, alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 3, borderRadius: radius.pill, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)', backgroundColor: 'rgba(255,255,255,0.14)' },
   hero: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 24, gap: 6 },
-  question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 24, lineHeight: 31, marginTop: 4, maxWidth: 320 },
+  question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 24, lineHeight: 32, marginTop: 4, maxWidth: 320 },
   glow: { position: 'absolute', left: 0, right: 0, bottom: -40, height: 300 },
   chip: { minHeight: 46, paddingHorizontal: 20, borderRadius: radius.pill, backgroundColor: color.white, borderWidth: 1, borderColor: color.line, justifyContent: 'center', ...shadow.card, shadowOpacity: 0.05 },
   composer: { backgroundColor: color.white, borderRadius: 24, borderWidth: 1, borderColor: color.line, paddingHorizontal: 14, paddingTop: 6, paddingBottom: 12, gap: 6, ...shadow.card },

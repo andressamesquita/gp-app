@@ -26,6 +26,7 @@ ao Assistente; compartilhar conquistas, Zap do Cidadão, Para mim, acompanhament
 em Configurações ajusta privacidade, tamanho do texto e contraste.
 Serviços: busca igual à do Início (o robô abre o Assistente) e filtros em chips: Categoria, Detran, Empresas, Servidor e Órgão.
 Menu inferior: Início, Assistente Gov.pi, Serviços e Área do cidadão (a Jornada fica nos atalhos).
+Tipografia no padrão de mercado (Material 3 / Apple HIG): corpo 16, apoio 14, legenda 12; títulos 24/20/18/16 em semi-negrito (`components/ui.tsx`, componente `T`).
 Raios iguais aos da web: 8 px em itens e campos, 10 px em botões, 12 px em blocos e 22 px em folhas.
 Ajuda traz o atalho para o Prisma Lab.
 Ao concluir uma solicitação, "Finalizar conversa" (no cartão do protocolo ou no X do topo) volta para a tela inicial do assistente.

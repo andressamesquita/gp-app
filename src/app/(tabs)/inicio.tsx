@@ -3,13 +3,13 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, Image, Pressable, ScrollView, StyleSheet, View, type ImageSourcePropType, type ScrollViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PrismaRow, ServiceCardCompact } from '@/components/blocks';
+import { ServiceCardCompact } from '@/components/blocks';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, IconButton, LinkText, Logo, T, tap } from '@/components/ui';
+import { Avatar, IconButton, LinkText, Logo, Row, Section, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -90,7 +90,7 @@ export default function Inicio() {
             ) : null}
           </View>
           {app.logged ? (
-            <T c={color.white} style={{ marginTop: 14, fontFamily: font.semibold, fontSize: 22, lineHeight: 28 }} accessibilityRole="header">
+            <T v="h1" c={color.white} style={{ marginTop: 14 }} accessibilityRole="header">
               Olá, {PERSON.first}!
             </T>
           ) : null}
@@ -112,7 +112,7 @@ export default function Inicio() {
                 ask(t);
               }}
               style={({ pressed }) => [styles.suggest, pressed && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
-              <T c={color.ink} style={{ fontFamily: font.medium, fontSize: 13.5, lineHeight: 18 }}>
+              <T v="smallStrong">
                 {t}
               </T>
             </Pressable>
@@ -130,7 +130,7 @@ export default function Inicio() {
               accessibilityLabel="Entre com sua conta Gov.pi"
               onPress={() => router.push('/entrar')}
               style={({ pressed }) => [styles.login, pressed && { opacity: 0.92 }]}>
-              <T c={color.white} style={{ fontFamily: font.regular, fontSize: 17, lineHeight: 22 }}>
+              <T v="body" c={color.white} style={{ fontSize: 17 }}>
                 Entre com sua conta
               </T>
               <Icon name="arrowRight" size={22} color={color.white} />
@@ -150,11 +150,20 @@ export default function Inicio() {
           ))}
         </ScrollView>
 
-        {/* ---------- Prisma Lab ---------- */}
-        <SectionHead title="Você no centro do Gov.pi" />
-        <View style={{ marginHorizontal: 16 }}>
-          <PrismaRow onPress={() => router.push('/ajuda')} />
-        </View>
+        {/* ---------- Você no centro do Gov.pi: canais para participar (lista com título, como "Como podemos ajudar?") ---------- */}
+        <Section title="Você no centro do Gov.pi" style={{ marginHorizontal: 16, marginTop: 32 }}>
+          <View>
+            <Row
+              icon="whats"
+              tone={{ bg: color.whatsBg, fg: color.whats }}
+              title="Resolva pelo WhatsApp"
+              sub="Zap do Cidadão, a qualquer hora"
+              right={<Icon name="ext" size={18} color={color.muted} />}
+              onPress={() => router.push('/whatsapp')}
+            />
+            <Row icon="prism" title="Seja um tester do Gov.pi" sub="Prisma Lab · teste novidades" onPress={() => router.push('/ajuda')} last />
+          </View>
+        </Section>
       </Animated.ScrollView>
 
       {/* Barra fixa: aparece quando o campo de busca chega ao topo */}
@@ -182,7 +191,7 @@ function SearchField({ flat }: { flat?: boolean }) {
       }}
       style={({ pressed }) => [styles.search, flat && styles.searchFlat, pressed && { borderColor: color.brand }]}>
       <Robot size={30} />
-      <T c={color.muted} style={{ flex: 1, fontFamily: font.regular, fontSize: 16, lineHeight: 22 }} numberOfLines={1}>
+      <T v="body" c={color.muted} style={{ flex: 1 }} numberOfLines={1}>
         O que você precisa resolver?
       </T>
       <View style={styles.searchSend}>
@@ -197,11 +206,11 @@ function SectionHead({ title, sub, action }: { title: string; sub?: string; acti
   return (
     <View style={styles.secHead}>
       <View style={{ flex: 1, gap: 2 }}>
-        <T c={color.ink} style={{ fontFamily: font.semibold, fontSize: 20, lineHeight: 26, letterSpacing: -0.2 }} accessibilityRole="header">
+        <T v="h2" accessibilityRole="header">
           {title}
         </T>
         {sub ? (
-          <T c={color.muted} style={{ fontFamily: font.regular, fontSize: 13, lineHeight: 18 }}>
+          <T v="small" c={color.muted}>
             {sub}
           </T>
         ) : null}

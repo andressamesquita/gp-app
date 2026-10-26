@@ -110,7 +110,7 @@ export default function Servicos() {
 
         <View style={{ padding: 16, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
-            <T style={{ fontFamily: font.semibold, fontSize: 20, lineHeight: 26 }} accessibilityRole="header">
+            <T v="h2" accessibilityRole="header">
               {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : org ? (QUICK.find((x) => x.org === org)?.label ?? org) : 'Mais procurados'}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
@@ -181,7 +181,7 @@ function FilterChip({ label, on, caret, icon, onPress }: { label: string; on?: b
       }}
       style={({ pressed }) => [styles.chip, on && styles.chipOn, pressed && { opacity: 0.85 }]}>
       {icon ? <Icon name={icon} size={14} color={on ? color.white : color.ink} /> : null}
-      <T c={on ? color.white : color.ink} numberOfLines={1} style={{ fontFamily: font.medium, fontSize: 14, lineHeight: 18, maxWidth: 180 }}>
+      <T v="smallStrong" c={on ? color.white : color.ink} numberOfLines={1} style={{ maxWidth: 180 }}>
         {label}
       </T>
       {caret ? <Icon name="down" size={16} color={on ? color.white : color.ink} /> : null}
@@ -200,7 +200,7 @@ function Option({ icon, label, count, on, onPress }: { icon: IconName; label: st
       }}
       style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
       <Icon name={icon} size={20} color={on ? color.brand : color.muted} />
-      <T style={{ flex: 1, fontFamily: on ? font.semibold : font.medium, fontSize: 15 }}>{label}</T>
+      <T v="bodyStrong" style={{ flex: 1, fontFamily: on ? font.semibold : font.medium }}>{label}</T>
       <T v="caption" c={color.muted}>
         {count}
       </T>

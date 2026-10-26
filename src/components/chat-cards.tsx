@@ -35,7 +35,7 @@ export function CardView({ card, msg, onAction }: { card: Card; msg: Msg; onActi
   if (card.type === 'summary')
     return (
       <View style={styles.summary}>
-        <T v="h3" style={{ fontFamily: font.bold, fontSize: 16 }}>
+        <T v="h3">
           {card.title}
         </T>
         <View>
@@ -85,7 +85,7 @@ export function CardView({ card, msg, onAction }: { card: Card; msg: Msg; onActi
             <Icon name="check" size={20} color={color.white} strokeWidth={2.6} />
           </View>
           <View style={{ flex: 1 }}>
-            <T v="h3" style={{ fontFamily: font.bold, fontSize: 16 }}>
+            <T v="h3">
               {card.title}
             </T>
             <T v="small" c={color.muted}>
@@ -103,7 +103,7 @@ export function CardView({ card, msg, onAction }: { card: Card; msg: Msg; onActi
   if (card.type === 'steps')
     return (
       <View style={styles.summary}>
-        <T v="h3" style={{ fontFamily: font.bold, fontSize: 16 }}>
+        <T v="h3">
           {card.title}
         </T>
         {card.steps.map((s, i) => (
@@ -140,7 +140,7 @@ export function CardView({ card, msg, onAction }: { card: Card; msg: Msg; onActi
               <Icon name={(CATEGORIES[ci]?.icon ?? 'grid') as never} size={18} color={k.fg} />
             </View>
             <View style={{ flex: 1 }}>
-              <T v="smallStrong" style={{ fontSize: 14 }}>
+              <T v="smallStrong">
                 {s.t}
               </T>
               <T v="caption" c={color.muted}>

@@ -63,6 +63,7 @@ const P: Record<string, string> = {
   image: 'M4 5h16v14H4zM4 16l5-5 4 4 2-2 5 5M15.5 9.5h.01',
   trophy: 'M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 14v4M8 21h8M9 18h6',
   edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+  prism: 'M12 4 21 20H3z',
   ext: 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
   arrowRight: 'M5 12h14M13 6l6 6-6 6',
   menu: 'M4 7h16M4 12h16M4 17h16',

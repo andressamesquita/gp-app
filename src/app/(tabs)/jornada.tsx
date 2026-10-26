@@ -94,7 +94,7 @@ function JornadaLogged() {
                 style={({ pressed }) => [styles.srv, pressed && { borderColor: color.brand }, s.status === 'Não se aplica' && { opacity: 0.7, borderStyle: 'dashed' }]}>
                 <View style={{ flex: 1, gap: 4 }}>
                   <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+                    <T v="bodyStrong">
                       {s.t}
                     </T>
                     <Tag label={s.status} tone={statusTone(s.status)} />

@@ -26,18 +26,26 @@ export const tap = () => {
 };
 
 /* ---------------- Texto ---------------- */
-type Variant = 'display' | 'h1' | 'h2' | 'h3' | 'body' | 'bodyStrong' | 'small' | 'smallStrong' | 'caption' | 'eyebrow';
+/**
+ * Escala tipográfica do app, no padrão de mercado (Material 3 e Apple HIG):
+ * corpo em 16, apoio em 14, legenda em 12; títulos em semi-negrito, sem negrito pesado.
+ *   display 28 · h1 24 (título de tela) · h2 20 (título de seção) · title 18 (título de card grande)
+ *   h3 16 (título de card/linha) · body 16 · small 14 · caption 12 · eyebrow 11 · label 15 (botões)
+ */
+type Variant = 'display' | 'h1' | 'h2' | 'title' | 'h3' | 'body' | 'bodyStrong' | 'small' | 'smallStrong' | 'caption' | 'eyebrow' | 'label';
 const V: Record<Variant, TextStyle> = {
-  display: { fontFamily: font.bold, fontSize: 28, lineHeight: 34, letterSpacing: -0.4 },
-  h1: { fontFamily: font.bold, fontSize: 24, lineHeight: 30, letterSpacing: -0.3 },
-  h2: { fontFamily: font.bold, fontSize: 18, lineHeight: 24 },
-  h3: { fontFamily: font.semibold, fontSize: 15, lineHeight: 21 },
-  body: { fontFamily: font.regular, fontSize: 15, lineHeight: 22 },
-  bodyStrong: { fontFamily: font.semibold, fontSize: 15, lineHeight: 22 },
-  small: { fontFamily: font.regular, fontSize: 13, lineHeight: 19 },
-  smallStrong: { fontFamily: font.semibold, fontSize: 13, lineHeight: 19 },
-  caption: { fontFamily: font.medium, fontSize: 12, lineHeight: 16 },
-  eyebrow: { fontFamily: font.semibold, fontSize: 12, lineHeight: 16, letterSpacing: 0.8, textTransform: 'uppercase' },
+  display: { fontFamily: font.semibold, fontSize: 28, lineHeight: 36, letterSpacing: -0.3 },
+  h1: { fontFamily: font.semibold, fontSize: 24, lineHeight: 32, letterSpacing: -0.2 },
+  h2: { fontFamily: font.semibold, fontSize: 20, lineHeight: 28, letterSpacing: -0.1 },
+  title: { fontFamily: font.semibold, fontSize: 18, lineHeight: 24 },
+  h3: { fontFamily: font.semibold, fontSize: 16, lineHeight: 22 },
+  body: { fontFamily: font.regular, fontSize: 16, lineHeight: 24 },
+  bodyStrong: { fontFamily: font.medium, fontSize: 16, lineHeight: 24 },
+  small: { fontFamily: font.regular, fontSize: 14, lineHeight: 20 },
+  smallStrong: { fontFamily: font.medium, fontSize: 14, lineHeight: 20 },
+  caption: { fontFamily: font.regular, fontSize: 12, lineHeight: 16 },
+  eyebrow: { fontFamily: font.semibold, fontSize: 11, lineHeight: 16, letterSpacing: 0.8, textTransform: 'uppercase' },
+  label: { fontFamily: font.semibold, fontSize: 15, lineHeight: 20 },
 };
 
 export function T({ v = 'body', c = color.ink, style, ...p }: TextProps & { v?: Variant; c?: string }) {
@@ -108,7 +116,7 @@ export function Button({
         style,
       ]}>
       {icon && <Icon name={icon} size={18} color={s.fg} />}
-      <T v="bodyStrong" c={s.fg} style={{ fontSize: small ? 13.5 : 14.5 }} numberOfLines={2}>
+      <T v="label" c={s.fg} style={small ? { fontSize: 14 } : undefined} numberOfLines={2}>
         {label}
       </T>
       {iconRight && <Icon name={iconRight} size={18} color={s.fg} />}
@@ -131,7 +139,7 @@ export function LinkText({ label, onPress, href, c = color.brand, icon }: { labe
       hitSlop={10}
       onPress={() => (onPress ? onPress() : href && router.push(href))}
       style={({ pressed }) => [{ minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 4 }, pressed && { opacity: 0.6 }]}>
-      <T v="smallStrong" c={c} style={{ fontSize: 14 }}>
+      <T v="label" c={c} style={{ fontSize: 14 }}>
         {label}
       </T>
       {icon && <Icon name={icon} size={16} color={c} />}
@@ -209,7 +217,7 @@ export function Chip({
       ]}>
       {on && !glass && <Icon name="check" size={16} color={fg} strokeWidth={2.4} />}
       {icon && <Icon name={icon} size={17} color={glass ? color.white : on ? color.white : color.brand} />}
-      <T v="smallStrong" c={fg} style={{ fontSize: 13.5 }} numberOfLines={1}>
+      <T v="smallStrong" c={fg} numberOfLines={1}>
         {label}
       </T>
     </Pressable>
@@ -305,6 +313,7 @@ export function Row({
   right,
   onPress,
   last,
+  tone,
 }: {
   icon?: IconName;
   title: string;
@@ -312,6 +321,7 @@ export function Row({
   right?: ReactNode;
   onPress?: () => void;
   last?: boolean;
+  tone?: { bg: string; fg: string };
 }) {
   return (
     <Pressable
@@ -324,12 +334,12 @@ export function Row({
       android_ripple={{ color: color.surface2 }}
       style={({ pressed }) => [styles.row, !last && styles.rowLine, pressed && { backgroundColor: color.bg }]}>
       {icon && (
-        <View style={styles.rowIco}>
-          <Icon name={icon} size={20} color={color.brand} />
+        <View style={[styles.rowIco, tone && { backgroundColor: tone.bg }]}>
+          <Icon name={icon} size={20} color={tone?.fg ?? color.brand} />
         </View>
       )}
       <View style={{ flex: 1, gap: 2 }}>
-        <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+        <T v="bodyStrong">
           {title}
         </T>
         {sub ? (
@@ -347,7 +357,7 @@ export function SwitchRow({ title, sub, value, onChange, last }: { title: string
   return (
     <View style={[styles.row, !last && styles.rowLine]}>
       <View style={{ flex: 1, gap: 2 }}>
-        <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+        <T v="bodyStrong">
           {title}
         </T>
         <T v="small" c={color.muted}>
@@ -459,7 +469,7 @@ export const inputStyle: TextStyle = {
   borderRadius: radius.sm,
   paddingHorizontal: 14,
   fontFamily: font.medium,
-  fontSize: 15,
+  fontSize: 16,
   color: color.ink,
   backgroundColor: color.surface,
 };

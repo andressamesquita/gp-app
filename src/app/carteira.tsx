@@ -177,7 +177,7 @@ function DocRow({ d, on, onPress }: { d: WalletDoc; on: boolean; onPress: () => 
         <Icon name="idcard" size={18} color={t.ink} />
       </View>
       <View style={{ flex: 1 }}>
-        <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+        <T v="bodyStrong">
           {d.title}
           {d.sub && d.title === 'Passe Livre' ? ` · ${d.sub === 'Pessoa com deficiência' ? 'PcD' : d.sub}` : ''}
         </T>

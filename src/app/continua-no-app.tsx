@@ -25,7 +25,7 @@ export default function ContinuaNoApp() {
       </View>
       <View style={styles.card}>
         <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          <T v="h3" style={{ fontSize: 16 }}>
+          <T v="h3">
             Renovação da CNH
           </T>
           <Tag label="Em andamento" />

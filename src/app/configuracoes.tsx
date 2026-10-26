@@ -32,7 +32,7 @@ export default function Configuracoes() {
 
       <Section title="Acessibilidade">
         <View style={{ gap: 8 }}>
-          <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+          <T v="bodyStrong">
             Tamanho do texto
           </T>
           <T v="small" c={color.muted}>

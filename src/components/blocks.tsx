@@ -213,7 +213,7 @@ export function RequestCard({ r, open: openInit = false, showActions = true }: {
         style={styles.rqHead}>
         <View style={{ flex: 1, gap: 4 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+            <T v="h3">
               {r.title}
             </T>
             <Tag label={r.status} tone={statusTone(r.status)} />
@@ -305,7 +305,7 @@ export function Timeline({ steps, fin }: { steps: Request['steps']; fin?: boolea
               {!last && <View style={{ flex: 1, width: 2, backgroundColor: color.line, marginVertical: 2 }} />}
             </View>
             <View style={{ flex: 1, paddingBottom: last ? 0 : 14, gap: 2 }}>
-              <T v="bodyStrong" style={{ fontSize: 14 }} c={s.s === 'todo' ? color.muted : color.ink}>
+              <T v="smallStrong" c={s.s === 'todo' ? color.muted : color.ink}>
                 {s.t}
               </T>
               {s.d ? (
@@ -360,7 +360,7 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
           <Icon name={fav ? 'starFill' : 'star'} size={20} color={fav ? color.waveYellow : color.muted} />
         </Pressable>
       </View>
-      <T v="bodyStrong" style={{ fontSize: 14.5, lineHeight: 20 }}>
+      <T v="h3">
         {s.t}
       </T>
       <T v="small" c={color.muted} numberOfLines={2}>
@@ -368,7 +368,7 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
       </T>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
         <View style={styles.org}>
-          <T v="caption" style={{ fontFamily: font.semibold, fontSize: 11.5 }}>
+          <T v="caption" style={{ fontFamily: font.medium }}>
             {s.o}
           </T>
         </View>
@@ -419,57 +419,25 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
           <Icon name={fav ? 'starFill' : 'star'} size={18} color={fav ? color.waveYellow : color.muted} />
         </Pressable>
       </View>
-      <T numberOfLines={2} style={{ fontFamily: font.semibold, fontSize: 15, lineHeight: 20, minHeight: 40 }}>
+      <T v="h3" numberOfLines={2} style={{ minHeight: 44 }}>
         {s.t}
       </T>
-      <T v="small" c={color.muted} numberOfLines={2} style={{ fontSize: 12.5, lineHeight: 17, minHeight: 34 }}>
+      <T v="small" c={color.muted} numberOfLines={2} style={{ minHeight: 40 }}>
         {s.d}
       </T>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 2, gap: 6 }}>
         <View style={[styles.org, { flexShrink: 1 }]}>
-          <T v="caption" numberOfLines={1} style={{ fontFamily: font.semibold, fontSize: 10.5, letterSpacing: 0.3 }}>
+          <T v="caption" numberOfLines={1} style={{ fontFamily: font.medium, fontSize: 11, letterSpacing: 0.3 }}>
             {s.o}
           </T>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-          <T v="smallStrong" c={color.brand} style={{ fontSize: 13 }}>
+          <T v="label" c={color.brand} style={{ fontSize: 14 }}>
             {s.v}
           </T>
           <Icon name="right" size={14} color={color.brand} />
         </View>
       </View>
-    </Pressable>
-  );
-}
-
-/**
- * Convite do Prisma Lab em linha (teste no Início): ícone, título, apoio e chevron.
- * Objetivo: chamar o cidadão para ser tester do Gov.pi com o mínimo de leitura.
- */
-export function PrismaRow({ onPress }: { onPress: () => void }) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel="Seja um tester do Gov.pi. Prisma Lab: teste novidades antes de todo mundo e dê sua opinião."
-      onPress={() => {
-        tap();
-        onPress();
-      }}
-      style={({ pressed }) => [styles.prismaRow, pressed && { backgroundColor: color.brandTint }]}>
-      <View style={styles.prismaRowIco}>
-        <Svg width={20} height={20} viewBox="0 0 24 24">
-          <Path d="M12 4 21 20H3z" fill="none" stroke={color.brand} strokeWidth={2.2} strokeLinejoin="round" />
-        </Svg>
-      </View>
-      <View style={{ flex: 1, gap: 2 }}>
-        <T c={color.ink} style={{ fontFamily: font.semibold, fontSize: 15.5, lineHeight: 21 }}>
-          Seja um tester do Gov.pi
-        </T>
-        <T c={color.muted} numberOfLines={1} style={{ fontFamily: font.regular, fontSize: 13, lineHeight: 18 }}>
-          Prisma Lab · Teste novidades
-        </T>
-      </View>
-      <Icon name="right" size={22} color={color.ink} />
     </Pressable>
   );
 }
@@ -490,10 +458,10 @@ export function PrismaCard({ onPress, compact }: { onPress: () => void; compact?
         </T>
       </View>
       <View style={{ gap: 4 }}>
-        <T c={color.ink} style={{ fontFamily: font.semibold, fontSize: 18, lineHeight: 24 }} accessibilityRole="header">
+        <T v="title" accessibilityRole="header">
           Ajude a desenhar o futuro do Piauí
         </T>
-        <T c={color.muted} style={{ fontFamily: font.regular, fontSize: 14, lineHeight: 20 }}>
+        <T v="small" c={color.muted}>
           Teste novidades antes de todo mundo e diga o que pode melhorar.
         </T>
       </View>
@@ -507,7 +475,7 @@ export function PrismaCard({ onPress, compact }: { onPress: () => void; compact?
                   {i + 1}
                 </T>
               </View>
-              <T c={color.ink} style={{ flex: 1, fontFamily: font.medium, fontSize: 14, lineHeight: 20 }}>
+              <T v="small" style={{ flex: 1 }}>
                 {t}
               </T>
             </View>
@@ -546,10 +514,10 @@ export function ForMeCard({
           </T>
         </View>
       )}
-      <T v="bodyStrong" style={{ fontSize: 14, lineHeight: 19 }}>
+      <T v="h3">
         {title}
       </T>
-      <T v="small" c={color.muted} style={{ flex: 1, fontSize: 12.5, lineHeight: 18 }}>
+      <T v="small" c={color.muted} style={{ flex: 1 }}>
         {text}
       </T>
       <Button small kind={urgent ? 'primary' : 'ghost'} label={cta} iconRight="right" onPress={onPress} style={{ alignSelf: 'flex-start', marginTop: 6 }} />
@@ -589,12 +557,10 @@ const styles = StyleSheet.create({
   dot: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   svc: { backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line, padding: 14, gap: 6, ...shadow.card },
   svcIco: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  svcC: { width: 208, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 14, paddingTop: 12, gap: 6, ...shadow.card },
+  svcC: { width: 224, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 14, paddingTop: 12, gap: 6, ...shadow.card },
   svcIcoC: { width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   prisma: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 18, gap: 12 },
   prismaTag: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.brandTint, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },
-  prismaRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 72, paddingVertical: 14, paddingLeft: 16, paddingRight: 14, borderRadius: radius.lg, backgroundColor: color.surface2 },
-  prismaRowIco: { width: 40, height: 40, borderRadius: radius.sm, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
   prismaNum: { width: 26, height: 26, borderRadius: 13, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   org: { backgroundColor: color.surface2, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
   mine: {

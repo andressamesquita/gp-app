@@ -245,7 +245,7 @@ function AreaLogada() {
             <T v="eyebrow" c="rgba(255,255,255,0.85)">
               Zap do Cidadão
             </T>
-            <T v="h2" c={color.white} style={{ fontSize: 21, lineHeight: 26 }}>
+            <T v="h2" c={color.white}>
               Seus avisos no WhatsApp
             </T>
             <T v="small" c="rgba(255,255,255,0.92)">
@@ -364,7 +364,7 @@ function AreaLogada() {
                   style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
                   <View style={[styles.radio, on && { borderColor: color.brand }]}>{on && <View style={styles.radioIn} />}</View>
                   <View style={{ flex: 1 }}>
-                    <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+                    <T v="bodyStrong">
                       {s.t}
                     </T>
                     <T v="caption" c={color.muted}>
@@ -460,7 +460,7 @@ function AreaLogada() {
               style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
               <View style={[styles.radio, on && { borderColor: color.brand }]}>{on && <View style={styles.radioIn} />}</View>
               <View style={{ flex: 1 }}>
-                <T v="bodyStrong" style={{ fontSize: 14.5 }}>
+                <T v="bodyStrong">
                   {d.title}
                 </T>
                 <T v="caption" c={color.muted}>

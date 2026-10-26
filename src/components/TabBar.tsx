@@ -77,7 +77,7 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
 }
 
 const styles = {
-  label: (focused: boolean) => ({ fontFamily: focused ? font.bold : font.semibold, fontSize: 11.5, lineHeight: 14, textAlign: 'center' as const }),
+  label: (focused: boolean) => ({ fontFamily: focused ? font.semibold : font.medium, fontSize: 12, lineHeight: 15, textAlign: 'center' as const }),
   ...StyleSheet.create({
   bar: { flexDirection: 'row', backgroundColor: color.surface, borderTopWidth: 1, borderTopColor: color.line, paddingTop: 6, paddingHorizontal: 2 },
   item: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', gap: 3, minHeight: 62 },
