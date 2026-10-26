@@ -21,7 +21,7 @@ function JornadaLogged() {
   const earned = earnedMedals(scenario);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ paddingBottom: 32 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
       <TabTop title="Minha jornada" sub="Seus momentos de vida e os serviços do Governo ligados a cada um." />
 
       <View style={{ padding: 16, gap: 16 }}>
@@ -78,7 +78,7 @@ function JornadaLogged() {
           <View style={{ width: 6 }} />
         </ScrollView>
 
-        <Section title={m.t}>
+        <Section flat title={m.t}>
           {m.services.map((s) => {
             const actionable = !!s.q;
             return (
@@ -109,7 +109,7 @@ function JornadaLogged() {
           })}
         </Section>
 
-        <Section title="Conquistas">
+        <Section flat title="Conquistas">
           <MedalGrid medals={MEDALS} earned={earned} onPress={(md) => showToast(earned.includes(md.id) ? `${md.t}: conquistada!` : `Como ganhar: ${md.how}`)} />
         </Section>
       </View>

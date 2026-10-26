@@ -44,7 +44,7 @@ function Carteira() {
 
   if (!docs.length)
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: color.bg }}>
+      <ScrollView style={{ flex: 1, backgroundColor: color.surface }}>
         <TabTop title="Carteira" />
         <View style={{ padding: 16 }}>
           <Empty icon="wallet" title="Sua carteira ainda está vazia" text="Documentos emitidos pelo Gov.pi, como a CNH Digital e a carteira do doador, aparecem aqui." action={{ label: 'Pedir um documento', onPress: () => ask() }} />
@@ -53,7 +53,7 @@ function Carteira() {
     );
 
   return (
-    <View style={{ flex: 1, backgroundColor: color.bg }}>
+    <View style={{ flex: 1, backgroundColor: color.surface }}>
     <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
       <TabTop title="Carteira" sub={`${docs.length} documentos digitais`} />
       <View style={{ padding: 16, gap: 16 }}>
@@ -92,6 +92,8 @@ function Carteira() {
         </Pressable>
       )}
 
+      {/* divisória clara de ponta a ponta antes da seção */}
+      <View style={{ marginHorizontal: -16, marginTop: 8, borderTopWidth: 1, borderTopColor: color.divider }} />
       <T v="h2">Todos os documentos</T>
       <View style={{ gap: 8 }}>
         {docs.map((d) => (

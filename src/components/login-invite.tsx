@@ -38,7 +38,7 @@ const COPY: Record<string, { title: string; icon: IconName; text: string; perks:
 export function LoginInvite({ kind }: { kind: keyof typeof COPY }) {
   const c = COPY[kind];
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ paddingBottom: 32 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 32 }}>
       <TabTop title={c.title} />
       <View style={{ padding: 16, marginTop: -12 }}>
         <View style={styles.card}>
@@ -74,6 +74,6 @@ export function LoginInvite({ kind }: { kind: keyof typeof COPY }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: radius.xl, borderWidth: 1, borderColor: color.line, padding: 20, gap: 14 },
+  card: { backgroundColor: color.surface, padding: 4, paddingTop: 8, gap: 14 },
   ico: { width: 52, height: 52, borderRadius: radius.lg, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
 });

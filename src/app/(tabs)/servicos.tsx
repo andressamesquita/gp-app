@@ -51,7 +51,7 @@ export default function Servicos() {
   const orgsShown = orgs.filter((o) => !orgQ.trim() || norm(o).includes(norm(orgQ.trim())));
 
   return (
-    <View style={{ flex: 1, backgroundColor: color.bg }}>
+    <View style={{ flex: 1, backgroundColor: color.surface }}>
       {/* Faixa azul, busca e filtros ficam fixos; só a lista rola */}
       <View style={{ zIndex: 1 }}>
         <TabTop title="Serviços para você" sub="525 serviços online do Governo do Piauí." overlap />
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   input: { flex: 1, minHeight: 54, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   searchBot: { width: 42, height: 42, borderRadius: radius.sm, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
-  cats: { backgroundColor: color.bg, paddingTop: 14, paddingBottom: 10 },
+  cats: { backgroundColor: color.surface, paddingTop: 14, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: color.divider },
   chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },
   chipOn: { backgroundColor: color.brand, borderColor: color.brand },
   catGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 18, paddingTop: 4, paddingBottom: 8 },
