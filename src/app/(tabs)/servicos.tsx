@@ -28,12 +28,16 @@ export default function Servicos() {
   const [draft, setDraft] = useState<string[]>([]);
   const [orgQ, setOrgQ] = useState('');
   const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
+  const [all, setAll] = useState(false);
   const open = useServiceOpen();
 
   const list = useMemo(() => {
     const n = norm(q.trim());
     return SERVICES.filter((s) => (!cat || s.c === cat) && (!orgsSel.length || orgsSel.includes(s.o)) && (!n || norm(`${s.t} ${s.d} ${s.o} ${s.k}`).includes(n)));
   }, [q, cat, orgsSel]);
+
+  const filtering = !!(q.trim() || cat || orgsSel.length);
+  const shown = filtering || all ? list : list.slice(0, 5);
 
   const counts = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.id, SERVICES.filter((s) => s.c === c.id).length])), []);
   const orgs = useMemo(() => [...new Set(SERVICES.map((s) => s.o))].sort((a, b) => a.localeCompare(b, 'pt-BR')), []);
@@ -127,13 +131,18 @@ export default function Servicos() {
               {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length === 1 ? (QUICK.find((x) => x.org === orgsSel[0])?.label ?? orgsSel[0]) : orgsSel.length ? 'Órgãos selecionados' : 'Mais procurados'}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
-              {list.length} {list.length === 1 ? 'serviço' : 'serviços'}
+              {shown.length < list.length ? `${shown.length} de ${list.length} serviços` : `${list.length} ${list.length === 1 ? 'serviço' : 'serviços'}`}
             </T>
           </View>
 
-          {list.map((s) => (
+          {shown.map((s) => (
             <ServiceCard key={s.t} s={s} onPress={() => open(s)} />
           ))}
+
+          {/* Sem busca nem filtro, mostra só os 5 mais procurados */}
+          {shown.length < list.length ? (
+            <Button kind="secondary" label={`Ver todos os ${list.length} serviços`} onPress={() => setAll(true)} />
+          ) : null}
 
           {!list.length && (
             <View style={styles.none}>

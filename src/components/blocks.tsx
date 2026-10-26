@@ -369,7 +369,7 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
           </T>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <T v="smallStrong" c={color.brand}>
+          <T v="label" c={color.brand}>
             {s.v}
           </T>
           <Icon name="right" size={16} color={color.brand} />
