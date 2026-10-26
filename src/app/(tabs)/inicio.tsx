@@ -153,7 +153,7 @@ export default function Inicio() {
         {/* ---------- Prisma Lab ---------- */}
         <SectionHead title="Você no centro do Gov.pi" />
         <View style={{ marginHorizontal: 16 }}>
-          <PrismaCard onPress={() => app.showToast('Aqui abriria o cadastro no Prisma Lab.')} />
+          <PrismaCard compact onPress={() => router.push('/ajuda')} />
         </View>
       </Animated.ScrollView>
 

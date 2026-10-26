@@ -446,7 +446,7 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
  * Convite do Prisma Lab (Início e Ajuda).
  * Hierarquia: etiqueta → título do cartão → apoio → passos → ação.
  */
-export function PrismaCard({ onPress }: { onPress: () => void }) {
+export function PrismaCard({ onPress, compact }: { onPress: () => void; compact?: boolean }) {
   return (
     <View style={styles.prisma}>
       <View style={styles.prismaTag}>
@@ -465,21 +465,24 @@ export function PrismaCard({ onPress }: { onPress: () => void }) {
           Teste novidades antes de todo mundo e diga o que pode melhorar.
         </T>
       </View>
-      <View style={{ gap: 10, marginTop: 2 }}>
-        {['Cadastre-se como colaborador', 'Teste serviços novos e dê sua opinião', 'Acompanhe sua sugestão virar melhoria'].map((t, i) => (
-          <View key={t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View style={styles.prismaNum}>
-              <T c={color.white} style={{ fontFamily: font.bold, fontSize: 12.5, lineHeight: 16 }}>
-                {i + 1}
+      {/* Versão compacta (Início): só etiqueta, título, uma linha e o botão. Os passos ficam na Ajuda. */}
+      {!compact && (
+        <View style={{ gap: 10, marginTop: 2 }}>
+          {['Cadastre-se como colaborador', 'Teste serviços novos e dê sua opinião', 'Acompanhe sua sugestão virar melhoria'].map((t, i) => (
+            <View key={t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={styles.prismaNum}>
+                <T c={color.white} style={{ fontFamily: font.bold, fontSize: 12.5, lineHeight: 16 }}>
+                  {i + 1}
+                </T>
+              </View>
+              <T c={color.ink} style={{ flex: 1, fontFamily: font.medium, fontSize: 14, lineHeight: 20 }}>
+                {t}
               </T>
             </View>
-            <T c={color.ink} style={{ flex: 1, fontFamily: font.medium, fontSize: 14, lineHeight: 20 }}>
-              {t}
-            </T>
-          </View>
-        ))}
-      </View>
-      <Button label="Quero participar" iconRight="arrowRight" onPress={onPress} style={{ marginTop: 6 }} />
+          ))}
+        </View>
+      )}
+      <Button label={compact ? 'Conhecer o Prisma Lab' : 'Quero participar'} iconRight="arrowRight" onPress={onPress} style={{ marginTop: compact ? 2 : 6 }} />
     </View>
   );
 }
