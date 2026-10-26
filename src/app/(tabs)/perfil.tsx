@@ -82,7 +82,7 @@ function AreaLogada() {
   return (
     <View style={{ flex: 1 }}>
       <Animated.ScrollView
-        style={{ flex: 1, backgroundColor: color.bg }}
+        style={{ flex: 1, backgroundColor: color.surface }}
         contentContainerStyle={{ paddingBottom: 44 }}
         scrollEventThrottle={16}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -288,7 +288,7 @@ function AreaLogada() {
           )}
 
           {/* ---------- Para mim ---------- */}
-          <Section title="Para mim" action={cards.length ? { label: `Ver todos (${cards.length})`, href: '/avisos' } : undefined}>
+          <Section flat title="Para mim" action={cards.length ? { label: `Ver todos (${cards.length})`, href: '/avisos' } : undefined}>
             {cards.length ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8 }}>
                 {cards.map((c) => (
@@ -309,7 +309,7 @@ function AreaLogada() {
           </Section>
 
           {/* ---------- Acompanhamento ---------- */}
-          <Section title="Acompanhamento de solicitações">
+          <Section flat title="Acompanhamento de solicitações">
             {all.length ? (
               <>
                 <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
@@ -334,7 +334,7 @@ function AreaLogada() {
           </Section>
 
           {/* ---------- Serviços favoritos ---------- */}
-          <Section title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
+          <Section flat title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
             {favs.length ? (
               <View>
                 {favs.map((s, i) => (
@@ -510,9 +510,9 @@ const styles = StyleSheet.create({
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
   stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden', zIndex: 10 },
-  sheetBody: { marginTop: -24, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, backgroundColor: color.bg, padding: 16, paddingTop: 20, gap: 16 },
+  sheetBody: { marginTop: -24, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, backgroundColor: color.surface, padding: 16, paddingTop: 20, gap: 8 },
   // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
-  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 8 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 16 },
   tile: { width: '25%', alignItems: 'center', gap: 8, paddingHorizontal: 2 },
   tileIco: { width: 62, height: 62, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },

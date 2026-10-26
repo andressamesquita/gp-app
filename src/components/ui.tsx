@@ -277,14 +277,17 @@ export function Section({
   action,
   children,
   style,
+  flat,
 }: {
   title: string;
   action?: { label: string; href?: Href; onPress?: () => void };
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
+  /** Sem card: fundo branco da tela e divisória clara em cima (seções da Área do cidadão). */
+  flat?: boolean;
 }) {
   return (
-    <View style={[styles.section, style]}>
+    <View style={[styles.section, flat && styles.sectionFlat, style]}>
       <View style={styles.sectionHead}>
         <T v="h2" accessibilityRole="header" style={{ flex: 1 }}>
           {title}
@@ -521,6 +524,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     gap: 10,
   },
+  sectionFlat: { backgroundColor: 'transparent', borderWidth: 0, borderTopWidth: 1, borderTopColor: color.divider, borderRadius: 0, marginHorizontal: -16, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: 8 },
   emptyIco: { width: 44, height: 44, borderRadius: 12, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 60, paddingVertical: 10 },

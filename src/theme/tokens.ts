@@ -20,6 +20,8 @@ export const color = {
   ink: '#14233A',
   muted: '#44546B',
   line: '#D6DEE9',
+  /** Divisória bem clara entre seções em fundo branco (estilo Méliuz). */
+  divider: '#EEF1F5',
   lineStrong: '#B9C5D6',
 
   // Estados
