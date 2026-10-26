@@ -4,12 +4,13 @@ import { Animated, Image, Pressable, ScrollView, StyleSheet, View, type ImageSou
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ServiceCardCompact } from '@/components/blocks';
+import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
+import { Avatar, Button, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -39,6 +40,7 @@ export default function Inicio() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [searchY, setSearchY] = useState(400);
   const [stuck, setStuck] = useState(false);
+  const [history, setHistory] = useState(false);
   const stickAt = Math.max(1, searchY - 28 - insets.top - 8); // 28 = margem negativa do campo sobre o topo azul
 
   const banners: Banner[] = [
@@ -80,6 +82,7 @@ export default function Inicio() {
           <View style={styles.headRow}>
             <Logo size={17} />
             <View style={{ flex: 1 }} />
+            <ChatHistoryButton onPress={() => setHistory(true)} />
             {app.logged ? (
               <>
                 <IconButton icon="bell" label="Avisos" tone="onBrand" badge onPress={() => router.push('/avisos')} />
@@ -87,7 +90,9 @@ export default function Inicio() {
                   <Avatar initials={PERSON.initials} size={38} light uri={app.photo} />
                 </Pressable>
               </>
-            ) : null}
+            ) : (
+              <Button small kind="onBrand" icon="user" label="Entrar" href="/entrar" style={{ marginLeft: 4 }} />
+            )}
           </View>
           {app.logged ? (
             <T v="h1" c={color.white} style={{ marginTop: 14 }} accessibilityRole="header">
@@ -176,6 +181,8 @@ export default function Inicio() {
         style={[styles.stickyBar, { paddingTop: insets.top + 8, opacity: scrollY.interpolate({ inputRange: [stickAt - 1, stickAt], outputRange: [0, 1], extrapolate: 'clamp' }) }]}>
         <SearchField flat />
       </Animated.View>
+
+      <ChatHistorySheet visible={history} onClose={() => setHistory(false)} />
     </View>
   );
 }

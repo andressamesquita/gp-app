@@ -155,6 +155,7 @@ export function IconButton({
   onPress,
   tone = 'onBrand',
   badge,
+  badgeColor,
   size = touch,
 }: {
   icon: IconName;
@@ -162,6 +163,8 @@ export function IconButton({
   onPress: () => void;
   tone?: 'onBrand' | 'plain' | 'soft';
   badge?: boolean;
+  /** Cor da bolinha (padrão: vermelho de aviso). Verde = há conversas salvas. */
+  badgeColor?: string;
   size?: number;
 }) {
   const fg = tone === 'onBrand' ? color.white : color.ink;
@@ -180,7 +183,7 @@ export function IconButton({
         pressed && { backgroundColor: tone === 'onBrand' ? 'rgba(255,255,255,0.16)' : color.surface2 },
       ]}>
       <Icon name={icon} size={22} color={fg} />
-      {badge && <View style={[styles.badge, { borderColor: tone === 'onBrand' ? color.brand : color.white }]} />}
+      {badge && <View style={[styles.badge, { borderColor: tone === 'onBrand' ? color.brand : color.white }, badgeColor ? { backgroundColor: badgeColor } : null]} />}
     </Pressable>
   );
 }
