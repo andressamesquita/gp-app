@@ -27,7 +27,7 @@ const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
  * 'branco' = quadrado branco com contorno fino · 'azul' = azul-claro (versão anterior).
  * Para voltar ao azul, troque para 'azul'.
  */
-const TILE_BG: 'branco' | 'azul' = 'branco';
+const TILE_BG: 'branco' | 'azul' = 'azul';
 
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
