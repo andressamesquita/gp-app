@@ -151,7 +151,7 @@ function AreaLogada() {
                       </View>
                     ) : null}
                   </View>
-                  <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', fontSize: 11, lineHeight: 14, letterSpacing: -0.3, marginHorizontal: -6, alignSelf: 'stretch' }}>
+                  <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', fontSize: 11, lineHeight: 14, letterSpacing: -0.2, marginHorizontal: -6, alignSelf: 'stretch' }}>
                     {s.label}
                   </T>
                 </Pressable>

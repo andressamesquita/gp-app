@@ -22,7 +22,7 @@ export default function WhatsApp() {
   );
   const Out = ({ text, time = '09:41' }: { text: string; time?: string }) => (
     <View style={[styles.b, styles.out]}>
-      <T v="body" style={{ fontSize: 14.5 }}>
+      <T v="body">
         {text}
       </T>
       <T v="caption" c={color.muted} style={styles.time}>
@@ -56,12 +56,12 @@ export default function WhatsApp() {
         </View>
         <Out text="Quero renovar minha CNH" />
         <In>
-          <T v="body" style={{ fontSize: 14.5 }}>
+          <T v="body">
             Olá, Ana. Encontrei sua habilitação. Vence em 27 dias e não há multas pendentes.
           </T>
         </In>
         <In time="09:42">
-          <T v="body" style={{ fontSize: 14.5 }}>
+          <T v="body">
             Posso abrir a renovação e reservar seu exame médico. Confirma?
           </T>
           {!confirmed && (
@@ -83,12 +83,12 @@ export default function WhatsApp() {
           <>
             <Out text="Confirmar" time="09:42" />
             <In time="09:42">
-              <T v="body" style={{ fontSize: 14.5 }}>
+              <T v="body">
                 Solicitação registrada. Exame marcado para quarta-feira, 21/10, às 9h20, na Clínica Centro. Seu protocolo é {PROTOCOL_CNH}.
               </T>
             </In>
             <In time="09:42">
-              <T v="body" style={{ fontSize: 14.5 }}>
+              <T v="body">
                 Sua solicitação também está no app. Acompanhe cada etapa onde preferir.
               </T>
               <Pressable accessibilityRole="link" onPress={() => router.push('/continua-no-app')} style={styles.link}>
@@ -134,6 +134,6 @@ const styles = StyleSheet.create({
   link: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, minHeight: 44, borderTopWidth: 1, borderTopColor: color.line, marginTop: 8 },
   foot: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 8, paddingTop: 8 },
   inputWrap: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: color.white, borderRadius: 24, paddingHorizontal: 12, height: 48 },
-  input: { flex: 1, fontFamily: font.medium, fontSize: 15, color: color.ink, outlineStyle: 'none' } as object,
+  input: { flex: 1, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   mic: { width: 48, height: 48, borderRadius: 24, backgroundColor: color.whats, alignItems: 'center', justifyContent: 'center' },
 });

@@ -51,7 +51,7 @@ export default function Configuracoes() {
                     app.setTextScale(s.v);
                   }}
                   style={[styles.segBtn, on && styles.segOn]}>
-                  <T v="smallStrong" c={on ? color.white : color.ink} style={{ fontFamily: font.semibold, fontSize: 13 }}>
+                  <T v="smallStrong" c={on ? color.white : color.ink} style={{ fontFamily: font.semibold }}>
                     {s.t}
                   </T>
                 </Pressable>

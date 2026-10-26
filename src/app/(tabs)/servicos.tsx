@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  input: { flex: 1, minHeight: 54, fontFamily: font.regular, fontSize: 16, color: color.ink, outlineStyle: 'none' } as object,
+  input: { flex: 1, minHeight: 54, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   searchBot: { width: 42, height: 42, borderRadius: radius.sm, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   cats: { backgroundColor: color.bg, paddingTop: 14, paddingBottom: 10 },
   chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 42, paddingHorizontal: 18, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },

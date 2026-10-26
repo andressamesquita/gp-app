@@ -196,11 +196,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 12,
     fontFamily: font.medium,
-    fontSize: 15,
+    fontSize: 14,
     color: color.ink,
     outlineStyle: 'none',
   } as object,
-  inputHero: { minHeight: 64, fontSize: 16, textAlignVertical: 'top', paddingTop: 12 },
+  inputHero: { minHeight: 64, fontSize: 14, textAlignVertical: 'top', paddingTop: 12 },
   side: { width: 44, height: 46, alignItems: 'center', justifyContent: 'center' },
   send: { width: 46, height: 46, borderRadius: 23, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
 });

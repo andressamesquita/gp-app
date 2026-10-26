@@ -89,7 +89,7 @@ export function WalletCard({ doc, compact }: { doc: WalletDoc; compact?: boolean
         <Circle cx={300} cy={-10} r={90} fill="#fff" fillOpacity={0.07} />
       </Svg>
       <View style={styles.wtop}>
-        <T v="eyebrow" c={tone.ink} style={{ opacity: 0.9, fontSize: 11 }}>
+        <T v="eyebrow" c={tone.ink} style={{ opacity: 0.9 }}>
           {doc.kicker}
         </T>
         {doc.status ? (
@@ -100,7 +100,7 @@ export function WalletCard({ doc, compact }: { doc: WalletDoc; compact?: boolean
           </View>
         ) : null}
       </View>
-      <T v="h2" c={tone.ink} style={{ fontSize: compact ? 18 : 22, marginTop: 2 }}>
+      <T v={compact ? 'h2' : 'h1'} c={tone.ink} style={{ marginTop: 2 }}>
         {doc.title}
       </T>
       <T v="small" c={tone.ink} style={{ opacity: 0.9 }}>
@@ -179,10 +179,10 @@ export function MedalGrid({ medals, earned, onPress }: { medals: Medal[]; earned
             onPress={() => onPress?.(m)}
             style={styles.medal}>
             <MedalBadge m={m} earned={on} />
-            <T v="smallStrong" c={on ? color.ink : color.muted} style={{ textAlign: 'center', fontSize: 12.5, lineHeight: 16 }}>
+            <T v="smallStrong" c={on ? color.ink : color.muted} style={{ textAlign: 'center' }}>
               {m.t}
             </T>
-            <T v="caption" c={on ? color.good : color.muted} style={{ textAlign: 'center', fontSize: 11 }}>
+            <T v="caption" c={on ? color.good : color.muted} style={{ textAlign: 'center' }}>
               {on ? 'Conquistada' : 'A conquistar'}
             </T>
           </Pressable>
@@ -279,7 +279,7 @@ export function StepBar({ steps, fin }: { steps: Request['steps']; fin?: boolean
       {steps.map((s, i) => (
         <View key={i} style={{ flex: 1, gap: 6 }}>
           <View style={{ height: 6, borderRadius: 3, backgroundColor: s.s === 'done' ? (fin ? color.good : color.brand) : s.s === 'current' ? color.waveYellow : color.line }} />
-          <T v="caption" c={s.s === 'current' ? color.ink : color.muted} style={{ fontSize: 11.5, lineHeight: 14, fontFamily: s.s === 'current' ? font.bold : font.medium }}>
+          <T v="caption" c={s.s === 'current' ? color.ink : color.muted} style={{ fontFamily: s.s === 'current' ? font.semibold : font.regular }}>
             {s.t}
           </T>
         </View>
@@ -419,20 +419,20 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
           <Icon name={fav ? 'starFill' : 'star'} size={18} color={fav ? color.waveYellow : color.muted} />
         </Pressable>
       </View>
-      <T v="h3" numberOfLines={2} style={{ minHeight: 44 }}>
+      <T v="h3" numberOfLines={2} style={{ minHeight: 40 }}>
         {s.t}
       </T>
-      <T v="small" c={color.muted} numberOfLines={2} style={{ minHeight: 40 }}>
+      <T v="small" c={color.muted} numberOfLines={2} style={{ minHeight: 36 }}>
         {s.d}
       </T>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 2, gap: 6 }}>
         <View style={[styles.org, { flexShrink: 1 }]}>
-          <T v="caption" numberOfLines={1} style={{ fontFamily: font.medium, fontSize: 11, letterSpacing: 0.3 }}>
+          <T v="caption" numberOfLines={1} style={{ fontFamily: font.medium, fontSize: 10, letterSpacing: 0.3 }}>
             {s.o}
           </T>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-          <T v="label" c={color.brand} style={{ fontSize: 14 }}>
+          <T v="label" c={color.brand}>
             {s.v}
           </T>
           <Icon name="right" size={14} color={color.brand} />
@@ -453,7 +453,7 @@ export function PrismaCard({ onPress, compact }: { onPress: () => void; compact?
         <Svg width={13} height={13} viewBox="0 0 24 24">
           <Path d="M12 4 21 20H3z" fill="none" stroke={color.brand} strokeWidth={2.4} strokeLinejoin="round" />
         </Svg>
-        <T c={color.brand} style={{ fontFamily: font.semibold, fontSize: 12, lineHeight: 16, letterSpacing: 0.3 }}>
+        <T v="label" c={color.brand} style={{ fontSize: 11 }}>
           Prisma Lab
         </T>
       </View>
@@ -471,7 +471,7 @@ export function PrismaCard({ onPress, compact }: { onPress: () => void; compact?
           {['Cadastre-se como colaborador', 'Teste serviços novos e dê sua opinião', 'Acompanhe sua sugestão virar melhoria'].map((t, i) => (
             <View key={t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={styles.prismaNum}>
-                <T c={color.white} style={{ fontFamily: font.bold, fontSize: 12.5, lineHeight: 16 }}>
+                <T v="label" c={color.white}>
                   {i + 1}
                 </T>
               </View>
@@ -509,7 +509,7 @@ export function ForMeCard({
       {urgent && (
         <View style={styles.utag}>
           <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: color.waveOrange }} />
-          <T v="caption" c={color.warnInk} style={{ fontFamily: font.semibold, fontSize: 10.5, letterSpacing: 0.6 }}>
+          <T v="eyebrow" c={color.warnInk}>
             PRECISA DE VOCÊ
           </T>
         </View>

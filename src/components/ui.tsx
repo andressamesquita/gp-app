@@ -27,25 +27,27 @@ export const tap = () => {
 
 /* ---------------- Texto ---------------- */
 /**
- * Escala tipográfica do app, no padrão de mercado (Material 3 e Apple HIG):
- * corpo em 16, apoio em 14, legenda em 12; títulos em semi-negrito, sem negrito pesado.
- *   display 28 · h1 24 (título de tela) · h2 20 (título de seção) · title 18 (título de card grande)
- *   h3 16 (título de card/linha) · body 16 · small 14 · caption 12 · eyebrow 11 · label 15 (botões)
+ * Escala tipográfica compacta do app (base definida pelo design):
+ *   títulos 16 semi-negrito · corpo e subtítulos 12 normal · rótulo de botão 12.
+ * A hierarquia parte desses tamanhos:
+ *   display 24 (pergunta do Assistente) · h1 20 (título de tela, nas faixas azuis)
+ *   h2 16 (título de seção) · title 16 (título de card de destaque) · h3 14 (título de card e de linha)
+ *   body/small 12 (texto e subtítulo) · label 12 (botões) · caption 11 (metadados) · eyebrow 10 (etiquetas)
  */
 type Variant = 'display' | 'h1' | 'h2' | 'title' | 'h3' | 'body' | 'bodyStrong' | 'small' | 'smallStrong' | 'caption' | 'eyebrow' | 'label';
 const V: Record<Variant, TextStyle> = {
-  display: { fontFamily: font.semibold, fontSize: 28, lineHeight: 36, letterSpacing: -0.3 },
-  h1: { fontFamily: font.semibold, fontSize: 24, lineHeight: 32, letterSpacing: -0.2 },
-  h2: { fontFamily: font.semibold, fontSize: 20, lineHeight: 28, letterSpacing: -0.1 },
-  title: { fontFamily: font.semibold, fontSize: 18, lineHeight: 24 },
-  h3: { fontFamily: font.semibold, fontSize: 16, lineHeight: 22 },
-  body: { fontFamily: font.regular, fontSize: 16, lineHeight: 24 },
-  bodyStrong: { fontFamily: font.medium, fontSize: 16, lineHeight: 24 },
-  small: { fontFamily: font.regular, fontSize: 14, lineHeight: 20 },
-  smallStrong: { fontFamily: font.medium, fontSize: 14, lineHeight: 20 },
-  caption: { fontFamily: font.regular, fontSize: 12, lineHeight: 16 },
-  eyebrow: { fontFamily: font.semibold, fontSize: 11, lineHeight: 16, letterSpacing: 0.8, textTransform: 'uppercase' },
-  label: { fontFamily: font.semibold, fontSize: 15, lineHeight: 20 },
+  display: { fontFamily: font.semibold, fontSize: 24, lineHeight: 30, letterSpacing: -0.2 },
+  h1: { fontFamily: font.semibold, fontSize: 20, lineHeight: 26, letterSpacing: -0.1 },
+  h2: { fontFamily: font.semibold, fontSize: 16, lineHeight: 22 },
+  title: { fontFamily: font.semibold, fontSize: 16, lineHeight: 22 },
+  h3: { fontFamily: font.semibold, fontSize: 14, lineHeight: 20 },
+  body: { fontFamily: font.regular, fontSize: 12, lineHeight: 18 },
+  bodyStrong: { fontFamily: font.medium, fontSize: 14, lineHeight: 20 },
+  small: { fontFamily: font.regular, fontSize: 12, lineHeight: 18 },
+  smallStrong: { fontFamily: font.medium, fontSize: 12, lineHeight: 18 },
+  caption: { fontFamily: font.regular, fontSize: 11, lineHeight: 14 },
+  eyebrow: { fontFamily: font.semibold, fontSize: 10, lineHeight: 14, letterSpacing: 0.8, textTransform: 'uppercase' },
+  label: { fontFamily: font.semibold, fontSize: 12, lineHeight: 16 },
 };
 
 export function T({ v = 'body', c = color.ink, style, ...p }: TextProps & { v?: Variant; c?: string }) {
@@ -116,7 +118,7 @@ export function Button({
         style,
       ]}>
       {icon && <Icon name={icon} size={18} color={s.fg} />}
-      <T v="label" c={s.fg} style={small ? { fontSize: 14 } : undefined} numberOfLines={2}>
+      <T v="label" c={s.fg} numberOfLines={2}>
         {label}
       </T>
       {iconRight && <Icon name={iconRight} size={18} color={s.fg} />}
@@ -139,7 +141,7 @@ export function LinkText({ label, onPress, href, c = color.brand, icon }: { labe
       hitSlop={10}
       onPress={() => (onPress ? onPress() : href && router.push(href))}
       style={({ pressed }) => [{ minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 4 }, pressed && { opacity: 0.6 }]}>
-      <T v="label" c={c} style={{ fontSize: 14 }}>
+      <T v="label" c={c}>
         {label}
       </T>
       {icon && <Icon name={icon} size={16} color={c} />}
@@ -469,7 +471,7 @@ export const inputStyle: TextStyle = {
   borderRadius: radius.sm,
   paddingHorizontal: 14,
   fontFamily: font.medium,
-  fontSize: 16,
+  fontSize: 14,
   color: color.ink,
   backgroundColor: color.surface,
 };

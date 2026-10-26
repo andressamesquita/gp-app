@@ -72,5 +72,5 @@ export default function Conversas() {
 
 const styles = StyleSheet.create({
   search: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 50, backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1.5, borderColor: color.line, paddingHorizontal: 14 },
-  input: { flex: 1, height: '100%', fontFamily: font.medium, fontSize: 15, color: color.ink, outlineStyle: 'none' } as object,
+  input: { flex: 1, height: '100%', fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
 });

@@ -130,13 +130,13 @@ export default function Inicio() {
               accessibilityLabel="Entre com sua conta Gov.pi"
               onPress={() => router.push('/entrar')}
               style={({ pressed }) => [styles.login, pressed && { opacity: 0.92 }]}>
-              <T v="body" c={color.white} style={{ fontSize: 17 }}>
+              <T v="h3" c={color.white} style={{ fontFamily: font.regular }}>
                 Entre com sua conta
               </T>
               <Icon name="arrowRight" size={22} color={color.white} />
               <View style={{ flex: 1 }} />
-              <T style={{ fontFamily: font.regular, fontSize: 20, color: color.white }}>
-                Gov.<T style={{ fontFamily: font.bold, fontSize: 20, color: color.white }}>pi</T>
+              <T style={{ fontFamily: font.regular, fontSize: 16, color: color.white }}>
+                Gov.<T style={{ fontFamily: font.bold, fontSize: 16, color: color.white }}>pi</T>
               </T>
             </Pressable>
           </View>
@@ -191,7 +191,7 @@ function SearchField({ flat }: { flat?: boolean }) {
       }}
       style={({ pressed }) => [styles.search, flat && styles.searchFlat, pressed && { borderColor: color.brand }]}>
       <Robot size={30} />
-      <T v="body" c={color.muted} style={{ flex: 1 }} numberOfLines={1}>
+      <T v="body" c={color.muted} style={{ flex: 1, fontSize: 14, lineHeight: 20 }} numberOfLines={1}>
         O que você precisa resolver?
       </T>
       <View style={styles.searchSend}>
@@ -326,6 +326,6 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.lineStrong },
   dotOn: { width: 22, backgroundColor: color.brand },
-  login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 64, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm, ...shadow.card },
+  login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm, ...shadow.card },
   secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 32, marginBottom: 14 },
 });
