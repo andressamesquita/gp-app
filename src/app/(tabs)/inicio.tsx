@@ -14,7 +14,7 @@ import { Avatar, Button, IconButton, LinkText, Logo, Row, T, tap } from '@/compo
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, radius, shadow } from '@/theme/tokens';
+import { color, font, radius } from '@/theme/tokens';
 
 /* ---------------- Banners ---------------- */
 type Banner = { id: string; img: ImageSourcePropType; label: string; onPress: () => void };
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.lineStrong },
   dotOn: { width: 22, backgroundColor: color.brand },
-  login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm, ...shadow.card },
-  listCard: { marginHorizontal: 16, paddingHorizontal: 16, paddingVertical: 2, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, ...shadow.card },
+  login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm },
+  listCard: { marginHorizontal: 16, paddingHorizontal: 16, paddingVertical: 2, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line },
   secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 32, marginBottom: 14 },
 });

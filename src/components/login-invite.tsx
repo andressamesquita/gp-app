@@ -5,7 +5,7 @@ import { Icon, type IconName } from './Icon';
 import { ask } from './nav';
 import { TabTop } from './page';
 import { Button, LinkText, T } from './ui';
-import { color, radius, shadow } from '@/theme/tokens';
+import { color, radius } from '@/theme/tokens';
 
 const COPY: Record<string, { title: string; icon: IconName; text: string; perks: string[] }> = {
   inicio: {
@@ -74,6 +74,6 @@ export function LoginInvite({ kind }: { kind: keyof typeof COPY }) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: radius.xl, borderWidth: 1, borderColor: color.line, padding: 20, gap: 14, ...shadow.card },
+  card: { backgroundColor: color.surface, borderRadius: radius.xl, borderWidth: 1, borderColor: color.line, padding: 20, gap: 14 },
   ico: { width: 52, height: 52, borderRadius: radius.lg, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
 });

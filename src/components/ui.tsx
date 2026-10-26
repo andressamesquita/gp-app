@@ -520,7 +520,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 16,
     gap: 10,
-    ...shadow.card,
   },
   sectionHead: { flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: 8 },
   emptyIco: { width: 44, height: 44, borderRadius: 12, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },

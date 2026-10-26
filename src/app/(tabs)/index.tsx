@@ -137,7 +137,7 @@ export default function Assistente() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 18 }}>
             <Icon name="spark" size={16} color={color.muted} />
             <T v="small" c={color.muted}>
-              {app.logged ? `Olá, ${PERSON.first}` : 'Assistente Gov.pi'}
+              {app.logged ? `Olá, ${PERSON.first}!` : 'Assistente Gov.pi'}
             </T>
           </View>
           <T v="h1" accessibilityRole="header" style={styles.question}>

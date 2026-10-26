@@ -7,7 +7,7 @@ import Svg, { Circle, Path, Polygon, Rect } from 'react-native-svg';
 import { CATEGORIES, type Service } from '@/data/catalog';
 import { WALLET_TONES, type Medal, type Request, type WalletDoc } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, kind, radius, shadow } from '@/theme/tokens';
+import { color, font, kind, radius } from '@/theme/tokens';
 import { Icon, type IconName } from './Icon';
 import { Button, T, Tag, statusTone, tap } from './ui';
 
@@ -516,7 +516,21 @@ export function ForMeCard({
       <T v="small" c={color.muted} style={{ flex: 1 }}>
         {text}
       </T>
-      <Button small kind="ghost" label={cta} iconRight="right" onPress={onPress} style={{ alignSelf: 'flex-start', marginTop: 6 }} />
+      {/* Ação no mesmo padrão dos cards de serviço: texto azul + seta, à direita */}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${cta}: ${title}`}
+        hitSlop={8}
+        onPress={() => {
+          tap();
+          onPress();
+        }}
+        style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', gap: 2, alignSelf: 'flex-end', minHeight: 32, marginTop: 4 }, pressed && { opacity: 0.6 }]}>
+        <T v="label" c={color.brand}>
+          {cta}
+        </T>
+        <Icon name="right" size={14} color={color.brand} />
+      </Pressable>
     </View>
   );
 }
@@ -540,7 +554,7 @@ export function useServiceOpen() {
 }
 
 const styles = StyleSheet.create({
-  wcard: { borderRadius: radius.sm, padding: 16, overflow: 'hidden', ...shadow.card },
+  wcard: { borderRadius: radius.sm, padding: 16, overflow: 'hidden' },
   wtop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   wstatus: { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
   medals: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 16 },
@@ -551,9 +565,9 @@ const styles = StyleSheet.create({
   progress: { flexDirection: 'row', gap: 4, marginTop: 6 },
   pbar: { flex: 1, height: 5, borderRadius: 3 },
   dot: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
-  svc: { backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line, padding: 14, gap: 6, ...shadow.card },
+  svc: { backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line, padding: 14, gap: 6 },
   svcIco: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  svcC: { width: 224, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 14, paddingTop: 12, gap: 6, ...shadow.card },
+  svcC: { width: 224, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 14, paddingTop: 12, gap: 6 },
   svcIcoC: { width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   prisma: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 18, gap: 12 },
   prismaTag: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.brandTint, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },

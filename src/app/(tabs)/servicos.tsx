@@ -52,7 +52,8 @@ export default function Servicos() {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.bg }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }} keyboardShouldPersistTaps="handled" stickyHeaderIndices={[2]} showsVerticalScrollIndicator={false}>
+      {/* Faixa azul, busca e filtros ficam fixos; só a lista rola */}
+      <View style={{ zIndex: 1 }}>
         <TabTop title="Serviços para você" sub="525 serviços online do Governo do Piauí." overlap />
 
         {/* Busca: mesmo campo do Início */}
@@ -126,7 +127,10 @@ export default function Servicos() {
           </ScrollView>
         </View>
 
-        <View style={{ padding: 16, gap: 12 }}>
+      </View>
+
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 44 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
               {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? (QUICK.find((x) => x.org === orgsSel[0])?.label ?? orgsSel[0]) : 'Mais procurados'}

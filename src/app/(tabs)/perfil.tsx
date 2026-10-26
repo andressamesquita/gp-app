@@ -14,7 +14,7 @@ import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@
 import { SERVICES } from '@/data/catalog';
 import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, kind, radius, shadow } from '@/theme/tokens';
+import { color, font, kind, radius } from '@/theme/tokens';
 
 const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
   { id: 'padrao', t: 'Com histórico', d: 'Solicitações em andamento e carteiras' },
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
   postArt: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: color.brand, borderRadius: radius.md, padding: 14 },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
-  zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', ...shadow.card },
+  zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden' },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },
   saldoBox: { backgroundColor: color.goodBg, borderRadius: radius.lg, padding: 18, gap: 4 },
   finger: { width: 80, height: 80, borderRadius: 40, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
