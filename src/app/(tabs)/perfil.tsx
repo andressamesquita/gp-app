@@ -59,13 +59,13 @@ function AreaLogada() {
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
   const alreadyPublished = app.posts.length > 0;
 
-  const SHORTCUTS: { label: string; icon: IconName; k: number; badge?: string; onPress: () => void }[] = [
+  const SHORTCUTS: { label: string; text?: string; icon: IconName; k: number; badge?: string; onPress: () => void }[] = [
     { label: 'Meu perfil', icon: 'user', k: 0, onPress: () => router.push('/meu-perfil') },
-    { label: 'Minha jornada', icon: 'route', k: 1, onPress: () => router.navigate('/jornada') },
-    { label: 'Nota Piauiense', icon: 'coins', k: 3, badge: 'R$ 38', onPress: () => setSheet('saldo') },
+    { label: 'Minha jornada', text: 'Minha\njornada', icon: 'route', k: 1, onPress: () => router.navigate('/jornada') },
+    { label: 'Nota Piauiense', text: 'Nota\nPiauiense', icon: 'coins', k: 3, badge: 'R$ 38', onPress: () => setSheet('saldo') },
     { label: 'Conversas', icon: 'chats', k: 0, badge: '2', onPress: () => router.push('/conversas') },
     { label: 'Feed', icon: 'image', k: 2, badge: app.posts.length ? String(app.posts.length) : undefined, onPress: () => router.push('/feed') },
-    { label: 'Zap do Cidadão', icon: 'whats', k: 1, badge: app.prefs.zapAvisos ? undefined : 'NOVO', onPress: () => setSheet('zap') },
+    { label: 'Zap do Cidadão', text: 'Zap do\nCidadão', icon: 'whats', k: 1, badge: app.prefs.zapAvisos ? undefined : 'NOVO', onPress: () => setSheet('zap') },
     { label: 'Configurações', icon: 'sliders', k: 0, onPress: () => router.push('/configuracoes') },
     { label: 'Ajuda', icon: 'help', k: 2, onPress: () => router.push('/ajuda') },
   ];
@@ -159,7 +159,7 @@ function AreaLogada() {
                     ) : null}
                   </View>
                   <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16, marginHorizontal: -4, alignSelf: 'stretch' }}>
-                    {s.label}
+                    {s.text ?? s.label}
                   </T>
                 </Pressable>
               );
