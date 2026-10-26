@@ -66,7 +66,7 @@ export default function Inicio() {
   const top = SERVICES.filter((s) => MAIS_ACESSADOS.includes(s.t)).sort((a, b) => MAIS_ACESSADOS.indexOf(a.t) - MAIS_ACESSADOS.indexOf(b.t));
 
   return (
-    <View style={{ flex: 1, backgroundColor: color.bg }}>
+    <View style={{ flex: 1, backgroundColor: color.surface }}>
       <Animated.ScrollView
         contentContainerStyle={{ paddingBottom: 44 }}
         showsVerticalScrollIndicator={false}
@@ -347,6 +347,8 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.lineStrong },
   dotOn: { width: 22, backgroundColor: color.brand },
   login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm },
-  listCard: { marginHorizontal: 16, paddingHorizontal: 16, paddingVertical: 2, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line },
-  secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 32, marginBottom: 14 },
+  // Sem card: linhas direto no fundo branco (como na Área do cidadão)
+  listCard: { paddingHorizontal: 20 },
+  // Cada seção começa com uma divisória clara de ponta a ponta (estilo Méliuz)
+  secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 24, paddingTop: 20, marginBottom: 14, borderTopWidth: 1, borderTopColor: color.divider },
 });
