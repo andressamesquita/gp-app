@@ -443,6 +443,38 @@ export function ServiceCardCompact({ s, onPress }: { s: Service; onPress: () => 
 }
 
 /**
+ * Convite do Prisma Lab em linha (teste no Início): ícone, título, apoio e chevron.
+ * Objetivo: chamar o cidadão para ser tester do Gov.pi com o mínimo de leitura.
+ */
+export function PrismaRow({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Seja um tester do Gov.pi. Prisma Lab: teste novidades antes de todo mundo e dê sua opinião."
+      onPress={() => {
+        tap();
+        onPress();
+      }}
+      style={({ pressed }) => [styles.prismaRow, pressed && { backgroundColor: color.brandTint }]}>
+      <View style={styles.prismaRowIco}>
+        <Svg width={20} height={20} viewBox="0 0 24 24">
+          <Path d="M12 4 21 20H3z" fill="none" stroke={color.brand} strokeWidth={2.2} strokeLinejoin="round" />
+        </Svg>
+      </View>
+      <View style={{ flex: 1, gap: 2 }}>
+        <T c={color.ink} style={{ fontFamily: font.semibold, fontSize: 15.5, lineHeight: 21 }}>
+          Seja um tester do Gov.pi
+        </T>
+        <T c={color.muted} numberOfLines={1} style={{ fontFamily: font.regular, fontSize: 13, lineHeight: 18 }}>
+          Prisma Lab · Teste novidades
+        </T>
+      </View>
+      <Icon name="right" size={22} color={color.ink} />
+    </Pressable>
+  );
+}
+
+/**
  * Convite do Prisma Lab (Início e Ajuda).
  * Hierarquia: etiqueta → título do cartão → apoio → passos → ação.
  */
@@ -561,6 +593,8 @@ const styles = StyleSheet.create({
   svcIcoC: { width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   prisma: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 18, gap: 12 },
   prismaTag: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.brandTint, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 5 },
+  prismaRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 72, paddingVertical: 14, paddingLeft: 16, paddingRight: 14, borderRadius: radius.lg, backgroundColor: color.surface2 },
+  prismaRowIco: { width: 40, height: 40, borderRadius: radius.sm, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
   prismaNum: { width: 26, height: 26, borderRadius: 13, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   org: { backgroundColor: color.surface2, borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3 },
   mine: {

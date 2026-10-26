@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, Image, Pressable, ScrollView, StyleSheet, View, type ImageSourcePropType, type ScrollViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PrismaCard, ServiceCardCompact } from '@/components/blocks';
+import { PrismaRow, ServiceCardCompact } from '@/components/blocks';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
@@ -67,7 +67,7 @@ export default function Inicio() {
   return (
     <View style={{ flex: 1, backgroundColor: color.bg }}>
       <Animated.ScrollView
-        contentContainerStyle={{ paddingBottom: 28 }}
+        contentContainerStyle={{ paddingBottom: 44 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -153,7 +153,7 @@ export default function Inicio() {
         {/* ---------- Prisma Lab ---------- */}
         <SectionHead title="Você no centro do Gov.pi" />
         <View style={{ marginHorizontal: 16 }}>
-          <PrismaCard compact onPress={() => router.push('/ajuda')} />
+          <PrismaRow onPress={() => router.push('/ajuda')} />
         </View>
       </Animated.ScrollView>
 
