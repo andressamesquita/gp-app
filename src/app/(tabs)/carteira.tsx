@@ -54,8 +54,9 @@ function Carteira() {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.surface }}>
-    <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
-      <TabTop title="Carteira" sub={`${docs.length} documentos digitais`} />
+    {/* Faixa azul fixa: fica parada enquanto o conteúdo rola */}
+    <TabTop title="Carteira" sub={`${docs.length} documentos digitais`} />
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
       <View style={{ padding: 16, gap: 16 }}>
       {current && (
         <View style={{ gap: 12 }}>
