@@ -167,30 +167,28 @@ function AreaLogada() {
 
           {/* ---------- Compartilhe suas conquistas (após concluir) ---------- */}
           {scenario === 'concluida' && (
-            <Section title="Compartilhe suas conquistas">
-              <View style={styles.post}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Avatar initials={PERSON.initials} size={36} uri={app.photo} />
-                  <View style={{ flex: 1 }}>
-                    <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
-                    <T v="caption" c={color.muted}>
-                      Conquista gerada pelo Gov.pi Cidadão
-                    </T>
-                  </View>
-                </View>
-                <T v="small">{shareText}</T>
-                <View style={styles.postArt}>
-                  <Icon name="car" size={30} color={color.white} />
-                  <View style={{ flex: 1 }}>
-                    <T v="bodyStrong" c={color.white}>
-                      CNH em dia, sem sair de casa
-                    </T>
-                    <T v="caption" c="rgba(255,255,255,0.88)">
-                      Renovação da CNH · DETRAN
-                    </T>
-                  </View>
+            <Section flat title="Compartilhe suas conquistas">
+              {/* Prévia no formato de post do Instagram: cabeçalho com avatar, imagem quadrada de ponta a ponta, legenda */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Avatar initials={PERSON.initials} size={36} uri={app.photo} />
+                <View style={{ flex: 1 }}>
+                  <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
+                  <T v="caption" c={color.muted}>
+                    Conquista gerada pelo Gov.pi Cidadão
+                  </T>
                 </View>
               </View>
+              <View style={styles.postArt} accessible accessibilityLabel="Imagem da conquista: CNH em dia, sem sair de casa. Renovação da CNH, DETRAN.">
+                <T style={styles.postArtTitle}>{'CNH EM DIA,\nSEM SAIR DE CASA.'}</T>
+                <View style={styles.postArtBadge}>
+                  <Icon name="car" size={40} color={color.white} />
+                </View>
+                <T v="caption" c={color.muted}>
+                  Renovação da CNH · DETRAN
+                </T>
+                <T style={styles.postArtMark}>@GOVPICIDADAO</T>
+              </View>
+              <T v="small">{shareText}</T>
               {alreadyPublished ? (
                 <View style={styles.thanks} accessibilityLiveRegion="polite">
                   <Icon name="check" size={18} color={color.good} strokeWidth={2.4} />
@@ -445,7 +443,11 @@ const styles = StyleSheet.create({
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
-  postArt: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: color.brand, borderRadius: radius.md, padding: 14 },
+  // Imagem quadrada de ponta a ponta, como um post do Instagram (sem card)
+  postArt: { marginHorizontal: -20, aspectRatio: 1, backgroundColor: color.surface, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider, alignItems: 'center', justifyContent: 'center', gap: 18, padding: 24 },
+  postArtTitle: { fontFamily: font.bold, fontSize: 22, lineHeight: 28, letterSpacing: 0.4, color: color.ink, textAlign: 'center' },
+  postArtBadge: { width: 88, height: 88, borderRadius: 44, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center', borderWidth: 6, borderColor: color.brandTint },
+  postArtMark: { fontFamily: font.bold, fontSize: 12, letterSpacing: 0.6, color: '#C4CBD6', position: 'absolute', bottom: 22 },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
   zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', marginBottom: 16 },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },
