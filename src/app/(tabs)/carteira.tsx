@@ -10,7 +10,7 @@ import { LoginInvite } from '@/components/login-invite';
 import { TabTop } from '@/components/page';
 import { Sheet as BottomSheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
-import { Button, Empty, LinkText, T, tap } from '@/components/ui';
+import { Button, Empty, LinkText, Row, T, tap } from '@/components/ui';
 import { WALLET_TONES, walletDocs, type WalletDoc } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, radius } from '@/theme/tokens';
@@ -95,10 +95,24 @@ function Carteira() {
       {/* divisória clara de ponta a ponta antes da seção */}
       <View style={{ marginHorizontal: -16, marginTop: 8, borderTopWidth: 1, borderTopColor: color.divider }} />
       <T v="h2">Todos os documentos</T>
-      <View style={{ gap: 8 }}>
-        {docs.map((d) => (
-          <DocRow key={d.id} d={d} on={d.id === current?.id} onPress={() => setSel(d.id)} />
-        ))}
+      {/* Lista no mesmo padrão de "Você no centro do Gov.pi": ícone, título, apoio e seta, separados por traço fino */}
+      <View>
+        {docs.map((d, i) => {
+          const t = WALLET_TONES[d.tone];
+          const on = d.id === current?.id;
+          return (
+            <Row
+              key={d.id}
+              icon="idcard"
+              tone={{ bg: `${t.bg}1F`, fg: d.tone === 'yellow' ? '#8A5A00' : t.bg }}
+              title={d.title}
+              sub={`${d.org}${d.status ? ` · ${d.status}` : ''}${on ? ' · Na frente da pilha' : ''}`}
+              right={on ? <Icon name="check" size={18} color={color.brand} strokeWidth={2.4} /> : undefined}
+              onPress={() => setSel(d.id)}
+              last={i === docs.length - 1}
+            />
+          );
+        })}
       </View>
 
       <LinkText label="Não achou um documento? Descreva o que precisa." icon="right" onPress={() => ask('Não encontrei um documento na carteira')} />
@@ -186,34 +200,6 @@ function Action({ icon, label, onPress }: { icon: 'qr' | 'share' | 'download'; l
   );
 }
 
-function DocRow({ d, on, onPress }: { d: WalletDoc; on: boolean; onPress: () => void }) {
-  const t = WALLET_TONES[d.tone];
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected: on }}
-      onPress={() => {
-        tap();
-        onPress();
-      }}
-      style={[styles.docRow, on && { borderColor: color.brand, borderWidth: 1.5 }]}>
-      <View style={[styles.docThumb, { backgroundColor: t.bg }]}>
-        <Icon name="idcard" size={18} color={t.ink} />
-      </View>
-      <View style={{ flex: 1 }}>
-        <T v="bodyStrong">
-          {d.title}
-          {d.sub && d.title === 'Passe Livre' ? ` · ${d.sub === 'Pessoa com deficiência' ? 'PcD' : d.sub}` : ''}
-        </T>
-        <T v="caption" c={color.muted}>
-          {d.org}
-          {d.status ? ` · ${d.status}` : ''}
-        </T>
-      </View>
-      {on && <Icon name="check" size={18} color={color.brand} strokeWidth={2.4} />}
-    </Pressable>
-  );
-}
 
 const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: 8 },
