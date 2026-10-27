@@ -69,7 +69,7 @@ export function AuthDivider() {
 
 const styles = StyleSheet.create({
   back: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', minHeight: 44 },
-  card: { backgroundColor: color.surface, borderRadius: radius.sheet, paddingHorizontal: 20, paddingVertical: 24, gap: 16 },
+  card: { backgroundColor: color.surface, borderRadius: radius.lg, paddingHorizontal: 20, paddingVertical: 24, gap: 16 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   divider: { height: 1, backgroundColor: color.divider, marginHorizontal: -20 },
 });
