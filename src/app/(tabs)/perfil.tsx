@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
   // Sem card: saudação e campo direto no fundo, entre divisórias claras (padrão das seções)
-  welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 4, paddingBottom: 20, gap: 12, marginBottom: 16, borderBottomWidth: 1, borderColor: color.divider },
+  welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 20, paddingBottom: 20, gap: 12, marginBottom: 16, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, overflow: 'hidden' },
