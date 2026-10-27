@@ -60,19 +60,10 @@ function Carteira() {
       {current && (
         <View style={{ gap: 12 }}>
           <WalletStack docs={docs} front={current.id} onFront={setSel} onOpen={() => setDetail(true)} />
-          <T v="caption" c={color.muted}>
-            Toque numa carteira de trás para trazê-la à frente. Toque na da frente para ver os dados.
-          </T>
           <View style={styles.actions}>
             <Action icon="qr" label="Mostrar QR Code" onPress={() => setPending({ action: 'qr', step: 'auth' })} />
             <Action icon="share" label="Compartilhar" onPress={() => setPending({ action: 'share', step: 'auth' })} />
             <Action icon="download" label="Baixar PDF" onPress={() => setPending({ action: 'pdf', step: 'auth' })} />
-          </View>
-          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-            <Icon name="lock" size={16} color={color.muted} />
-            <T v="caption" c={color.muted} style={{ flex: 1 }}>
-              Para mostrar ou compartilhar, confirmamos que é você, com digital ou senha.
-            </T>
           </View>
         </View>
       )}
