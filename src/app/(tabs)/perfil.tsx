@@ -262,8 +262,8 @@ function AreaLogada() {
                   <Chip label="Todas" count={all.length} on={filter === 'todas'} onPress={() => setFilter('todas')} />
                 </ScrollView>
                 <View style={{ gap: 10 }}>
-                  {list.map((r, i) => (
-                    <RequestCard key={r.id + filter} r={r} open={i === 0} />
+                  {list.map((r) => (
+                    <RequestCard key={r.id + filter} r={r} />
                   ))}
                   {!list.length && (
                     <T v="small" c={color.muted}>
