@@ -116,11 +116,11 @@ function Art() {
 
 const styles = StyleSheet.create({
   wrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', padding: 20 },
-  card: { width: '100%', maxWidth: 360, borderRadius: radius.sheet, overflow: 'hidden', alignItems: 'center', paddingHorizontal: 22, paddingTop: 28, paddingBottom: 22, gap: 14 },
+  card: { width: '100%', maxWidth: 360, borderRadius: radius.lg, overflow: 'hidden', alignItems: 'center', paddingHorizontal: 22, paddingTop: 28, paddingBottom: 22, gap: 14 },
   close: { position: 'absolute', top: 12, right: 12, width: 40, height: 40, borderRadius: 20, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center', zIndex: 2 },
   kicker: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 4 },
   title: { fontFamily: font.semibold, fontSize: 30, lineHeight: 36, textAlign: 'center', letterSpacing: -0.4 },
-  art: { backgroundColor: color.white, borderRadius: 18, paddingVertical: 16, paddingHorizontal: 22, alignItems: 'center', transform: [{ rotate: '-3deg' }], marginVertical: 4 },
+  art: { backgroundColor: color.white, borderRadius: radius.lg, paddingVertical: 16, paddingHorizontal: 22, alignItems: 'center', transform: [{ rotate: '-3deg' }], marginVertical: 4 },
   bang: { width: 30, height: 30, borderRadius: 15, borderWidth: 2.5, borderColor: ORANGE, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
   iconDot: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   tick: { width: 18, height: 18, borderRadius: 5, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center' },
