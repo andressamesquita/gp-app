@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ForMeCard, MedalGrid, RequestCard } from '@/components/blocks';
@@ -35,7 +35,7 @@ const TILE_BG: 'branco' | 'azul' = 'azul';
  *   MOSTRAR_ZAP: card azul "Zap do Cidadão · Seus avisos no WhatsApp"
  */
 const MOSTRAR_BEM_VINDA = false;
-const MOSTRAR_ZAP = false;
+const MOSTRAR_ZAP = true;
 
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
@@ -48,10 +48,6 @@ function AreaLogada() {
   const [sheet, setSheet] = useState<SheetName>(null);
   const [net, setNet] = useState<'WhatsApp' | 'Instagram'>('WhatsApp');
   const [filter, setFilter] = useState<F>('andamento');
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [stuck, setStuck] = useState(false);
-  // a faixa compacta entra assim que o título rola para cima; o bloco de conquistas passa por baixo dela e some
-  const stickAt = 44;
   const earned = useMemo(() => {
     const e = earnedMedals(scenario);
     if (app.prefs.zapAvisos) e.push('zap');
@@ -81,72 +77,51 @@ function AreaLogada() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Animated.ScrollView
-        style={{ flex: 1, backgroundColor: color.surface }}
-        contentContainerStyle={{ paddingBottom: 44 }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: false,
-          listener: (e: { nativeEvent: { contentOffset: { y: number } } }) => setStuck(e.nativeEvent.contentOffset.y > stickAt),
-        })}>
-        {/* ---------- Topo: a pessoa ---------- */}
-        <View style={{ paddingTop: insets.top + 10, paddingHorizontal: 18, paddingBottom: 40, gap: 16 }}>
-          <BlueBackdrop />
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <T v="h1" c={color.white} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
-              Área do cidadão
+      {/* ---------- Faixa azul fixa: foto (abre Minhas conquistas), título, saldo e avisos ---------- */}
+      <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }]}>
+        <BlueBackdrop />
+        <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
+          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
+        </Pressable>
+        <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
+          Área do cidadão
+        </T>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
+          <Icon name="coins" size={16} color={color.white} />
+          <T v="smallStrong" c={color.white}>
+            {SALDO.valor}
+          </T>
+        </Pressable>
+        <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
+      </View>
+      <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
+        <View style={styles.sheetBody}>
+          {/* ---------- Zap do Cidadão (primeiro bloco; some com MOSTRAR_ZAP = false) ---------- */}
+          {MOSTRAR_ZAP && (
+          <View style={styles.zap}>
+            <BlueBackdrop />
+            <T v="eyebrow" c="rgba(255,255,255,0.85)">
+              Zap do Cidadão
             </T>
-            <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
-              <Icon name="coins" size={16} color={color.white} />
-              <T v="smallStrong" c={color.white}>
-                {SALDO.valor}
-              </T>
-            </Pressable>
-            <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-            <View>
-              <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
-                <Avatar initials={PERSON.initials} light size={60} uri={app.photo} />
-              </Pressable>
-              <Pressable accessibilityRole="button" accessibilityLabel="Alterar foto de perfil" hitSlop={8} onPress={() => router.push('/meu-perfil')} style={styles.camBadge}>
-                <Icon name="camera" size={13} color={color.brand} />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, gap: 4 }}>
-              <T v="h2" c={color.white}>
-                {PERSON.name}
-              </T>
-              <View style={styles.level}>
-                <Icon name="shield" size={13} color={color.white} />
-                <T v="caption" c={color.white} style={{ fontFamily: font.semibold }}>
-                  Conta {PERSON.level}
+            <T v="h2" c={color.white}>
+              Seus avisos no WhatsApp
+            </T>
+            <T v="small" c="rgba(255,255,255,0.92)">
+              Prazos, solicitações e benefícios chegam direto no seu WhatsApp.
+            </T>
+            {app.prefs.zapAvisos ? (
+              <View style={styles.zapOn}>
+                <Icon name="check" size={16} color={color.brand} strokeWidth={2.6} />
+                <T v="smallStrong" c={color.brand}>
+                  Avisos ativos no Zap
                 </T>
               </View>
-            </View>
+            ) : (
+              <Button kind="onBrand" label="Receber avisos no Zap" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
+            )}
           </View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Conquistas: ${earned.length} de ${MEDALS.length}. Ver conquistas`} onPress={() => router.push('/conquistas')} style={styles.conq}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <T v="small" c="rgba(255,255,255,0.9)">
-                Conquistas
-              </T>
-              <T v="smallStrong" c={color.white}>
-                {earned.length} de {MEDALS.length}
-              </T>
-            </View>
-            <View style={styles.track}>
-              <View style={[styles.fill, { width: `${Math.max(pct * 100, 2)}%` }]} />
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <T v="smallStrong" c={color.white}>
-                Ver conquistas
-              </T>
-              <Icon name="right" size={15} color={color.white} />
-            </View>
-          </Pressable>
-        </View>
+          )}
 
-        <View style={styles.sheetBody}>
           {/* ---------- Atalhos em grade ---------- */}
           <View style={styles.grid} accessibilityLabel="Atalhos da área do cidadão">
             {SHORTCUTS.map((s) => {
@@ -261,32 +236,6 @@ function AreaLogada() {
             </Section>
           )}
 
-          {/* ---------- Zap do Cidadão (oculto: MOSTRAR_ZAP) ---------- */}
-          {MOSTRAR_ZAP && (
-          <View style={styles.zap}>
-            <BlueBackdrop />
-            <T v="eyebrow" c="rgba(255,255,255,0.85)">
-              Zap do Cidadão
-            </T>
-            <T v="h2" c={color.white}>
-              Seus avisos no WhatsApp
-            </T>
-            <T v="small" c="rgba(255,255,255,0.92)">
-              Prazos, solicitações e benefícios chegam direto no seu WhatsApp.
-            </T>
-            {app.prefs.zapAvisos ? (
-              <View style={styles.zapOn}>
-                <Icon name="check" size={16} color={color.brand} strokeWidth={2.6} />
-                <T v="smallStrong" c={color.brand}>
-                  Avisos ativos no Zap
-                </T>
-              </View>
-            ) : (
-              <Button kind="onBrand" label="Receber avisos no Zap" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
-            )}
-          </View>
-          )}
-
           {/* ---------- Para mim ---------- */}
           <Section flat title="Para mim" action={cards.length ? { label: `Ver todos (${cards.length})`, href: '/avisos' } : undefined}>
             {cards.length ? (
@@ -397,29 +346,7 @@ function AreaLogada() {
             }}
           />
         </View>
-      </Animated.ScrollView>
-
-      {/* ---------- Faixa fixa ao rolar: some o bloco de conquistas, fica a foto (abre as conquistas) ---------- */}
-      <Animated.View
-        pointerEvents={stuck ? 'auto' : 'none'}
-        accessibilityElementsHidden={!stuck}
-        importantForAccessibility={stuck ? 'auto' : 'no-hide-descendants'}
-        style={[styles.stickyBar, { paddingTop: insets.top + 8, opacity: scrollY.interpolate({ inputRange: [stickAt - 10, stickAt], outputRange: [0, 1], extrapolate: 'clamp' }) }]}>
-        <BlueBackdrop />
-        <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
-          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
-        </Pressable>
-        <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
-          Área do cidadão
-        </T>
-        <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
-          <Icon name="coins" size={16} color={color.white} />
-          <T v="smallStrong" c={color.white}>
-            {SALDO.valor}
-          </T>
-        </Pressable>
-        <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
-      </Animated.View>
+      </ScrollView>
 
       {/* ---------- Folhas inferiores ---------- */}
       <Sheet visible={sheet === 'saldo'} onClose={() => setSheet(null)} title="Nota Piauiense" sub="Créditos das suas compras com CPF na nota.">
@@ -509,8 +436,8 @@ const styles = StyleSheet.create({
   conq: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radius.md, padding: 14, gap: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' },
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
-  stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden', zIndex: 10 },
-  sheetBody: { marginTop: -24, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, backgroundColor: color.surface, padding: 16, paddingTop: 20, gap: 8 },
+  stickyBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden', zIndex: 10 },
+  sheetBody: { backgroundColor: color.surface, padding: 16, paddingTop: 16, gap: 8 },
   // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 16 },
   tile: { width: '25%', alignItems: 'center', gap: 8, paddingHorizontal: 2 },
@@ -523,7 +450,7 @@ const styles = StyleSheet.create({
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
   postArt: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: color.brand, borderRadius: radius.md, padding: 14 },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
-  zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden' },
+  zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', marginBottom: 16 },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },
   saldoBox: { backgroundColor: color.goodBg, borderRadius: radius.lg, padding: 18, gap: 4 },
   finger: { width: 80, height: 80, borderRadius: 40, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
