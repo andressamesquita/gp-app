@@ -51,12 +51,13 @@ export function FlatBlock({ children, style, first }: { children: ReactNode; sty
 }
 
 /** Topo das abas: faixa azul compacta (mesma altura da Área do cidadão), título e um apoio opcional (ex.: campo do Assistente). */
-export function TabTop({ title, sub, children, right }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode }) {
+export function TabTop({ title, sub, children, right, left }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; /** antes do título (ex.: voltar) */ left?: ReactNode }) {
   const insets = useSafeAreaInsets();
   return (
     <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, overflow: 'hidden' }}>
       <BlueBackdrop />
-      <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: left ? 4 : 0 }}>
+        {left}
         <T v="h1" c={color.white} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
           {title}
         </T>
