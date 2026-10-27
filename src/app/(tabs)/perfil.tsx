@@ -34,7 +34,7 @@ const TILE_BG: 'branco' | 'azul' = 'azul';
  *   MOSTRAR_BEM_VINDA: "Bem-vinda, Ana Souza!" com o campo "O que você precisa resolver?"
  *   MOSTRAR_ZAP: card azul "Zap do Cidadão · Seus avisos no WhatsApp"
  */
-const MOSTRAR_BEM_VINDA = false;
+const MOSTRAR_BEM_VINDA = true;
 const MOSTRAR_ZAP = true;
 
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
@@ -122,6 +122,23 @@ function AreaLogada() {
           </View>
           )}
 
+          {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}
+          {MOSTRAR_BEM_VINDA && (
+          <View style={styles.welcome}>
+            <T v="bodyStrong" c={color.brand}>
+              Bem-vinda, {PERSON.name}!
+            </T>
+            <Pressable accessibilityRole="button" accessibilityLabel="O que você precisa resolver? Abrir o Assistente Gov.pi" onPress={() => ask()} style={styles.fakeInput}>
+              <T v="bodyStrong" c={color.ink} style={{ flex: 1, fontFamily: font.semibold }}>
+                O que você precisa resolver?
+              </T>
+              <View style={styles.fakeSend}>
+                <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
+              </View>
+            </Pressable>
+          </View>
+          )}
+
           {/* ---------- Atalhos em grade ---------- */}
           <View style={styles.grid} accessibilityLabel="Atalhos da área do cidadão">
             {SHORTCUTS.map((s) => {
@@ -153,23 +170,6 @@ function AreaLogada() {
               );
             })}
           </View>
-
-          {/* ---------- Bem-vinda + campo de conversa (oculto: MOSTRAR_BEM_VINDA) ---------- */}
-          {MOSTRAR_BEM_VINDA && (
-          <View style={styles.welcome}>
-            <T v="bodyStrong" c={color.brand}>
-              Bem-vinda, {PERSON.name}!
-            </T>
-            <Pressable accessibilityRole="button" accessibilityLabel="O que você precisa resolver? Abrir o Assistente Gov.pi" onPress={() => ask()} style={styles.fakeInput}>
-              <T v="bodyStrong" c={color.ink} style={{ flex: 1, fontFamily: font.semibold }}>
-                O que você precisa resolver?
-              </T>
-              <View style={styles.fakeSend}>
-                <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
-              </View>
-            </Pressable>
-          </View>
-          )}
 
           {/* ---------- Compartilhe suas conquistas (após concluir) ---------- */}
           {scenario === 'concluida' && (
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   tileIco: { width: 62, height: 62, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
-  welcome: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 16, gap: 10 },
+  welcome: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 16, gap: 10, marginBottom: 16 },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
