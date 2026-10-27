@@ -2,7 +2,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { Page } from '@/components/page';
+import { FlatBlock, Page } from '@/components/page';
 import { Avatar, Button, LinkText, Row, Section, T, Tag } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -29,8 +29,8 @@ export default function MeuPerfil() {
   };
 
   return (
-    <Page title="Meu perfil">
-      <View style={{ alignItems: 'center', gap: 8 }}>
+    <Page title="Meu perfil" flat>
+      <View style={{ alignItems: 'center', gap: 8, paddingVertical: 24 }}>
         <Avatar initials={PERSON.initials} size={88} uri={app.photo} />
         <T v="h2">{PERSON.name}</T>
         <Tag label={`Conta ${PERSON.level}`} tone="brand" center />
@@ -70,7 +70,9 @@ export default function MeuPerfil() {
       <Section title="Nível da conta">
         <T v="small">Sua conta é nível {PERSON.level}, o mais alto. Você pode usar todos os serviços do Gov.pi, inclusive os que pedem assinatura digital.</T>
       </Section>
-      <Button kind="secondary" label="Atualizar meus dados" onPress={() => app.showToast('Aqui abriria a edição dos dados de contato.')} />
+      <FlatBlock>
+        <Button kind="secondary" label="Atualizar meus dados" onPress={() => app.showToast('Aqui abriria a edição dos dados de contato.')} />
+      </FlatBlock>
     </Page>
   );
 }

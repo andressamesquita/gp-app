@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
-import { Page } from '@/components/page';
+import { FlatBlock, Page } from '@/components/page';
 import { Button, LinkText, Section, SwitchRow, T, tap } from '@/components/ui';
 import { useApp } from '@/state/app-state';
 import { color, font, radius } from '@/theme/tokens';
@@ -18,8 +18,8 @@ export default function Configuracoes() {
   const { prefs, setPref } = app;
 
   return (
-    <Page title="Configurações" sub="Como o Gov.pi usa seus dados e como você prefere navegar">
-      <Section title="Privacidade">
+    <Page title="Configurações" flat>
+      <Section title="Privacidade" style={{ borderTopWidth: 0 }}>
         <View>
           <SwitchRow title="Mostrar meu nome nas conquistas" sub="Seu nome aparece nas publicações que você compartilha." value={prefs.nomeConquistas} onChange={(v) => setPref('nomeConquistas', v)} />
           <SwitchRow title="Receber avisos pelo Zap do Cidadão" sub="Prazos, solicitações e benefícios no seu WhatsApp." value={prefs.zapAvisos} onChange={(v) => setPref('zapAvisos', v)} />
@@ -74,13 +74,15 @@ export default function Configuracoes() {
         </View>
       </Section>
 
-      <Button label="Concluir" icon="check" onPress={() => (router.canGoBack() ? router.back() : router.navigate('/perfil'))} />
-      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-        <Icon name="info" size={16} color={color.muted} />
-        <T v="caption" c={color.muted} style={{ flex: 1 }}>
-          As mudanças valem na hora e ficam guardadas neste celular.
-        </T>
-      </View>
+      <FlatBlock>
+        <Button label="Concluir" icon="check" onPress={() => (router.canGoBack() ? router.back() : router.navigate('/perfil'))} />
+        <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+          <Icon name="info" size={16} color={color.muted} />
+          <T v="caption" c={color.muted} style={{ flex: 1 }}>
+            As mudanças valem na hora e ficam guardadas neste celular.
+          </T>
+        </View>
+      </FlatBlock>
     </Page>
   );
 }

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, font } from '@/theme/tokens';
 import { BlueBackdrop } from './hero';
 import { useStatusBar } from './statusbar';
-import { ScreenHeader, T } from './ui';
+import { FlatSections, ScreenHeader, T } from './ui';
 
 /** Tela interna: cabeçalho azul com voltar + conteúdo rolável. */
 export function Page({
@@ -17,6 +17,7 @@ export function Page({
   close,
   contentStyle,
   onBack,
+  flat,
 }: {
   title: string;
   sub?: string;
@@ -26,18 +27,27 @@ export function Page({
   close?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
   onBack?: () => void;
+  /** Padrão "sem cards, com divisórias": fundo branco e Section flat. Use FlatBlock para o que não for Section. */
+  flat?: boolean;
 }) {
   const insets = useSafeAreaInsets();
   useStatusBar('light', color.brand);
   return (
-    <View style={{ flex: 1, backgroundColor: color.bg }}>
+    <View style={{ flex: 1, backgroundColor: flat ? color.surface : color.bg }}>
       <ScreenHeader title={title} sub={sub} right={right} close={close} onBack={onBack} />
-      <ScrollView contentContainerStyle={[{ padding: 16, gap: 16, paddingBottom: footer ? 16 : insets.bottom + 32 }, contentStyle]} keyboardShouldPersistTaps="handled">
-        {children}
+      <ScrollView
+        contentContainerStyle={[{ padding: 16, gap: 16, paddingBottom: footer ? 16 : insets.bottom + 32 }, flat && { paddingTop: 0, gap: 0 }, contentStyle]}
+        keyboardShouldPersistTaps="handled">
+        <FlatSections.Provider value={!!flat}>{children}</FlatSections.Provider>
       </ScrollView>
       {footer ? <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>{footer}</View> : null}
     </View>
   );
+}
+
+/** Parte de uma tela flat que não é Section (botões, avisos, cabeçalho): mesma margem e divisória em cima. */
+export function FlatBlock({ children, style, first }: { children: ReactNode; style?: StyleProp<ViewStyle>; first?: boolean }) {
+  return <View style={[styles.flatBlock, first && { borderTopWidth: 0 }, style]}>{children}</View>;
 }
 
 /** Topo das abas: faixa azul compacta (mesma altura da Área do cidadão), título e um apoio opcional (ex.: campo do Assistente). */
@@ -63,5 +73,6 @@ export function TabTop({ title, sub, children, right }: { title: string; sub?: s
 }
 
 const styles = StyleSheet.create({
+  flatBlock: { marginHorizontal: -16, paddingHorizontal: 20, paddingVertical: 20, gap: 12, borderTopWidth: 1, borderTopColor: color.divider },
   footer: { paddingHorizontal: 16, paddingTop: 12, backgroundColor: color.surface, borderTopWidth: 1, borderTopColor: color.line, gap: 8 },
 });

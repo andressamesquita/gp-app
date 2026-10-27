@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { router, type Href } from 'expo-router';
-import type { ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import {
   Image,
   Platform,
@@ -284,6 +284,9 @@ export function Card({ children, style, onPress, a11y }: { children: ReactNode; 
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
+/** Telas no padrão "sem cards, com divisórias": todas as Section dentro ficam flat. */
+export const FlatSections = createContext(false);
+
 export function Section({
   title,
   action,
@@ -298,8 +301,10 @@ export function Section({
   /** Sem card: fundo branco da tela e divisória clara em cima (seções da Área do cidadão). */
   flat?: boolean;
 }) {
+  const flatCtx = useContext(FlatSections);
+  const isFlat = flat ?? flatCtx;
   return (
-    <View style={[styles.section, flat && styles.sectionFlat, style]}>
+    <View style={[styles.section, isFlat && styles.sectionFlat, style]}>
       <View style={styles.sectionHead}>
         <T v="h2" accessibilityRole="header" style={{ flex: 1 }}>
           {title}

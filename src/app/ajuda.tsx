@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { PrismaCard } from '@/components/blocks';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
-import { Page } from '@/components/page';
+import { FlatBlock, Page } from '@/components/page';
 import { Button, Row, Section, T } from '@/components/ui';
 import { useApp } from '@/state/app-state';
 import { color, font, radius } from '@/theme/tokens';
@@ -12,8 +12,8 @@ import { color, font, radius } from '@/theme/tokens';
 export default function Ajuda() {
   const app = useApp();
   return (
-    <Page title="Ajuda">
-      <Section title="Como podemos ajudar?">
+    <Page title="Ajuda" flat>
+      <Section title="Como podemos ajudar?" style={{ borderTopWidth: 0 }}>
         <View>
           <Row icon="spark" title="Perguntar ao Assistente Gov.pi" sub="Responde na hora, a qualquer momento" onPress={() => ask()} />
           <Row icon="whats" title="Falar com um atendente" sub="Dias úteis, das 7h30 às 19h" onPress={() => router.push('/whatsapp')} />
@@ -23,7 +23,9 @@ export default function Ajuda() {
       </Section>
 
       {/* Prisma Lab como atalho dentro da Ajuda */}
-      <PrismaCard onPress={() => app.showToast('Aqui abriria o cadastro no Prisma Lab.')} />
+      <FlatBlock>
+        <PrismaCard onPress={() => app.showToast('Aqui abriria o cadastro no Prisma Lab.')} />
+      </FlatBlock>
 
       <Section title="Suporte Gov.pi">
         <View style={{ gap: 6 }}>

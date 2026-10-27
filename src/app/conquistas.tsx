@@ -3,11 +3,11 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { MedalGrid } from '@/components/blocks';
-import { Page } from '@/components/page';
+import { FlatBlock, Page } from '@/components/page';
 import { Avatar, Button, Section, T } from '@/components/ui';
 import { MEDALS, PERSON, earnedMedals } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, radius } from '@/theme/tokens';
+import { color } from '@/theme/tokens';
 
 /** Minhas conquistas: abre ao tocar na foto (AS) da Área do cidadão. */
 export default function Conquistas() {
@@ -21,7 +21,7 @@ export default function Conquistas() {
   const pct = earned.length / MEDALS.length;
 
   return (
-    <Page title="Minhas conquistas">
+    <Page title="Minhas conquistas" flat>
       <View style={styles.head}>
         <Avatar initials={PERSON.initials} size={56} uri={app.photo} />
         <View style={{ flex: 1, gap: 6 }}>
@@ -47,13 +47,15 @@ export default function Conquistas() {
         </T>
       </Section>
 
-      <Button kind="secondary" label="Compartilhar uma conquista" onPress={() => router.push('/compartilhar')} />
+      <FlatBlock>
+        <Button kind="secondary" label="Compartilhar uma conquista" onPress={() => router.push('/compartilhar')} />
+      </FlatBlock>
     </Page>
   );
 }
 
 const styles = StyleSheet.create({
-  head: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: 16, backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line },
+  head: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 20, paddingHorizontal: 4 },
   track: { height: 8, borderRadius: 4, backgroundColor: color.surface2, overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
 });
