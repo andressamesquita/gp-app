@@ -99,7 +99,7 @@ function AreaLogada() {
           {/* ---------- Zap do Cidadão (primeiro bloco; some com MOSTRAR_ZAP = false) ---------- */}
           {MOSTRAR_ZAP && (
           <View style={styles.zap}>
-            <BlueBackdrop />
+            <BlueBackdrop tone="green" />
             <T v="eyebrow" c="rgba(255,255,255,0.85)">
               Zap do Cidadão
             </T>
@@ -111,13 +111,13 @@ function AreaLogada() {
             </T>
             {app.prefs.zapAvisos ? (
               <View style={styles.zapOn}>
-                <Icon name="check" size={16} color={color.brand} strokeWidth={2.6} />
-                <T v="smallStrong" c={color.brand}>
+                <Icon name="check" size={16} color={color.whats} strokeWidth={2.6} />
+                <T v="smallStrong" c={color.whats}>
                   Avisos ativos no Zap
                 </T>
               </View>
             ) : (
-              <Button kind="onBrand" label="Receber avisos no Zap" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
+              <Button kind="onWhats" label="Acessar" a11y="Acessar o Zap do Cidadão" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
             )}
           </View>
           )}

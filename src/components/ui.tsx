@@ -73,7 +73,7 @@ export function Logo({ light = true, size = 17 }: { light?: boolean; size?: numb
 }
 
 /* ---------------- Botões ---------------- */
-type BtnKind = 'primary' | 'secondary' | 'ghost' | 'onBrand' | 'whats' | 'danger';
+type BtnKind = 'primary' | 'secondary' | 'ghost' | 'onBrand' | 'whats' | 'danger' | 'onWhats';
 export function Button({
   label,
   kind = 'primary',
@@ -130,6 +130,7 @@ const BTN: Record<BtnKind, { bg: string; fg: string; border: string }> = {
   secondary: { bg: 'transparent', fg: color.brand, border: color.brand },
   ghost: { bg: color.surface2, fg: color.brand, border: color.surface2 },
   onBrand: { bg: color.white, fg: color.brand, border: color.white },
+  onWhats: { bg: color.white, fg: color.whats, border: color.white },
   whats: { bg: color.whats, fg: color.white, border: color.whats },
   danger: { bg: 'transparent', fg: color.danger, border: color.line },
 };

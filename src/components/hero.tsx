@@ -12,20 +12,22 @@ import { T, tap } from './ui';
  * Fundo azul da primeira dobra: degradê #0B5CBD → #034EA2 → #023C7E,
  * dois brilhos radiais e o padrão de ondas da Proposta web.
  */
-export function BlueBackdrop({ style }: { style?: StyleProp<ViewStyle> }) {
+export function BlueBackdrop({ style, tone = 'blue' }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green' }) {
   const waves = [300, 270, 240, 210, 180, 150, 120, 90];
+  // 'green' = mesmo desenho em tons de verde, para o que é do WhatsApp (Zap do Cidadão)
+  const g = tone === 'green' ? { c: ['#1FA060', '#0E7A3B', '#075A2B'] as const, a: '#8AF0B4', b: '#2BD27A' } : { c: ['#0B5CBD', '#034EA2', '#023C7E'] as const, a: '#6EBEFF', b: '#00AAE6' };
   return (
     <View style={[StyleSheet.absoluteFill, style]} pointerEvents="none">
-      <LinearGradient colors={['#0B5CBD', '#034EA2', '#023C7E']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={g.c} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
       <Svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 520" style={StyleSheet.absoluteFill}>
         <Defs>
           <RadialGradient id="g1" cx="10%" cy="0%" r="60%">
-            <Stop offset="0" stopColor="#6EBEFF" stopOpacity={0.4} />
-            <Stop offset="1" stopColor="#6EBEFF" stopOpacity={0} />
+            <Stop offset="0" stopColor={g.a} stopOpacity={0.4} />
+            <Stop offset="1" stopColor={g.a} stopOpacity={0} />
           </RadialGradient>
           <RadialGradient id="g2" cx="95%" cy="100%" r="70%">
-            <Stop offset="0" stopColor="#00AAE6" stopOpacity={0.32} />
-            <Stop offset="1" stopColor="#00AAE6" stopOpacity={0} />
+            <Stop offset="0" stopColor={g.b} stopOpacity={0.32} />
+            <Stop offset="1" stopColor={g.b} stopOpacity={0} />
           </RadialGradient>
         </Defs>
         <Rect width="400" height="520" fill="url(#g1)" />
