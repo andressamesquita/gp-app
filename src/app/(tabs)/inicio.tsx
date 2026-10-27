@@ -5,12 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ServiceCardCompact } from '@/components/blocks';
 import { AskField } from '@/components/ask-field';
+import { PrismaPromo, ZapPromo } from '@/components/promo-cards';
 import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, Button, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
+import { Avatar, Button, IconButton, LinkText, Logo, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -157,18 +158,10 @@ export default function Inicio() {
 
         {/* ---------- Você no centro do Gov.pi: canais para participar (lista com título, como "Como podemos ajudar?") ---------- */}
         <SectionHead title="Você no centro do Gov.pi" />
-        <View style={styles.listCard}>
-          <View>
-            <Row
-              icon="whats"
-              tone={{ bg: color.whatsBg, fg: color.whats }}
-              title="Resolva pelo WhatsApp"
-              sub="Zap do Cidadão, a qualquer hora"
-              right={<Icon name="ext" size={18} color={color.muted} />}
-              onPress={() => router.push('/whatsapp')}
-            />
-            <Row icon="prism" title="Contribua com o Gov.pi" sub="Prisma Lab, teste novidades" onPress={() => router.push('/ajuda')} last />
-          </View>
+        {/* Cards de divulgação, um após o outro */}
+        <View style={{ paddingHorizontal: 16, gap: 12 }}>
+          <ZapPromo onPress={() => router.push('/whatsapp')} />
+          <PrismaPromo onPress={() => router.push('/ajuda')} />
         </View>
       </Animated.ScrollView>
 
@@ -299,8 +292,6 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: color.lineStrong },
   dotOn: { width: 22, backgroundColor: color.brand },
   login: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingHorizontal: 20, backgroundColor: color.brand, borderRadius: radius.sm },
-  // Sem card: linhas direto no fundo branco (como na Área do cidadão)
-  listCard: { paddingHorizontal: 20 },
   // Cada seção começa com uma divisória clara de ponta a ponta (estilo Méliuz)
   secHead: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, marginTop: 24, paddingTop: 20, marginBottom: 14, borderTopWidth: 1, borderTopColor: color.divider },
 });
