@@ -4,7 +4,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AskField } from '@/components/ask-field';
-import { ForMeCard, MedalGrid, RequestCard } from '@/components/blocks';
+import { ForMeCard, MedalGrid, RequestCard, ServiceCardCompact } from '@/components/blocks';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
@@ -279,11 +279,12 @@ function AreaLogada() {
           {/* ---------- Serviços favoritos ---------- */}
           <Section flat title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
             {favs.length ? (
-              <View>
-                {favs.map((s, i) => (
-                  <Row key={s.t} icon="star" title={s.t} sub={s.o} last={i === favs.length - 1} onPress={() => ask(s.q)} />
+              // Mesmos cards de "Mais acessados" (Início), em carrossel
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
+                {favs.map((s) => (
+                  <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
                 ))}
-              </View>
+              </ScrollView>
             ) : (
               <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
             )}
