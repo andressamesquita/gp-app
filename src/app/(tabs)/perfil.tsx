@@ -151,7 +151,7 @@ function AreaLogada() {
                     <Icon name={s.icon} size={26} color={k.fg} strokeWidth={2} />
                     {s.badge ? (
                       <View style={[styles.badge, s.badge === 'NOVO' && { backgroundColor: color.waveYellow }]}>
-                        <T v="caption" c={s.badge === 'NOVO' ? '#2B1F00' : color.white} style={{ fontFamily: font.bold, fontSize: 10, lineHeight: 13 }}>
+                        <T v="caption" c={color.white} style={{ fontFamily: font.bold, fontSize: 10, lineHeight: 13 }}>
                           {s.badge}
                         </T>
                       </View>
