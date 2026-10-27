@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AskField } from '@/components/ask-field';
 import { ForMeCard, MedalGrid, RequestCard } from '@/components/blocks';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
@@ -128,14 +129,7 @@ function AreaLogada() {
             <T v="h2" accessibilityRole="header">
               Bem-vinda, {PERSON.name}!
             </T>
-            <Pressable accessibilityRole="button" accessibilityLabel="O que você precisa resolver? Abrir o Assistente Gov.pi" onPress={() => ask()} style={styles.fakeInput}>
-              <T v="bodyStrong" c={color.ink} style={{ flex: 1, fontFamily: font.semibold }}>
-                O que você precisa resolver?
-              </T>
-              <View style={styles.fakeSend}>
-                <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
-              </View>
-            </Pressable>
+            <AskField />
           </View>
           )}
 
@@ -445,7 +439,7 @@ const styles = StyleSheet.create({
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
   // Sem card: saudação e campo direto no fundo, entre divisórias claras (padrão das seções)
-  welcome: { marginHorizontal: -16, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20, gap: 12, marginBottom: 16, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider },
+  welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20, gap: 12, marginBottom: 16, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },

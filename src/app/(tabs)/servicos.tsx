@@ -2,10 +2,10 @@ import { ask } from '@/components/nav';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
+import { AskField } from '@/components/ask-field';
 import { ServiceCard, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
 import { TabTop } from '@/components/page';
-import { Robot } from '@/components/Robot';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Button, LinkText, T, tap } from '@/components/ui';
@@ -56,34 +56,8 @@ export default function Servicos() {
       <View style={{ zIndex: 1 }}>
         <TabTop title="Serviços para você" sub="525 serviços online do Governo do Piauí." overlap />
 
-        {/* Busca: mesmo campo do Início */}
-        <View style={styles.search}>
-          <Icon name="search" size={22} color={color.ink} />
-          <TextInput
-            accessibilityLabel="Buscar um serviço"
-            value={q}
-            onChangeText={setQ}
-            placeholder="Buscar um serviço"
-            placeholderTextColor={color.muted}
-            style={styles.input}
-            returnKeyType="search"
-          />
-          {q ? (
-            <Pressable accessibilityRole="button" accessibilityLabel="Limpar busca" onPress={() => setQ('')} hitSlop={8} style={{ padding: 4 }}>
-              <Icon name="close" size={18} color={color.muted} />
-            </Pressable>
-          ) : null}
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Perguntar ao Assistente Gov.pi"
-            onPress={() => {
-              tap();
-              ask(q || undefined);
-            }}
-            style={({ pressed }) => [styles.searchBot, pressed && { opacity: 0.85 }]}>
-            <Robot size={26} />
-          </Pressable>
-        </View>
+        {/* Campo do Assistente: igual ao do Início; digitar filtra a lista, a seta envia ao Assistente */}
+        <AskField value={q} onChangeText={setQ} style={{ marginTop: -28, marginHorizontal: 16 }} />
 
         {/* Filtros em chips, como na web */}
         <View style={styles.cats}>

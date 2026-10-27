@@ -4,11 +4,11 @@ import { Animated, Image, Pressable, ScrollView, StyleSheet, View, type ImageSou
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ServiceCardCompact } from '@/components/blocks';
+import { AskField } from '@/components/ask-field';
 import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
 import { BlueBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
-import { ask, askVoice } from '@/components/nav';
-import { Robot } from '@/components/Robot';
+import { ask } from '@/components/nav';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, IconButton, LinkText, Logo, Row, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
@@ -178,7 +178,9 @@ export default function Inicio() {
         accessibilityElementsHidden={!stuck}
         importantForAccessibility={stuck ? 'auto' : 'no-hide-descendants'}
         style={[styles.stickyBar, { paddingTop: insets.top + 8, opacity: scrollY.interpolate({ inputRange: [stickAt - 1, stickAt], outputRange: [0, 1], extrapolate: 'clamp' }) }]}>
-        <SearchField flat />
+        <View style={{ marginHorizontal: 16 }}>
+          <SearchField flat />
+        </View>
       </Animated.View>
 
       <ChatHistorySheet visible={history} onClose={() => setHistory(false)} />
@@ -188,36 +190,7 @@ export default function Inicio() {
 
 /* ---------------- Campo que leva ao Assistente (fica fixo ao rolar) ---------------- */
 function SearchField({ flat }: { flat?: boolean }) {
-  return (
-    <Pressable
-      accessibilityRole="search"
-      accessibilityLabel="O que você precisa resolver? Pergunte ao Assistente Gov.pi"
-      accessibilityHint="Abre o Assistente Gov.pi"
-      onPress={() => {
-        tap();
-        ask();
-      }}
-      style={({ pressed }) => [styles.search, flat && styles.searchFlat, pressed && { borderColor: color.brand }]}>
-      <Robot size={28} />
-      <T v="body" c={color.muted} style={{ flex: 1, fontSize: 14, lineHeight: 20 }} numberOfLines={1}>
-        O que você precisa resolver?
-      </T>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Falar com o Assistente Gov.pi"
-        hitSlop={6}
-        onPress={() => {
-          tap();
-          askVoice();
-        }}
-        style={({ pressed }) => [styles.searchMic, pressed && { backgroundColor: color.surface2 }]}>
-        <Icon name="mic" size={22} color={color.ink} />
-      </Pressable>
-      <View style={styles.searchSend}>
-        <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
-      </View>
-    </Pressable>
-  );
+  return <AskField flat={flat} style={flat ? undefined : styles.searchPos} />;
 }
 
 /* ---------------- Título de seção: nível 1 da hierarquia ---------------- */
@@ -318,29 +291,8 @@ function Carousel({ items }: { items: Banner[] }) {
 const styles = StyleSheet.create({
   head: { backgroundColor: color.brand, paddingHorizontal: 20, paddingBottom: 46, overflow: 'hidden' },
   headRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
-  search: {
-    marginTop: -28,
-    marginHorizontal: 16,
-    minHeight: 58,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingLeft: 12,
-    paddingRight: 8,
-    backgroundColor: color.surface,
-    borderRadius: radius.sm,
-    borderWidth: 1.5,
-    borderColor: color.line,
-    shadowColor: '#0A1428',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  searchFlat: { marginTop: 0, borderColor: 'transparent', shadowOpacity: 0, elevation: 0 },
+  searchPos: { marginTop: -28, marginHorizontal: 16 },
   stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: color.brand, paddingBottom: 10, zIndex: 10 },
-  searchMic: { width: 36, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
-  searchSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   suggest: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface, justifyContent: 'center' },
   banner: { aspectRatio: 2.23, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: color.surface2, borderWidth: 1, borderColor: color.line },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12 },
