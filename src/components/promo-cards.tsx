@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   card: { flexDirection: 'row', alignItems: 'center', minHeight: 168, borderRadius: radius.lg, overflow: 'hidden', paddingVertical: 18, paddingLeft: 18, paddingRight: 12, gap: 8 },
   left: { flex: 1, gap: 10, zIndex: 1 },
   kicker: { flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
-  title: { fontFamily: font.bold, fontSize: 22, lineHeight: 26, letterSpacing: -0.3 },
+  title: { fontFamily: font.semibold, fontSize: 22, lineHeight: 27, letterSpacing: -0.2 },
   cta: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 },
   art: { zIndex: 1, transform: [{ rotate: '-3deg' }] },
   bubble: { borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },

@@ -2,9 +2,10 @@ import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold, Mo
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 
+import { NewsModal } from '@/components/news-modal';
 import { Toast } from '@/components/ui';
 import { AppStateProvider, useApp } from '@/state/app-state';
 import { color } from '@/theme/tokens';
@@ -17,6 +18,7 @@ function ToastHost() {
 }
 
 export default function RootLayout() {
+  const [news, setNews] = useState(true);
   const [fontsLoaded, fontError] = useFonts({ Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold });
   // Na prévia web as fontes já vêm embutidas na página; não esperamos por elas.
   const loaded = fontsLoaded || !!fontError || (Platform.OS === 'web' && typeof document !== 'undefined' && !!document.getElementById('govpi-fonts'));
@@ -36,6 +38,8 @@ export default function RootLayout() {
           <Stack.Screen name="continua-no-whats" options={{ presentation: 'transparentModal', animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
         </Stack>
         <ToastHost />
+        {/* Novidades: aparece uma vez a cada abertura do app */}
+        <NewsModal visible={news} onClose={() => setNews(false)} />
       </View>
     </AppStateProvider>
   );
