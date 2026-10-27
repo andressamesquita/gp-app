@@ -191,7 +191,10 @@ export default function Assistente() {
           <T v="caption" c={color.muted} style={{ textAlign: 'center', marginTop: 10, marginBottom: 22 }}>
             Conheça nossa <T v="caption" c={color.ink} style={{ fontFamily: font.semibold, textDecorationLine: 'underline' }}>Política de Privacidade</T>.
           </T>
-        ) : null}
+        ) : (
+          // Respiro entre o campo de conversa e o botão elevado do menu
+          <View style={{ height: 28 }} />
+        )}
       </View>
     </KeyboardAvoidingView>
   );
