@@ -22,7 +22,7 @@ export function WalletStack({ docs, onOpen, front, onFront }: { docs: WalletDoc[
   const [order, setOrder] = useState(docs.map((d) => d.id));
   const anims = useRef(new Map<string, Animated.Value>()).current;
   docs.forEach((d) => {
-    if (!anims.has(d.id)) anims.set(d.id, new Animated.Value(order.indexOf(d.id)));
+    if (!anims.has(d.id)) anims.set(d.id, new Animated.Value(Math.min(Math.max(order.indexOf(d.id), 0), 3)));
   });
 
   const idsKey = docs.map((d) => d.id).join(',');
@@ -38,14 +38,37 @@ export function WalletStack({ docs, onOpen, front, onFront }: { docs: WalletDoc[
     if (order[0]) onFront?.(order[0]);
   }, [order]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Anima só as carteiras que mudaram de posição. Sem native driver: com várias
+  // carteiras (ex.: modo "Após concluir"), o driver nativo entrava em laço de
+  // atualização no Android ("Maximum update depth exceeded").
+  const lastDepth = useRef(new Map<string, number>()).current;
   useEffect(() => {
     order.forEach((id, depth) => {
-      Animated.spring(anims.get(id)!, { toValue: depth, useNativeDriver: true, damping: 18, stiffness: 160 }).start();
+      const v = anims.get(id);
+      if (!v || lastDepth.get(id) === depth) return;
+      lastDepth.set(id, depth);
+      Animated.spring(v, { toValue: Math.min(depth, 3), useNativeDriver: false, damping: 18, stiffness: 160 }).start();
     });
-  }, [order, anims]);
+  }, [order, anims, lastDepth]);
 
   const visible = Math.min(docs.length, 3);
   const height = CARD_H + STEP * (visible - 1);
+
+  // Interpolações criadas uma vez por carteira (estáveis entre renderizações)
+  const interp = useRef(new Map<string, { translateY: Animated.AnimatedInterpolation<number>; scale: Animated.AnimatedInterpolation<number>; opacity: Animated.AnimatedInterpolation<number>; visible: number }>()).current;
+  const getInterp = (id: string) => {
+    const cached = interp.get(id);
+    if (cached && cached.visible === visible) return cached;
+    const a = anims.get(id)!;
+    const next = {
+      visible,
+      translateY: a.interpolate({ inputRange: [0, 1, 2, 3], outputRange: [STEP * (visible - 1), STEP * (visible - 2), STEP * (visible - 3), STEP * (visible - 3)], extrapolate: 'clamp' }),
+      scale: a.interpolate({ inputRange: [0, 1, 2, 3], outputRange: [1, 0.95, 0.9, 0.86], extrapolate: 'clamp' }),
+      opacity: a.interpolate({ inputRange: [0, 2, 3], outputRange: [1, 1, 0], extrapolate: 'clamp' }),
+    };
+    interp.set(id, next);
+    return next;
+  };
 
   return (
     <View style={{ height }} accessibilityLabel={`Carteira com ${docs.length} documentos`}>
@@ -53,10 +76,7 @@ export function WalletStack({ docs, onOpen, front, onFront }: { docs: WalletDoc[
         const d = docs.find((x) => x.id === id);
         if (!d) return null;
         const depth = order.indexOf(id);
-        const a = anims.get(id)!;
-        const translateY = a.interpolate({ inputRange: [0, 1, 2, 3], outputRange: [STEP * (visible - 1), STEP * (visible - 2), STEP * (visible - 3), STEP * (visible - 3)] });
-        const scale = a.interpolate({ inputRange: [0, 1, 2, 3], outputRange: [1, 0.95, 0.9, 0.86] });
-        const opacity = a.interpolate({ inputRange: [0, 2, 3], outputRange: [1, 1, 0] });
+        const { translateY, scale, opacity } = getInterp(id);
         return (
           <Animated.View
             key={id}
