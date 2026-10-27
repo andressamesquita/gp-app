@@ -10,6 +10,7 @@ import { BlueBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
+import { ZapAvisosPromo } from '@/components/promo-cards';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
@@ -100,28 +101,7 @@ function AreaLogada() {
         <View style={styles.sheetBody}>
           {/* ---------- Zap do Cidadão (primeiro bloco; some com MOSTRAR_ZAP = false) ---------- */}
           {MOSTRAR_ZAP && (
-          <View style={styles.zap}>
-            <BlueBackdrop />
-            <T v="eyebrow" c="rgba(255,255,255,0.85)">
-              Zap do Cidadão
-            </T>
-            <T v="h2" c={color.white}>
-              Seus avisos no WhatsApp
-            </T>
-            <T v="small" c="rgba(255,255,255,0.92)">
-              Prazos, solicitações e benefícios chegam direto no seu WhatsApp.
-            </T>
-            {app.prefs.zapAvisos ? (
-              <View style={styles.zapOn}>
-                <Icon name="check" size={16} color={color.brand} strokeWidth={2.6} />
-                <T v="smallStrong" c={color.brand}>
-                  Avisos ativos no Zap
-                </T>
-              </View>
-            ) : (
-              <Button kind="onBrand" label="Acessar" a11y="Acessar o Zap do Cidadão" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
-            )}
-          </View>
+          <ZapAvisosPromo ativo={app.prefs.zapAvisos} onPress={() => setSheet('zap')} />
           )}
 
           {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}

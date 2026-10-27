@@ -143,6 +143,52 @@ export function ZapPromo({ onPress }: { onPress: () => void }) {
   );
 }
 
+/** Ilustração dos avisos no Zap: notificação do WhatsApp com um aviso do Gov.pi. */
+function AvisosArt() {
+  return (
+    <View style={styles.flow}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'stretch' }}>
+        <View style={[styles.flowDot, { width: 22, height: 22, backgroundColor: '#25B864' }]}>
+          <Icon name="whats" size={12} color={color.white} />
+        </View>
+        <T v="caption" c={color.ink} style={{ fontFamily: font.semibold, fontSize: 10.5, flex: 1 }}>
+          Zap do Cidadão
+        </T>
+      </View>
+      <View style={[styles.bubble, styles.bot, { backgroundColor: '#EEF4FB', alignSelf: 'stretch' }]}>
+        <T v="caption" c={color.ink} style={{ fontSize: 10, lineHeight: 13 }}>
+          Sua CNH vence em 30 dias. Renove por aqui.
+        </T>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 4, alignSelf: 'stretch' }}>
+        {(['bell', 'calendar', 'check'] as IconName[]).map((i, k) => (
+          <View key={i} style={[styles.flowDot, { width: 24, height: 24 }, k === 2 && { backgroundColor: color.brand }]}>
+            <Icon name={i} size={12} color={k === 2 ? color.white : color.brand} strokeWidth={2.2} />
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+/** Zap do Cidadão na Área do cidadão: mesmo estilo azul do card do Prisma Lab. */
+export function ZapAvisosPromo({ onPress, ativo }: { onPress: () => void; ativo?: boolean }) {
+  return (
+    <PromoCard
+      colors={['#2F7BE0', '#034EA2', '#012F66']}
+      kicker="Zap do Cidadão"
+      kickerIcon="whats"
+      title={'Seus avisos no\nWhatsApp'}
+      cta={ativo ? 'Avisos ativos' : 'Acessar'}
+      ctaIcon={ativo ? 'check' : 'right'}
+      ctaInk={color.brand}
+      a11y={ativo ? 'Zap do Cidadão. Seus avisos no WhatsApp estão ativos.' : 'Zap do Cidadão. Receba prazos, solicitações e benefícios no WhatsApp. Acessar'}
+      onPress={onPress}
+      art={<AvisosArt />}
+    />
+  );
+}
+
 export function PrismaPromo({ onPress }: { onPress: () => void }) {
   return (
     <PromoCard
