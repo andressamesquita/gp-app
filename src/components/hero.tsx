@@ -12,8 +12,8 @@ import { T, tap } from './ui';
  * Fundo azul da primeira dobra: degradê #0B5CBD → #034EA2 → #023C7E,
  * dois brilhos radiais e o padrão de ondas da Proposta web.
  */
-export function BlueBackdrop({ style, tone = 'blue' }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green' }) {
-  const waves = [300, 270, 240, 210, 180, 150, 120, 90];
+export function BlueBackdrop({ style, tone = 'blue', full }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green'; /** ondas na tela inteira (telas de fundo azul, como o login) */ full?: boolean }) {
+  const waves = full ? Array.from({ length: 22 }, (_, i) => -160 + i * 26) : [300, 270, 240, 210, 180, 150, 120, 90];
   // 'green' = mesmo desenho em tons de verde, para o que é do WhatsApp (Zap do Cidadão)
   const g = tone === 'green' ? { c: ['#1FA060', '#0E7A3B', '#075A2B'] as const, a: '#8AF0B4', b: '#2BD27A' } : { c: ['#0B5CBD', '#034EA2', '#023C7E'] as const, a: '#6EBEFF', b: '#00AAE6' };
   return (

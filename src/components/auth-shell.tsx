@@ -18,7 +18,7 @@ export function AuthShell({ title, children }: { title?: string; children: React
   useStatusBar('light', color.brand);
   return (
     <View style={{ flex: 1, backgroundColor: color.brand }}>
-      <BlueBackdrop />
+      <BlueBackdrop full />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24, paddingHorizontal: 16 }}
