@@ -20,7 +20,7 @@ import { CardView } from '@/components/chat-cards';
 import { Icon } from '@/components/Icon';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, Button, IconButton, LinkText, Logo, T, tap } from '@/components/ui';
+import { Avatar, Button, IconButton, Logo, T, tap } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import type { Action, Msg } from '@/state/assistant';
 import { useApp } from '@/state/app-state';
@@ -191,11 +191,7 @@ export default function Assistente() {
           <T v="caption" c={color.muted} style={{ textAlign: 'center', marginTop: 10, marginBottom: 22 }}>
             Conheça nossa <T v="caption" c={color.ink} style={{ fontFamily: font.semibold, textDecorationLine: 'underline' }}>Política de Privacidade</T>.
           </T>
-        ) : (
-          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 18 }}>
-            <LinkText label="Falar com um atendente" href="/whatsapp" c={color.muted} />
-          </View>
-        )}
+        ) : null}
       </View>
     </KeyboardAvoidingView>
   );
