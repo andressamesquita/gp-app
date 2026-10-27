@@ -14,8 +14,8 @@ import { ZapAvisosPromo } from '@/components/promo-cards';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
-import { SERVICES } from '@/data/catalog';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, type Scenario } from '@/data/mock';
+import { CATEGORIES, SERVICES } from '@/data/catalog';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, recentes, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius } from '@/theme/tokens';
 
@@ -40,6 +40,14 @@ const TILE_BG: 'branco' | 'azul' = 'azul';
 const MOSTRAR_BEM_VINDA = true;
 const MOSTRAR_ZAP = true;
 
+/**
+ * Reorganização (testes antes/depois):
+ *   AS_ABRE: o que o avatar (AS) da faixa azul abre. 'conta' = Minha conta (novo) · 'conquistas' = Minhas conquistas (antes)
+ *   MOSTRAR_SEUS_SERVICOS: true = bloco "Seus serviços" com Recentes | Favoritos (novo) · false = só "Serviços favoritos" (antes)
+ */
+const AS_ABRE: 'conta' | 'conquistas' = 'conta';
+const MOSTRAR_SEUS_SERVICOS = true;
+
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
 
@@ -62,6 +70,11 @@ function AreaLogada() {
   const list = all.filter((r) => (filter === 'todas' ? true : filter === 'concluidas' ? /conclu/i.test(r.status) : !/conclu/i.test(r.status)));
   const cards = forMe(scenario, cnhStarted);
   const favs = SERVICES.filter((s) => app.favorites.includes(s.t));
+  // Últimos acessos: some numa conta nova; "Limpar" esvazia a lista neste aparelho
+  const [recLimpos, setRecLimpos] = useState(false);
+  const recs = recLimpos ? [] : recentes(scenario).map((r) => ({ ...r, s: SERVICES.find((x) => x.t === r.t) })).filter((r) => r.s);
+  const [aba, setAba] = useState<'recentes' | 'favoritos'>('recentes');
+  const abaAtiva = recs.length ? aba : 'favoritos';
   const pct = earned.length / MEDALS.length;
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
   const alreadyPublished = app.posts.length > 0;
@@ -83,7 +96,10 @@ function AreaLogada() {
       {/* ---------- Faixa azul fixa: foto (abre Minhas conquistas), título, saldo e avisos ---------- */}
       <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }]}>
         <BlueBackdrop />
-        <Pressable accessibilityRole="button" accessibilityLabel={`Minhas conquistas: ${earned.length} de ${MEDALS.length}`} onPress={() => router.push('/conquistas')}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={AS_ABRE === 'conta' ? 'Minha conta' : `Minhas conquistas: ${earned.length} de ${MEDALS.length}`}
+          onPress={() => router.push(AS_ABRE === 'conta' ? '/minha-conta' : '/conquistas')}>
           <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
         </Pressable>
         <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
@@ -258,7 +274,55 @@ function AreaLogada() {
             )}
           </Section>
 
-          {/* ---------- Serviços favoritos ---------- */}
+          {/* ---------- Seus serviços: Recentes | Favoritos (MOSTRAR_SEUS_SERVICOS) ---------- */}
+          {MOSTRAR_SEUS_SERVICOS ? (
+            <Section
+              flat
+              title="Seus serviços"
+              action={abaAtiva === 'recentes' ? { label: 'Limpar', onPress: () => { setRecLimpos(true); app.showToast('Últimos acessos apagados deste aparelho.'); } } : { label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
+              <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
+                {recs.length ? <Chip label="Recentes" on={abaAtiva === 'recentes'} onPress={() => setAba('recentes')} /> : null}
+                <Chip label="Favoritos" count={favs.length || undefined} on={abaAtiva === 'favoritos'} onPress={() => setAba('favoritos')} />
+              </View>
+              {abaAtiva === 'recentes' ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}>
+                  {recs.map(({ s, quando }) => {
+                    const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s!.c));
+                    const k = kind[ci % 4];
+                    return (
+                      <Pressable
+                        key={s!.t}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${s!.t}, ${s!.o}, acessado ${quando.toLowerCase()}`}
+                        onPress={() => {
+                          tap();
+                          ask(s!.q);
+                        }}
+                        style={({ pressed }) => [styles.rec, pressed && { opacity: 0.7 }]}>
+                        <View style={[styles.recIco, { backgroundColor: k.bg }]}>
+                          <Icon name={(CATEGORIES[ci]?.icon ?? 'grid') as IconName} size={22} color={k.fg} />
+                        </View>
+                        <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16 }}>
+                          {s!.t}
+                        </T>
+                        <T v="caption" c={color.muted}>
+                          {quando}
+                        </T>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              ) : favs.length ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
+                  {favs.map((s) => (
+                    <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
+                  ))}
+                </ScrollView>
+              ) : (
+                <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
+              )}
+            </Section>
+          ) : (
           <Section flat title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
             {favs.length ? (
               // Mesmos cards de "Mais acessados" (Início), em carrossel
@@ -271,6 +335,7 @@ function AreaLogada() {
               <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
             )}
           </Section>
+          )}
 
           {/* ---------- Só para o protótipo ---------- */}
           <View style={styles.proto}>
@@ -432,6 +497,9 @@ const styles = StyleSheet.create({
   postCap: { paddingHorizontal: 14, paddingVertical: 10, gap: 2, backgroundColor: '#EEF4FB' },
   postFoot: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: 1, borderTopColor: color.divider },
   netBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.md, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface },
+  // Últimos acessos: ícone + nome em 2 linhas + quando
+  rec: { width: 96, alignItems: 'center', gap: 6, paddingVertical: 4, paddingHorizontal: 4 },
+  recIco: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
   zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', marginBottom: 16 },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },

@@ -295,3 +295,16 @@ export const PROMPT_EXAMPLES = [
   'Ex.: quero renovar minha habilitação',
   'Ex.: tenho crédito da Nota Piauiense?',
 ];
+
+/* ---------- Últimos acessos (Área do cidadão > Seus serviços > Recentes) ---------- */
+export type Recente = { t: string; quando: string };
+export function recentes(s: Scenario): Recente[] {
+  if (s === 'novo') return [];
+  return [
+    { t: 'Renovar CNH', quando: s === 'concluida' ? 'Há 2 dias' : 'Hoje' },
+    { t: 'Resgatar créditos da Nota Piauiense', quando: 'Ontem' },
+    { t: 'Consultar a minha CNH', quando: 'Há 3 dias' },
+    { t: 'Emitir CRLV digital do veículo', quando: 'Há 5 dias' },
+    { t: 'Marcar uma consulta', quando: 'Há 1 semana' },
+  ];
+}
