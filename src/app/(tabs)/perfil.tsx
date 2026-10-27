@@ -105,15 +105,9 @@ function AreaLogada() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* ---------- Faixa azul fixa: foto (abre Minhas conquistas), título, saldo e avisos ---------- */}
+      {/* ---------- Faixa azul fixa: título, saldo, avisos e foto (abre Minha conta) ---------- */}
       <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }]}>
         <BlueBackdrop />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={AS_ABRE === 'conta' ? 'Minha conta' : `Minhas conquistas: ${earned.length} de ${MEDALS.length}`}
-          onPress={() => router.push(AS_ABRE === 'conta' ? '/minha-conta' : '/conquistas')}>
-          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
-        </Pressable>
         <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
           Área do cidadão
         </T>
@@ -124,6 +118,12 @@ function AreaLogada() {
           </T>
         </Pressable>
         <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={AS_ABRE === 'conta' ? 'Minha conta' : `Minhas conquistas: ${earned.length} de ${MEDALS.length}`}
+          onPress={() => router.push(AS_ABRE === 'conta' ? '/minha-conta' : '/conquistas')}>
+          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
+        </Pressable>
       </View>
       <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
         <View style={styles.sheetBody}>
