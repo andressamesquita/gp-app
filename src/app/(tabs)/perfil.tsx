@@ -125,9 +125,6 @@ function AreaLogada() {
           {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}
           {MOSTRAR_BEM_VINDA && (
           <View style={styles.welcome}>
-            <T v="bodyStrong" c={color.brand}>
-              Bem-vinda, {PERSON.name}!
-            </T>
             <Pressable accessibilityRole="button" accessibilityLabel="O que você precisa resolver? Abrir o Assistente Gov.pi" onPress={() => ask()} style={styles.fakeInput}>
               <T v="bodyStrong" c={color.ink} style={{ flex: 1, fontFamily: font.semibold }}>
                 O que você precisa resolver?
