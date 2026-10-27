@@ -47,6 +47,11 @@ const MOSTRAR_ZAP = true;
  */
 const AS_ABRE: 'conta' | 'conquistas' = 'conta';
 const MOSTRAR_SEUS_SERVICOS = true;
+/**
+ *   GRADE_ENXUTA: true = só os atalhos de uso frequente (Jornada, Nota, Conversas, Conquistas); Meu perfil, Configurações,
+ *   Ajuda, Feed e Sair ficam em Minha conta (no AS) e o Zap fica só no card do topo · false = grade de 8 e "Sair" aqui (antes)
+ */
+const GRADE_ENXUTA = true;
 
 type SheetName = null | 'saldo' | 'zap' | 'conquistas' | 'publicar';
 type F = 'andamento' | 'concluidas' | 'todas';
@@ -89,6 +94,13 @@ function AreaLogada() {
     { label: 'Configurações', icon: 'sliders', k: 0, onPress: () => router.push('/configuracoes') },
     { label: 'Ajuda', icon: 'help', k: 2, onPress: () => router.push('/ajuda') },
   ];
+  const SHORTCUTS_ENXUTOS: typeof SHORTCUTS = [
+    SHORTCUTS[1], // Minha jornada
+    SHORTCUTS[2], // Nota Piauiense
+    SHORTCUTS[3], // Conversas
+    { label: 'Conquistas', icon: 'trophy', k: 2, badge: `${earned.length}/${MEDALS.length}`, onPress: () => router.push('/conquistas') },
+  ];
+  const atalhos = GRADE_ENXUTA ? SHORTCUTS_ENXUTOS : SHORTCUTS;
 
 
   return (
@@ -132,7 +144,7 @@ function AreaLogada() {
 
           {/* ---------- Atalhos em grade ---------- */}
           <View style={styles.grid} accessibilityLabel="Atalhos da área do cidadão">
-            {SHORTCUTS.map((s) => {
+            {atalhos.map((s) => {
               const k = kind[0]; // ícones no azul da marca; o fundo segue TILE_BG
               return (
                 <Pressable
@@ -377,6 +389,7 @@ function AreaLogada() {
             </View>
           </View>
 
+          {!GRADE_ENXUTA && (
           <Button
             kind="danger"
             icon="logout"
@@ -387,6 +400,7 @@ function AreaLogada() {
               router.navigate('/');
             }}
           />
+          )}
         </View>
       </ScrollView>
 
