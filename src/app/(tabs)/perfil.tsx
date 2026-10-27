@@ -1,6 +1,7 @@
 import { router, type Href } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Svg, { Circle, Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AskField } from '@/components/ask-field';
@@ -168,63 +169,65 @@ function AreaLogada() {
           {/* ---------- Compartilhe suas conquistas (após concluir) ---------- */}
           {scenario === 'concluida' && (
             <Section flat title="Compartilhe suas conquistas">
-              {/* Prévia no formato de post do Instagram: cabeçalho com avatar, imagem quadrada de ponta a ponta, legenda */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Avatar initials={PERSON.initials} size={36} uri={app.photo} />
-                <View style={{ flex: 1 }}>
-                  <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
-                  <T v="caption" c={color.muted}>
-                    Conquista gerada pelo Gov.pi Cidadão
-                  </T>
-                </View>
-              </View>
-              <View style={styles.postArt} accessible accessibilityLabel="Imagem da conquista: CNH em dia, sem sair de casa. Renovação da CNH, DETRAN.">
-                <T style={styles.postArtTitle}>{'CNH EM DIA,\nSEM SAIR DE CASA.'}</T>
-                <View style={styles.postArtBadge}>
-                  <Icon name="car" size={40} color={color.white} />
-                </View>
-                <T v="caption" c={color.muted}>
-                  Renovação da CNH · DETRAN
-                </T>
-                <T style={styles.postArtMark}>@GOVPICIDADAO</T>
-              </View>
-              <T v="small">{shareText}</T>
-              {alreadyPublished ? (
-                <View style={styles.thanks} accessibilityLiveRegion="polite">
-                  <Icon name="check" size={18} color={color.good} strokeWidth={2.4} />
-                  <T v="small" style={{ flex: 1 }}>
-                    Você está levando o Gov.pi a mais pessoas, obrigado por colaborar!
-                  </T>
-                </View>
-              ) : (
-                <>
-                  <T v="smallStrong">Publicar em</T>
-                  <View style={{ flexDirection: 'row', gap: 8 }}>
-                    <Button
-                      kind="whats"
-                      icon="whats"
-                      label="WhatsApp"
-                      small
-                      style={{ flex: 1 }}
-                      onPress={() => {
-                        setNet('WhatsApp');
-                        setSheet('publicar');
-                      }}
-                    />
-                    <Button
-                      kind="secondary"
-                      icon="image"
-                      label="Instagram"
-                      small
-                      style={{ flex: 1 }}
-                      onPress={() => {
-                        setNet('Instagram');
-                        setSheet('publicar');
-                      }}
-                    />
+              {/* Versão compacta do post da web: cabeçalho, texto, ilustração, faixa com o título e rodapé "Publicar em" */}
+              <View style={styles.post}>
+                <View style={styles.postHead}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <Avatar initials={PERSON.initials} size={32} uri={app.photo} />
+                    <View style={{ flex: 1 }}>
+                      <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
+                      <T v="caption" c={color.muted}>
+                        Conquista gerada pelo Gov.pi Cidadão
+                      </T>
+                    </View>
                   </View>
-                </>
-              )}
+                  <T v="small">{shareText}</T>
+                </View>
+                <View style={styles.postImg}>
+                <Image
+                  source={require('../../../assets/banners/conquista-cnh.png')}
+                  style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%' }}
+                  resizeMode="cover"
+                  accessibilityLabel="Ilustração: celular com a CNH Digital válida"
+                  accessibilityIgnoresInvertColors
+                />
+                </View>
+                <View style={styles.postCap}>
+                  <T v="h3">CNH em dia, sem sair de casa</T>
+                  <T v="caption" c={color.muted}>
+                    Renovação da CNH · DETRAN
+                  </T>
+                </View>
+                {alreadyPublished ? (
+                  <View style={[styles.postFoot, { backgroundColor: color.goodBg }]} accessibilityLiveRegion="polite">
+                    <Icon name="check" size={18} color={color.good} strokeWidth={2.4} />
+                    <T v="small" style={{ flex: 1 }}>
+                      Você está levando o Gov.pi a mais pessoas, obrigado por colaborar!
+                    </T>
+                  </View>
+                ) : (
+                  <View style={styles.postFoot}>
+                    <T v="small" c={color.muted} style={{ marginRight: 'auto' }}>
+                      Publicar em
+                    </T>
+                    {(['WhatsApp', 'Instagram'] as const).map((n) => (
+                      <Pressable
+                        key={n}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Publicar no ${n}`}
+                        onPress={() => {
+                          tap();
+                          setNet(n);
+                          setSheet('publicar');
+                        }}
+                        style={({ pressed }) => [styles.netBtn, pressed && { backgroundColor: color.bg }]}>
+                        {n === 'WhatsApp' ? <Icon name="whats" size={18} color={color.whats} /> : <InstaIcon />}
+                        <T v="label">{n}</T>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+              </View>
             </Section>
           )}
 
@@ -393,7 +396,7 @@ function AreaLogada() {
       </Sheet>
 
       <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title={`Publicar no ${net}?`} sub="Confira o que será publicado antes de confirmar.">
-        <View style={styles.post}>
+        <View style={styles.postPreview}>
           <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
           <T v="small">{shareText}</T>
         </View>
@@ -442,12 +445,13 @@ const styles = StyleSheet.create({
   welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20, gap: 12, marginBottom: 16, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
-  post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
-  // Imagem quadrada de ponta a ponta, como um post do Instagram (sem card)
-  postArt: { marginHorizontal: -20, aspectRatio: 1, backgroundColor: color.surface, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider, alignItems: 'center', justifyContent: 'center', gap: 18, padding: 24 },
-  postArtTitle: { fontFamily: font.bold, fontSize: 22, lineHeight: 28, letterSpacing: 0.4, color: color.ink, textAlign: 'center' },
-  postArtBadge: { width: 88, height: 88, borderRadius: 44, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center', borderWidth: 6, borderColor: color.brandTint },
-  postArtMark: { fontFamily: font.bold, fontSize: 12, letterSpacing: 0.6, color: '#C4CBD6', position: 'absolute', bottom: 22 },
+  post: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, overflow: 'hidden' },
+  postPreview: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
+  postHead: { padding: 14, gap: 8 },
+  postImg: { width: '100%', aspectRatio: 2.6, overflow: 'hidden', backgroundColor: color.brandTint },
+  postCap: { paddingHorizontal: 14, paddingVertical: 10, gap: 2, backgroundColor: '#EEF4FB' },
+  postFoot: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: 1, borderTopColor: color.divider },
+  netBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.md, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
   zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', marginBottom: 16 },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },
@@ -459,3 +463,23 @@ const styles = StyleSheet.create({
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   radioIn: { width: 10, height: 10, borderRadius: 5, backgroundColor: color.brand },
 });
+
+/** Ícone do Instagram (gradiente da marca), só para o botão de publicar. */
+function InstaIcon() {
+  return (
+    <Svg width={18} height={18} viewBox="0 0 24 24">
+      <Defs>
+        <LinearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
+          <Stop offset="0" stopColor="#FEDA75" />
+          <Stop offset="0.35" stopColor="#FA7E1E" />
+          <Stop offset="0.6" stopColor="#D62976" />
+          <Stop offset="1" stopColor="#4F5BD5" />
+        </LinearGradient>
+      </Defs>
+      <Rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig)" />
+      <Rect x="6" y="6" width="12" height="12" rx="4" fill="none" stroke="#fff" strokeWidth={1.8} />
+      <Circle cx="12" cy="12" r="2.8" fill="none" stroke="#fff" strokeWidth={1.8} />
+      <Circle cx="16.6" cy="7.4" r="1" fill="#fff" />
+    </Svg>
+  );
+}
