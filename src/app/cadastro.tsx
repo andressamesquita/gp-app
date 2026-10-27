@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
-import { Page } from '@/components/page';
+import { AuthShell } from '@/components/auth-shell';
 import { Button, Field, LinkText, T, inputStyle } from '@/components/ui';
 import { useApp } from '@/state/app-state';
 import { color } from '@/theme/tokens';
@@ -32,7 +32,7 @@ export default function Cadastro() {
     { t: 'Um caractere especial (@ ! # $ ...)', ok: /[^a-z0-9]/i.test(f.pw) },
   ];
   return (
-    <Page title="Criar conta" sub="Leva cerca de 2 minutos">
+    <AuthShell title="Criar conta">
       <T v="h2">Informe os dados abaixo para criar sua conta</T>
       <Field label="Nome completo">
         <TextInput value={f.nome} onChangeText={set('nome')} placeholder="Digite seu nome completo" placeholderTextColor={color.muted} style={inputStyle} autoComplete="name" />
@@ -95,6 +95,6 @@ export default function Cadastro() {
         </T>
         <LinkText label="Entrar" href="/entrar" />
       </View>
-    </Page>
+    </AuthShell>
   );
 }

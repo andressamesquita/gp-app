@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { TextInput } from 'react-native';
 
-import { Page } from '@/components/page';
+import { AuthShell } from '@/components/auth-shell';
 import { Button, Field, LinkText, T, inputStyle } from '@/components/ui';
 import { useApp } from '@/state/app-state';
 import { color } from '@/theme/tokens';
@@ -12,8 +12,7 @@ export default function RecuperarSenha() {
   const app = useApp();
   const [cpf, setCpf] = useState('');
   return (
-    <Page title="Recuperar senha">
-      <T v="h1">Esqueceu sua senha?</T>
+    <AuthShell title="Recuperar senha">
       <T v="body" c={color.muted}>
         Informe seu CPF. Enviamos as instruções para o celular ou e-mail cadastrado.
       </T>
@@ -28,6 +27,6 @@ export default function RecuperarSenha() {
         }}
       />
       <LinkText label="Voltar para o login" onPress={() => router.back()} />
-    </Page>
+    </AuthShell>
   );
 }

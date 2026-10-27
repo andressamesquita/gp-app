@@ -1,19 +1,20 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { Icon } from '@/components/Icon';
-import { Page } from '@/components/page';
+import { AuthDivider, AuthShell } from '@/components/auth-shell';
 import { PasswordInput, maskCpf } from '@/components/form';
-import { Button, Field, LinkText, T, inputStyle } from '@/components/ui';
+import { Icon } from '@/components/Icon';
+import { Button, Field, LinkText, T, inputStyle, tap } from '@/components/ui';
 import { useApp } from '@/state/app-state';
 import { color, font, radius } from '@/theme/tokens';
 
+/** Login no modelo do Gov.pi Cidadão atual: cartão branco sobre o azul, CPF, senha e gov.br / ID Piauí. */
 export default function Entrar() {
   const app = useApp();
   const [cpf, setCpf] = useState('');
   const [pw, setPw] = useState('');
-  const [keep, setKeep] = useState(true);
+  const [keep, setKeep] = useState(false);
   const { from } = useLocalSearchParams<{ from?: string }>();
   const enter = () => {
     if (router.canDismiss()) router.dismissAll();
@@ -26,57 +27,64 @@ export default function Entrar() {
     app.showToast('Bem-vinda de volta, Ana.');
   };
   return (
-    <Page title="Entrar">
-      <T v="h1">Acesse sua conta</T>
+    <AuthShell>
       <Field label="CPF">
         <TextInput value={cpf} onChangeText={(v) => setCpf(maskCpf(v))} keyboardType="number-pad" placeholder="000.000.000-00" placeholderTextColor={color.muted} style={inputStyle} accessibilityLabel="CPF" />
       </Field>
-      <Field label="Senha">
-        <PasswordInput placeholder="Digite sua senha" value={pw} onChangeText={setPw} />
-      </Field>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Switch value={keep} onValueChange={setKeep} trackColor={{ false: color.lineStrong, true: color.brand }} thumbColor={color.white} accessibilityLabel="Manter-me conectado" />
-          <T v="small">Manter-me conectado</T>
+      <View style={{ gap: 6 }}>
+        <Field label="Senha">
+          <PasswordInput placeholder="Digite sua senha" value={pw} onChangeText={setPw} />
+        </Field>
+        <View style={{ alignItems: 'flex-end' }}>
+          <LinkText label="Esqueci minha senha" href="/recuperar-senha" />
         </View>
-        <LinkText label="Esqueci a senha" href="/recuperar-senha" />
       </View>
-      <Button label="Entrar" onPress={enter} />
-      <View style={styles.or}>
-        <View style={styles.line} />
-        <T v="caption" c={color.muted}>
-          ou entre com
+
+      <Pressable
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: keep }}
+        onPress={() => {
+          tap();
+          setKeep((k) => !k);
+        }}
+        style={styles.keep}>
+        <View style={[styles.box, keep && styles.boxOn]}>{keep ? <Icon name="check" size={15} color={color.white} strokeWidth={3} /> : null}</View>
+        <T v="small" c={color.muted}>
+          Manter-me conectado
         </T>
-        <View style={styles.line} />
-      </View>
+      </Pressable>
+
+      <Button label="Entrar" onPress={enter} style={{ marginTop: 4 }} />
+
+      <AuthDivider />
+
+      <T v="small" c={color.muted} style={{ textAlign: 'center' }}>
+        ou faça login através de um dos meios abaixo
+      </T>
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Pressable accessibilityRole="button" onPress={enter} style={[styles.idp, { borderColor: '#1351B4' }]}>
-          <T v="bodyStrong" c="#1351B4" style={{ fontFamily: font.bold }}>
-            gov.br
+        <Pressable accessibilityRole="button" accessibilityLabel="Entrar com gov.br" onPress={enter} style={({ pressed }) => [styles.idp, pressed && { borderColor: color.brand }]}>
+          <T style={{ fontFamily: font.bold, fontSize: 18, lineHeight: 22, color: '#1351B4', letterSpacing: -0.5 }}>
+            gov<T style={{ fontFamily: font.bold, fontSize: 18, color: '#FFCD07' }}>.</T>br
           </T>
         </Pressable>
-        <Pressable accessibilityRole="button" onPress={enter} style={[styles.idp, { borderColor: color.brand }]}>
-          <T v="bodyStrong" c={color.brand} style={{ fontFamily: font.bold }}>
-            ID Piauí
-          </T>
+        <Pressable accessibilityRole="button" accessibilityLabel="Entrar com ID Piauí" onPress={enter} style={({ pressed }) => [styles.idp, pressed && { borderColor: color.brand }]}>
+          <T style={{ fontFamily: font.bold, fontSize: 16, lineHeight: 22, color: '#0E7A3B', letterSpacing: -0.3 }}>ID Piauí</T>
         </Pressable>
       </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
         <T v="small" c={color.muted}>
           Não possui uma conta?
         </T>
         <LinkText label="Cadastre-se" href="/cadastro" />
       </View>
-      <View style={{ alignItems: 'center' }}>
-        <LinkText label="Não tenho CPF" c={color.muted} onPress={() => app.showToast('Aqui mostraríamos como ser atendido sem CPF.')} />
-      </View>
-    </Page>
+    </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  eye: { position: 'absolute', right: 4, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
-  or: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  line: { flex: 1, height: 1, backgroundColor: color.line },
-  idp: { flex: 1, minHeight: 52, borderWidth: 1.5, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', backgroundColor: color.surface },
+  keep: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 40, alignSelf: 'flex-start' },
+  box: { width: 22, height: 22, borderRadius: 5, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center', backgroundColor: color.surface },
+  boxOn: { backgroundColor: color.brand, borderColor: color.brand },
+  idp: { flex: 1, minHeight: 48, borderWidth: 1, borderColor: color.line, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: color.surface },
 });
