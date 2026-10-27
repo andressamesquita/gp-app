@@ -134,7 +134,7 @@ export default function Inicio() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Entre com sua conta Gov.pi"
-              onPress={() => router.push('/entrar')}
+              onPress={() => router.push({ pathname: '/entrar', params: { from: 'inicio' } })}
               style={({ pressed }) => [styles.login, pressed && { opacity: 0.92 }]}>
               <T v="h3" c={color.white} style={{ fontFamily: font.regular }}>
                 Entre com sua conta

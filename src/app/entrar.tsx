@@ -25,6 +25,9 @@ export default function Entrar() {
     }
     app.setLogged(true);
     app.showToast('Bem-vinda de volta, Ana.');
+    // Botão "Entre com sua conta" da Início leva para a Área do cidadão.
+    // Carteiras e Área do cidadão: a pessoa continua na aba de onde veio.
+    if (from === 'inicio') setTimeout(() => router.navigate('/perfil'), 0);
   };
   return (
     <AuthShell>
