@@ -125,6 +125,9 @@ function AreaLogada() {
           {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}
           {MOSTRAR_BEM_VINDA && (
           <View style={styles.welcome}>
+            <T v="h2" accessibilityRole="header">
+              Bem-vinda, {PERSON.name}!
+            </T>
             <Pressable accessibilityRole="button" accessibilityLabel="O que você precisa resolver? Abrir o Assistente Gov.pi" onPress={() => ask()} style={styles.fakeInput}>
               <T v="bodyStrong" c={color.ink} style={{ flex: 1, fontFamily: font.semibold }}>
                 O que você precisa resolver?
@@ -441,7 +444,8 @@ const styles = StyleSheet.create({
   tileIco: { width: 62, height: 62, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
-  welcome: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 16, gap: 10, marginBottom: 16 },
+  // Sem card: saudação e campo direto no fundo, entre divisórias claras (padrão das seções)
+  welcome: { marginHorizontal: -16, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20, gap: 12, marginBottom: 16, borderTopWidth: 1, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
