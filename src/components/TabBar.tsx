@@ -20,7 +20,7 @@ export function TabBar({ state, navigateToTab }: BottomTabBarProps) {
 
   const TABS: { name: string; label: string; icon: IconName }[] = [
     { name: 'inicio', label: 'Início', icon: 'home' },
-    { name: 'carteira', label: 'Carteira', icon: 'wallet' },
+    { name: 'carteira', label: 'Carteiras', icon: 'wallet' },
     { name: 'index', label: 'Assistente\nGov.pi', icon: 'chat' },
     { name: 'servicos', label: 'Serviços', icon: 'grid' },
     { name: 'perfil', label: 'Área do\ncidadão', icon: 'user' },

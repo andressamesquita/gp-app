@@ -54,10 +54,10 @@ export default function Servicos() {
     <View style={{ flex: 1, backgroundColor: color.surface }}>
       {/* Faixa azul, busca e filtros ficam fixos; só a lista rola */}
       <View style={{ zIndex: 1 }}>
-        <TabTop title="Serviços para você" sub="525 serviços online do Governo do Piauí." overlap />
-
-        {/* Campo do Assistente: igual ao do Início; digitar filtra a lista, a seta envia ao Assistente */}
-        <AskField value={q} onChangeText={setQ} style={{ marginTop: -28, marginHorizontal: 16 }} />
+        {/* Campo do Assistente dentro da faixa azul, fixo ao rolar (como a barra do Início) */}
+        <TabTop title="Serviços para você">
+          <AskField value={q} onChangeText={setQ} flat />
+        </TabTop>
 
         {/* Filtros em chips, como na web */}
         <View style={styles.cats}>

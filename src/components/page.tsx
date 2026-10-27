@@ -40,13 +40,13 @@ export function Page({
   );
 }
 
-/** Topo das abas: faixa azul com ondas, título grande e um apoio opcional (busca, filtros). */
-export function TabTop({ title, sub, children, right, overlap }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; overlap?: boolean }) {
+/** Topo das abas: faixa azul compacta (mesma altura da Área do cidadão), título e um apoio opcional (ex.: campo do Assistente). */
+export function TabTop({ title, sub, children, right }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top + 14, paddingHorizontal: 20, paddingBottom: overlap ? 46 : 22, gap: 10, overflow: 'hidden' }}>
+    <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, overflow: 'hidden' }}>
       <BlueBackdrop />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48 }}>
         <T v="h1" c={color.white} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
           {title}
         </T>

@@ -97,7 +97,7 @@ export default function Assistente() {
           <View style={{ flex: 1 }} />
           {app.logged ? (
             <>
-              <IconButton icon="history" label="Conversas anteriores" onPress={() => router.push('/conversas')} />
+              <IconButton icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />
               <Pressable accessibilityRole="button" accessibilityLabel={`Seu perfil, ${PERSON.name}`} onPress={() => router.navigate('/perfil')} hitSlop={6} style={{ marginLeft: 4 }}>
                 <Avatar initials={PERSON.initials} size={38} light uri={app.photo} />
               </Pressable>
@@ -111,7 +111,7 @@ export default function Assistente() {
           <BlueBackdrop />
           <View style={[styles.side, { flexDirection: 'row' }]}>
             <IconButton icon="back" label="Voltar" onPress={() => (router.canGoBack() ? router.back() : router.navigate('/inicio'))} />
-            {app.logged && <IconButton icon="history" label="Conversas anteriores" onPress={() => router.push('/conversas')} />}
+            {app.logged && <IconButton icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />}
           </View>
           <View style={{ flex: 1, alignItems: 'center', gap: 4 }}>
             <View style={styles.robotHalo}>
