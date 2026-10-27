@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { AskField } from '@/components/ask-field';
+import { CategoryIcon } from '@/components/category-icon';
 import { ServiceCard, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
 import { TabTop } from '@/components/page';
@@ -136,9 +137,9 @@ export default function Servicos() {
       </ScrollView>
 
       {/* Categoria: grade de opções em círculo, escolha única (referência: "Ordenação por" do iFood) */}
-      <Sheet visible={sheet === 'cat'} onClose={() => setSheet(null)} title="Escolha a categoria" center>
+      <Sheet visible={sheet === 'cat'} onClose={() => setSheet(null)} title="Escolha a categoria do serviço">
         <View style={styles.catGrid} accessibilityRole="radiogroup">
-          {[{ id: null as CategoryId | null, t: 'Todas', icon: 'menu' }, ...CATEGORIES].map((c) => {
+          {[{ id: null as CategoryId | null, t: 'Todas' }, ...[...CATEGORIES].sort((a, b) => a.t.localeCompare(b.t, 'pt-BR'))].map((c) => {
             const on = cat === c.id;
             return (
               <Pressable
@@ -151,11 +152,11 @@ export default function Servicos() {
                   setCat(c.id);
                   setSheet(null);
                 }}
-                style={styles.catItem}>
-                <View style={[styles.catCircle, on && styles.catCircleOn]}>
-                  <Icon name={c.icon as IconName} size={24} color={on ? color.brand : color.ink} />
+                style={({ pressed }) => [styles.catItem, on && styles.catItemOn, pressed && !on && { backgroundColor: color.bg }]}>
+                <View style={[styles.catTile, on && { backgroundColor: color.surface }]}>
+                  <CategoryIcon id={c.id ?? 'todas'} size={24} color={color.brand} />
                 </View>
-                <T v={on ? 'smallStrong' : 'small'} c={on ? color.brand : color.ink} numberOfLines={2} style={{ textAlign: 'center', fontFamily: on ? font.semibold : font.regular }}>
+                <T v="small" c={color.ink} numberOfLines={3} style={{ textAlign: 'center' }}>
                   {c.t}
                 </T>
               </Pressable>
@@ -277,10 +278,11 @@ const styles = StyleSheet.create({
   cats: { backgroundColor: color.surface, paddingTop: 14, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: color.divider },
   chip: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface },
   chipOn: { backgroundColor: color.brand, borderColor: color.brand },
-  catGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 18, paddingTop: 4, paddingBottom: 8 },
-  catItem: { width: '33.33%', alignItems: 'center', gap: 8, paddingHorizontal: 4 },
-  catCircle: { width: 72, height: 72, borderRadius: 36, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
-  catCircleOn: { borderWidth: 1.5, borderColor: color.brand, backgroundColor: color.brandTint },
+  catGrid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 8, paddingTop: 4, paddingBottom: 8 },
+  // Grade de 4 colunas: quadrado azul-claro com ícone cheio azul; a escolhida ganha caixa com contorno azul
+  catItem: { width: '25%', alignItems: 'center', gap: 8, paddingHorizontal: 4, paddingVertical: 10, borderRadius: radius.lg, borderWidth: 1.5, borderColor: 'transparent' },
+  catItemOn: { backgroundColor: color.brandTint, borderColor: color.brand },
+  catTile: { width: 52, height: 52, borderRadius: radius.lg, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   orgSearch: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 14, borderRadius: radius.sm, borderWidth: 1, borderColor: color.lineStrong },
   orgInput: { flex: 1, height: '100%', fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   orgRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 60, paddingVertical: 8 },
