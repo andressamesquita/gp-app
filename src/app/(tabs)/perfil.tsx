@@ -97,29 +97,35 @@ function AreaLogada() {
       <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
         <View style={styles.sheetBody}>
           {/* ---------- Zap do Cidadão (primeiro bloco; some com MOSTRAR_ZAP = false) ---------- */}
+          {/* Versão discreta: uma linha com ícone, título curto e ação */}
           {MOSTRAR_ZAP && (
-          <View style={styles.zap}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={app.prefs.zapAvisos ? 'Zap do Cidadão: avisos ativos no WhatsApp' : 'Zap do Cidadão: receba seus avisos no WhatsApp. Acessar'}
+            onPress={() => setSheet('zap')}
+            style={({ pressed }) => [styles.zap, pressed && { opacity: 0.92 }]}>
             <BlueBackdrop />
-            <T v="eyebrow" c="rgba(255,255,255,0.85)">
-              Zap do Cidadão
-            </T>
-            <T v="h2" c={color.white}>
-              Seus avisos no WhatsApp
-            </T>
-            <T v="small" c="rgba(255,255,255,0.92)">
-              Prazos, solicitações e benefícios chegam direto no seu WhatsApp.
-            </T>
+            <View style={styles.zapIco}>
+              <Icon name="whats" size={18} color={color.brand} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <T v="h3" c={color.white}>
+                Seus avisos no WhatsApp
+              </T>
+              <T v="caption" c="rgba(255,255,255,0.85)">
+                {app.prefs.zapAvisos ? 'Avisos ativos no Zap do Cidadão' : 'Zap do Cidadão'}
+              </T>
+            </View>
             {app.prefs.zapAvisos ? (
-              <View style={styles.zapOn}>
-                <Icon name="check" size={16} color={color.brand} strokeWidth={2.6} />
-                <T v="smallStrong" c={color.brand}>
-                  Avisos ativos no Zap
+              <Icon name="check" size={18} color={color.white} strokeWidth={2.6} />
+            ) : (
+              <View style={styles.zapBtn}>
+                <T v="label" c={color.brand}>
+                  Acessar
                 </T>
               </View>
-            ) : (
-              <Button kind="onBrand" label="Acessar" a11y="Acessar o Zap do Cidadão" onPress={() => setSheet('zap')} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
             )}
-          </View>
+          </Pressable>
           )}
 
           {/* ---------- Atalhos em grade ---------- */}
@@ -450,7 +456,9 @@ const styles = StyleSheet.create({
   post: { backgroundColor: color.bg, borderRadius: radius.md, padding: 14, gap: 10 },
   postArt: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: color.brand, borderRadius: radius.md, padding: 14 },
   thanks: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: color.goodBg, borderRadius: radius.md, padding: 12 },
-  zap: { borderRadius: radius.xl, padding: 20, gap: 8, overflow: 'hidden', marginBottom: 16 },
+  zap: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: radius.lg, paddingVertical: 12, paddingHorizontal: 14, overflow: 'hidden', marginBottom: 16 },
+  zapIco: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center' },
+  zapBtn: { backgroundColor: color.white, borderRadius: radius.md, paddingHorizontal: 14, paddingVertical: 8 },
   zapOn: { flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, marginTop: 4 },
   saldoBox: { backgroundColor: color.goodBg, borderRadius: radius.lg, padding: 18, gap: 4 },
   finger: { width: 80, height: 80, borderRadius: 40, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
