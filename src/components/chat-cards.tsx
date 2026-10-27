@@ -95,9 +95,8 @@ export function CardView({ card, msg, onAction }: { card: Card; msg: Msg; onActi
         </View>
         <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
           <Button small label="Acompanhar" href="/atividade" />
-          <Button small kind="secondary" label="Adicionar à agenda" icon="calendar" onPress={() => app.showToast('Evento adicionado à agenda (simulação).')} />
+          <Button small kind="secondary" label="Finalizar conversa" icon="check" onPress={() => app.newChat()} />
         </View>
-        <Button small kind="ghost" label="Finalizar conversa" icon="check" onPress={() => app.newChat()} style={{ alignSelf: 'flex-start' }} />
       </View>
     );
   if (card.type === 'steps')
