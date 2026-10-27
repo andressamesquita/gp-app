@@ -196,18 +196,22 @@ export function Chip({
   onPress,
   on,
   glass,
+  count,
 }: {
   label: string;
   icon?: IconName;
   onPress?: () => void;
   on?: boolean;
   glass?: boolean;
+  /** Número exibido depois do nome; quando presente, o chip não mostra o ✓ de selecionado. */
+  count?: number;
 }) {
   const fg = glass ? color.white : on ? color.white : color.ink;
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected: !!on }}
+      accessibilityLabel={count !== undefined ? `${label}, ${count}` : undefined}
       onPress={() => {
         tap();
         onPress?.();
@@ -221,11 +225,18 @@ export function Chip({
             : { backgroundColor: color.surface, borderColor: color.lineStrong },
         pressed && { opacity: 0.75 },
       ]}>
-      {on && !glass && <Icon name="check" size={16} color={fg} strokeWidth={2.4} />}
+      {on && !glass && count === undefined && <Icon name="check" size={16} color={fg} strokeWidth={2.4} />}
       {icon && <Icon name={icon} size={17} color={glass ? color.white : on ? color.white : color.brand} />}
       <T v="smallStrong" c={fg} numberOfLines={1}>
         {label}
       </T>
+      {count !== undefined && (
+        <View style={[styles.chipCount, { backgroundColor: on ? 'rgba(255,255,255,0.22)' : color.surface2 }]}>
+          <T v="caption" c={fg} style={{ fontFamily: font.semibold }}>
+            {count}
+          </T>
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -499,6 +510,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   badge: { position: 'absolute', top: 11, right: 12, width: 10, height: 10, borderRadius: 5, backgroundColor: '#FF5A4D', borderWidth: 2 },
+  chipCount: { minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
   chip: {
     minHeight: 36,
     paddingHorizontal: 14,

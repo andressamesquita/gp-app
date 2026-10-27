@@ -255,11 +255,12 @@ function AreaLogada() {
           <Section flat title="Acompanhamento de solicitações">
             {all.length ? (
               <>
-                <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-                  <Chip label="Em andamento" on={filter === 'andamento'} onPress={() => setFilter('andamento')} />
-                  <Chip label="Concluídas" on={filter === 'concluidas'} onPress={() => setFilter('concluidas')} />
-                  <Chip label="Todas" on={filter === 'todas'} onPress={() => setFilter('todas')} />
-                </View>
+                {/* Uma linha só, rolando para o lado se não couber (como os filtros de Serviços) */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 8, paddingHorizontal: 20 }}>
+                  <Chip label="Em andamento" count={all.filter((r) => !/conclu/i.test(r.status)).length} on={filter === 'andamento'} onPress={() => setFilter('andamento')} />
+                  <Chip label="Concluídas" count={all.filter((r) => /conclu/i.test(r.status)).length} on={filter === 'concluidas'} onPress={() => setFilter('concluidas')} />
+                  <Chip label="Todas" count={all.length} on={filter === 'todas'} onPress={() => setFilter('todas')} />
+                </ScrollView>
                 <View style={{ gap: 10 }}>
                   {list.map((r, i) => (
                     <RequestCard key={r.id + filter} r={r} open={i === 0} />

@@ -24,9 +24,9 @@ export default function Atividade() {
       ) : (
         <>
           <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }} accessibilityRole="tablist">
-            <Chip label="Em andamento" on={f === 'andamento'} onPress={() => setF('andamento')} />
-            <Chip label="Concluídas" on={f === 'concluidas'} onPress={() => setF('concluidas')} />
-            <Chip label="Todas" on={f === 'todas'} onPress={() => setF('todas')} />
+            <Chip label="Em andamento" count={all.filter((r) => !/conclu/i.test(r.status)).length} on={f === 'andamento'} onPress={() => setF('andamento')} />
+            <Chip label="Concluídas" count={all.filter((r) => /conclu/i.test(r.status)).length} on={f === 'concluidas'} onPress={() => setF('concluidas')} />
+            <Chip label="Todas" count={all.length} on={f === 'todas'} onPress={() => setF('todas')} />
           </View>
           {list.length ? (
             list.map((r, i) => <RequestCard key={r.id + f} r={r} open={i === 0} />)
