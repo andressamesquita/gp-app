@@ -161,12 +161,13 @@ export function PrismaPromo({ onPress }: { onPress: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  card: { flexDirection: 'row', alignItems: 'center', minHeight: 168, borderRadius: radius.lg, overflow: 'hidden', paddingVertical: 18, paddingLeft: 18, paddingRight: 12, gap: 8 },
-  left: { flex: 1, gap: 10, zIndex: 1 },
+  // Mesma proporção e largura dos banners de Destaques (2,23 : 1)
+  card: { flexDirection: 'row', alignItems: 'center', aspectRatio: 2.23, borderRadius: radius.lg, overflow: 'hidden', paddingVertical: 12, paddingLeft: 16, paddingRight: 10, gap: 6 },
+  left: { flex: 1, gap: 8, zIndex: 1 },
   kicker: { flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
-  title: { fontFamily: font.semibold, fontSize: 22, lineHeight: 27, letterSpacing: -0.2 },
-  cta: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 },
-  art: { zIndex: 1, transform: [{ rotate: '-3deg' }] },
+  title: { fontFamily: font.semibold, fontSize: 19, lineHeight: 23, letterSpacing: -0.2 },
+  cta: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
+  art: { zIndex: 1, transform: [{ rotate: '-3deg' }, { scale: 0.9 }] },
   bubble: { borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },
   me: { alignSelf: 'flex-end', backgroundColor: '#D7F5DF', borderTopRightRadius: 2 },
   bot: { alignSelf: 'flex-start', backgroundColor: color.white, borderTopLeftRadius: 2 },

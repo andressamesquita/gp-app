@@ -159,7 +159,7 @@ export default function Inicio() {
         {/* ---------- Você no centro do Gov.pi: canais para participar (lista com título, como "Como podemos ajudar?") ---------- */}
         <SectionHead title="Você no centro do Gov.pi" />
         {/* Cards de divulgação, um após o outro */}
-        <View style={{ paddingHorizontal: 16, gap: 12 }}>
+        <View style={{ paddingHorizontal: 24, gap: 12 }}>
           <ZapPromo onPress={() => router.push('/whatsapp')} />
           <PrismaPromo onPress={() => router.push('/ajuda')} />
         </View>
