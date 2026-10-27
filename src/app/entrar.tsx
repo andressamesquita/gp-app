@@ -72,12 +72,6 @@ export default function Entrar() {
         </Pressable>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-        <T v="small" c={color.muted}>
-          Não possui uma conta?
-        </T>
-        <LinkText label="Cadastre-se" href="/cadastro" />
-      </View>
     </AuthShell>
   );
 }
