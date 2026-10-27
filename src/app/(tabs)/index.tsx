@@ -133,7 +133,7 @@ export default function Assistente() {
       {/* ---------- Conteúdo ---------- */}
       {empty ? (
         <ScrollView contentContainerStyle={styles.hero} keyboardShouldPersistTaps="handled">
-          <Robot size={112} blink />
+          <Robot size={80} blink />
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 18 }}>
             <Icon name="spark" size={16} color={color.muted} />
             <T v="small" c={color.muted}>
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   side: { width: 96 },
   namePill: { flex: 0, alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 3, borderRadius: radius.pill, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)', backgroundColor: 'rgba(255,255,255,0.14)' },
   hero: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 24, gap: 6 },
-  question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 24, lineHeight: 30, marginTop: 4, maxWidth: 320 },
+  question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 20, lineHeight: 26, marginTop: 4, maxWidth: 300 },
   glow: { position: 'absolute', left: 0, right: 0, bottom: -40, height: 300 },
   chip: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, backgroundColor: color.white, borderWidth: 1, borderColor: color.lineStrong, justifyContent: 'center' },
   composer: { backgroundColor: color.white, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, paddingHorizontal: 14, paddingTop: 6, paddingBottom: 12, gap: 6, ...shadow.card },
