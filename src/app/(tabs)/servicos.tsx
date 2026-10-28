@@ -66,6 +66,16 @@ export default function Servicos() {
         <View style={styles.cats}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
             <FilterChip label={catLabel} on={!!cat && !quickCat} caret onPress={() => setSheet('cat')} />
+            <FilterChip
+              label={orgLabel}
+              on={otherOrgs.length > 0}
+              caret
+              onPress={() => {
+                setDraft(orgsSel);
+                setOrgQ('');
+                setSheet('org');
+              }}
+            />
             {QUICK.map((x) => {
               const on = x.cat ? cat === x.cat : orgsSel.includes(x.org as string);
               return (
@@ -81,16 +91,6 @@ export default function Servicos() {
                 />
               );
             })}
-            <FilterChip
-              label={orgLabel}
-              on={otherOrgs.length > 0}
-              caret
-              onPress={() => {
-                setDraft(orgsSel);
-                setOrgQ('');
-                setSheet('org');
-              }}
-            />
             {any ? (
               <FilterChip
                 label="Limpar filtros"
