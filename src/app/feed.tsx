@@ -10,7 +10,7 @@ import { color } from '@/theme/tokens';
 export default function Feed() {
   const app = useApp();
   return (
-    <Page title="Minhas publicações" flat>
+    <Page title="Publicações" flat>
       {app.posts.length ? (
         app.posts.map((p, i) => (
           <FlatBlock key={p.id} first={i === 0} style={{ gap: 10 }}>

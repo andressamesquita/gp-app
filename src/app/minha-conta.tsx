@@ -79,7 +79,6 @@ export default function MinhaConta() {
       <Section flat title="Conta">
         <View>
           <Row icon="user" title="Meu perfil" sub="Dados pessoais, contato e endereço" onPress={() => router.push('/meu-perfil')} />
-          <Row icon="image" title="Minhas publicações" sub="Conquistas que você compartilhou" onPress={() => router.push('/feed')} />
           <Row icon="sliders" title="Configurações" sub="Privacidade, avisos e acessibilidade" onPress={() => router.push('/configuracoes')} />
           <Row icon="help" title="Ajuda" sub="Dúvidas frequentes e atendimento" onPress={() => router.push('/ajuda')} last />
         </View>

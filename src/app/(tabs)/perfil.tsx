@@ -96,7 +96,8 @@ function AreaLogada() {
   ];
   const SHORTCUTS_ENXUTOS: typeof SHORTCUTS = [
     SHORTCUTS[1], // Minha jornada
-    SHORTCUTS[2], // Nota Piauiense
+    // Publicações no lugar da Nota Piauiense (o saldo continua no botão da faixa azul)
+    { label: 'Publicações', icon: 'image', k: 2, badge: app.posts.length ? String(app.posts.length) : undefined, onPress: () => router.push('/feed') },
     SHORTCUTS[3], // Conversas
     { label: 'Conquistas', icon: 'trophy', k: 2, badge: `${earned.length}/${MEDALS.length}`, onPress: () => router.push('/conquistas') },
   ];
