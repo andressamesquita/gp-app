@@ -49,7 +49,7 @@ export default function Servicos() {
   const quickOrgs = QUICK.filter((x) => x.org).map((x) => x.org as string);
   const otherOrgs = orgsSel.filter((o) => !quickOrgs.includes(o));
   const catLabel = cat && !quickCat ? CATEGORIES.find((c) => c.id === cat)?.t ?? 'Categoria' : 'Categoria';
-  const orgLabel = otherOrgs[0] ?? 'Órgão';
+  const orgLabel = otherOrgs.length > 1 ? `${otherOrgs[0]} +${otherOrgs.length - 1}` : otherOrgs[0] ?? 'Órgão';
   const any = !!(cat || orgsSel.length);
   const orgsShown = orgs.filter((o) => !orgQ.trim() || norm(o).includes(norm(orgQ.trim())));
 
@@ -110,7 +110,7 @@ export default function Servicos() {
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
-              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? (QUICK.find((x) => x.org === orgsSel[0])?.label ?? orgsSel[0]) : 'Mais procurados'}
+              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : 'Mais procurados'}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
               {shown.length < list.length ? `${shown.length} de ${list.length} serviços` : `${list.length} ${list.length === 1 ? 'serviço' : 'serviços'}`}
@@ -200,12 +200,13 @@ export default function Servicos() {
             return (
               <Pressable
                 key={o}
-                accessibilityRole="radio"
+                accessibilityRole="checkbox"
                 accessibilityState={{ checked: on }}
                 accessibilityLabel={`${o}, ${n} ${n === 1 ? 'serviço' : 'serviços'}`}
                 onPress={() => {
                   tap();
-                  setDraft(on ? [] : [o]); // um órgão por vez
+                  // Caixa de seleção: dá para marcar mais de um órgão
+                  setDraft((d) => (on ? d.filter((x) => x !== o) : [...d, o]));
                 }}
                 style={[styles.orgRow, i < orgsShown.length - 1 && styles.orgLine]}>
                 <View style={[styles.orgBadge, on && { backgroundColor: color.brandTint }]}>
@@ -219,7 +220,7 @@ export default function Servicos() {
                     {n} {n === 1 ? 'serviço' : 'serviços'}
                   </T>
                 </View>
-                <View style={[styles.radio, on && styles.radioOn]}>{on ? <View style={styles.radioDot} /> : null}</View>
+                <View style={[styles.check, on && styles.checkOn]}>{on ? <Icon name="check" size={16} color={color.white} strokeWidth={3} /> : null}</View>
               </Pressable>
             );
           })}
@@ -290,8 +291,7 @@ const styles = StyleSheet.create({
   orgRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 60, paddingVertical: 8 },
   orgLine: { borderBottomWidth: 1, borderBottomColor: color.line },
   orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
-  radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
-  radioOn: { borderColor: color.brand, borderWidth: 2 },
-  radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: color.brand },
+  check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
+  checkOn: { backgroundColor: color.brand, borderColor: color.brand },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });
