@@ -38,7 +38,7 @@ const TILE_BG: 'branco' | 'azul' = 'azul';
  *   MOSTRAR_ZAP: card azul "Zap do Cidadão · Seus avisos no WhatsApp"
  */
 const MOSTRAR_BEM_VINDA = true;
-const MOSTRAR_ZAP = true;
+const MOSTRAR_ZAP = false;
 
 /**
  * Reorganização (testes antes/depois):
@@ -134,7 +134,7 @@ function AreaLogada() {
 
           {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}
           {MOSTRAR_BEM_VINDA && (
-          <View style={styles.welcome}>
+          <View style={[styles.welcome, !MOSTRAR_ZAP && { paddingTop: 4 }]}>
             <T v="h2" accessibilityRole="header">
               Bem-vinda, {PERSON.name}!
             </T>
