@@ -95,7 +95,7 @@ function Carteira() {
           return (
             <Row
               key={d.id}
-              icon="idcard"
+              icon={d.id === 'residencia' ? 'home' : 'idcard'}
               tone={{ bg: `${t.bg}1F`, fg: d.tone === 'yellow' ? '#8A5A00' : t.bg }}
               title={d.title}
               sub={`${d.org}${d.status ? ` · ${d.status}` : ''}${on ? ' · Na frente da pilha' : ''}`}
