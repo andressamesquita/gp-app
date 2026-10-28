@@ -14,9 +14,11 @@ import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
 import { norm } from '@/state/assistant';
 import { color, font, radius } from '@/theme/tokens';
 
-/* Atalhos rápidos, como na web: Detran, Empresas, Servidor */
+/* Atalhos rápidos, como na web: Detran, Empresas, Servidor.
+   Os três são CATEGORIAS (Detran = Transporte e Veículos), então só um fica ativo por vez
+   e troca a categoria escolhida no painel. Categoria + órgão podem ficar juntos. */
 const QUICK: { label: string; cat?: CategoryId; org?: string }[] = [
-  { label: 'Detran', org: 'DETRAN' },
+  { label: 'Detran', cat: 'transp' },
   { label: 'Empresas', cat: 'empr' },
   { label: 'Servidor', cat: 'srv' },
 ];
