@@ -15,7 +15,7 @@ import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES } from '@/data/catalog';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, recentes, requests, type Scenario } from '@/data/mock';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, PERFIL_RESUMO, recentes, recomendados, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius } from '@/theme/tokens';
 
@@ -78,8 +78,10 @@ function AreaLogada() {
   // Últimos acessos: some numa conta nova; "Limpar" esvazia a lista neste aparelho
   const [recLimpos, setRecLimpos] = useState(false);
   const recs = recLimpos ? [] : recentes(scenario).map((r) => ({ ...r, s: SERVICES.find((x) => x.t === r.t) })).filter((r) => r.s);
-  const [aba, setAba] = useState<'recentes' | 'favoritos'>('recentes');
-  const abaAtiva = recs.length ? aba : 'favoritos';
+  const [aba, setAba] = useState<'recentes' | 'recomendados' | 'favoritos'>('recentes');
+  // Recomendados pelo perfil; respeita “Usar meu histórico para sugerir serviços” em Configurações
+  const recomend = app.prefs.historico ? recomendados(scenario).map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x) : [];
+  const abaAtiva = !recs.length && aba === 'recentes' ? 'recomendados' : aba;
   const pct = earned.length / MEDALS.length;
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
   const alreadyPublished = app.posts.length > 0;
@@ -295,6 +297,7 @@ function AreaLogada() {
               action={abaAtiva === 'recentes' ? { label: 'Limpar', onPress: () => { setRecLimpos(true); app.showToast('Últimos acessos apagados deste aparelho.'); } } : { label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
               <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
                 {recs.length ? <Chip label="Recentes" on={abaAtiva === 'recentes'} onPress={() => setAba('recentes')} /> : null}
+                <Chip label="Recomendados" on={abaAtiva === 'recomendados'} onPress={() => setAba('recomendados')} />
                 <Chip label="Favoritos" count={favs.length || undefined} on={abaAtiva === 'favoritos'} onPress={() => setAba('favoritos')} />
               </View>
               {abaAtiva === 'recentes' ? (
@@ -325,6 +328,26 @@ function AreaLogada() {
                     );
                   })}
                 </ScrollView>
+              ) : abaAtiva === 'recomendados' ? (
+                recomend.length ? (
+                  <>
+                    <T v="small" c={color.muted}>
+                      Com base no seu perfil: {PERFIL_RESUMO}.
+                    </T>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
+                      {recomend.map((s) => (
+                        <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
+                      ))}
+                    </ScrollView>
+                  </>
+                ) : (
+                  <Empty
+                    icon="spark"
+                    title="Recomendações desligadas"
+                    text="Ligue “Usar meu histórico para sugerir serviços” em Configurações para ver serviços escolhidos para você."
+                    action={{ label: 'Abrir Configurações', onPress: () => router.push('/configuracoes') }}
+                  />
+                )
               ) : favs.length ? (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
                   {favs.map((s) => (

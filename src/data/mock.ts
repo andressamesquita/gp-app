@@ -44,6 +44,7 @@ export function walletDocs(s: Scenario): WalletDoc[] {
     { id: 'cin', kicker: 'Identidade', title: 'Carteira CIN', sub: 'Carteira de Identidade Nacional', org: 'Identidade', tone: 'orange', number: '0915', fields: [['Nome', PERSON.name], ['CPF', '•••.•••.•••-••'], ['Emissão', '03/2025']] },
     { id: 'estudante', kicker: 'Educação', title: 'Carteira do Estudante', sub: 'Meia-entrada', org: 'Educação', tone: 'yellow', number: '5520', fields: [['Nome', PERSON.name], ['Instituição', 'UFPI'], ['Validade', '03/2027']] },
     { id: 'idoso', kicker: 'Transporte', title: 'Carteira do Idoso', sub: 'Gratuidade no transporte', org: 'Transporte', tone: 'deep', number: '7744', fields: [['Beneficiária', 'Maria Souza (mãe)'], ['Validade', '12/2027']] },
+    { id: 'residencia', kicker: 'Residência', title: 'Comprovante de residência', sub: 'Conta de energia · Equatorial Piauí', org: 'Residência', tone: 'deep', number: '8826', fields: [['Titular', PERSON.name], ['Endereço', 'Rua Areolino de Abreu, 1200 · Centro · Teresina'], ['Referência', 'Setembro/2026'], ['Emissão', '05/10/2026']] },
   ];
   if (s === 'concluida')
     return [
@@ -307,4 +308,12 @@ export function recentes(s: Scenario): Recente[] {
     { t: 'Emitir CRLV digital do veículo', quando: 'Há 5 dias' },
     { t: 'Marcar uma consulta', quando: 'Há 1 semana' },
   ];
+}
+
+/* ---------- Recomendados (Área do cidadão > Seus serviços > Recomendados) ----------
+   Escolhidos pelo perfil da pessoa logada: condutora, doadora de sangue, servidora estadual, mãe de estudante. */
+export const PERFIL_RESUMO = 'condutora, doadora de sangue e servidora estadual';
+export function recomendados(s: Scenario): string[] {
+  const cnh = s === 'concluida' ? 'Consultar a minha CNH' : 'Renovar CNH';
+  return [cnh, 'Agendar doação de sangue', 'Consultar contracheque', 'Realizar prova de vida', 'Boletim escolar', 'Resgatar créditos da Nota Piauiense'];
 }
