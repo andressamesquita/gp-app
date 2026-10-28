@@ -59,7 +59,7 @@ export default function Servicos() {
       <View style={{ zIndex: 1 }}>
         {/* Campo do Assistente dentro da faixa azul, fixo ao rolar (como a barra do Início) */}
         <TabTop title="Serviços para você">
-          <AskField value={q} onChangeText={setQ} flat />
+          <AskField value={q} onChangeText={setQ} flat search />
         </TabTop>
 
         {/* Filtros em chips, como na web */}

@@ -18,12 +18,15 @@ export function AskField({
   onChangeText,
   flat,
   style,
+  search,
 }: {
   value?: string;
   onChangeText?: (t: string) => void;
   /** Sem contorno nem sombra (dentro da faixa azul fixa). */
   flat?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Campo de busca (aba Serviços): lupa no lugar do robô, "Busque por um serviço", microfone e sem a seta de envio. */
+  search?: boolean;
 }) {
   const editable = onChangeText !== undefined;
   const send = () => {
@@ -44,6 +47,29 @@ export function AskField({
       <Icon name="mic" size={22} color={color.ink} />
     </Pressable>
   );
+
+  if (editable && search)
+    return (
+      <View style={[styles.box, flat && styles.flat, { paddingLeft: 16, paddingRight: 6 }, style]} accessibilityRole="search">
+        <Icon name="search" size={22} color={color.ink} />
+        <TextInput
+          accessibilityLabel="Busque por um serviço"
+          value={value}
+          onChangeText={onChangeText}
+          placeholder="Busque por um serviço"
+          placeholderTextColor={color.muted}
+          style={[styles.input, { marginLeft: 4 }]}
+          returnKeyType="search"
+        />
+        {value ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Limpar busca" hitSlop={8} onPress={() => onChangeText?.('')} style={styles.mic}>
+            <Icon name="close" size={18} color={color.muted} />
+          </Pressable>
+        ) : (
+          mic
+        )}
+      </View>
+    );
 
   if (editable)
     return (
