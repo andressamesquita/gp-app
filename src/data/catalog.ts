@@ -100,6 +100,42 @@ export const SERVICES: Service[] = [
     q: "Perdi minha CNH"
   },
   {
+    t: "Cancelar Autorização para Transferência de Propriedade do Veículo",
+    d: "Cancele a ATPV antes de concluir a transferência do veículo.",
+    c: "transp",
+    o: "DETRAN",
+    v: "Cancelar",
+    k: "atpv transferência venda vendi",
+    q: "Quero cancelar a autorização para transferência do meu veículo"
+  },
+  {
+    t: "Consultar Restrição Gravame Veículo",
+    d: "Veja se o veículo tem restrições, como alienação ou financiamento.",
+    c: "transp",
+    o: "DETRAN",
+    v: "Consultar",
+    k: "gravame restrição alienação financiamento",
+    q: "Quero consultar restrição de gravame do meu veículo"
+  },
+  {
+    t: "Solicitar Defesa Prévia Online para Infrações de Trânsito",
+    d: "Apresente e acompanhe a defesa prévia de uma multa de trânsito.",
+    c: "transp",
+    o: "DETRAN",
+    v: "Solicitar",
+    k: "multa infração recurso defesa",
+    q: "Quero fazer a defesa prévia de uma multa de trânsito"
+  },
+  {
+    t: "Emitir Permissão Internacional para Dirigir",
+    d: "Tire a PID para dirigir em países estrangeiros com sua CNH.",
+    c: "transp",
+    o: "DETRAN",
+    v: "Emitir",
+    k: "pid internacional exterior viagem",
+    q: "Quero emitir a Permissão Internacional para Dirigir"
+  },
+  {
     t: "Medicamentos Especializados · Farmácia do Povo",
     d: "Veja a disponibilidade e reserve seu medicamento.",
     c: "saude",
