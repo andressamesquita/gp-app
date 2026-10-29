@@ -11,6 +11,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
 import { ZapAvisosPromo } from '@/components/promo-cards';
+import { RecentesPaginados } from '@/components/recentes';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
@@ -47,6 +48,11 @@ const MOSTRAR_ZAP = false;
  */
 const AS_ABRE: 'conta' | 'conquistas' = 'conta';
 const MOSTRAR_SEUS_SERVICOS = true;
+/**
+ *   RECENTES_LAYOUT: 'paginas' = lista em páginas de 3 que rolam para o lado, com pontinhos (novo)
+ *                    'icones'  = ícones em fileira (antes)
+ */
+const RECENTES_LAYOUT: 'paginas' | 'icones' = 'paginas';
 /**
  *   GRADE_ENXUTA: true = só os atalhos de uso frequente (Jornada, Nota, Conversas, Conquistas); Meu perfil, Configurações,
  *   Ajuda, Feed e Sair ficam em Minha conta (no AS) e o Zap fica só no card do topo · false = grade de 8 e "Sair" aqui (antes)
@@ -300,7 +306,9 @@ function AreaLogada() {
                 <Chip label="Recomendados" on={abaAtiva === 'recomendados'} onPress={() => setAba('recomendados')} />
                 <Chip label="Favoritos" count={favs.length || undefined} on={abaAtiva === 'favoritos'} onPress={() => setAba('favoritos')} />
               </View>
-              {abaAtiva === 'recentes' ? (
+              {abaAtiva === 'recentes' && RECENTES_LAYOUT === 'paginas' ? (
+                <RecentesPaginados itens={recs.map((r) => ({ s: r.s!, quando: r.quando }))} onOpen={(s) => ask(s.q)} />
+              ) : abaAtiva === 'recentes' ? (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}>
                   {recs.map(({ s, quando }) => {
                     const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s!.c));

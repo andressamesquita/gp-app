@@ -307,6 +307,10 @@ export function recentes(s: Scenario): Recente[] {
     { t: 'Consultar a minha CNH', quando: 'Há 3 dias' },
     { t: 'Emitir CRLV digital do veículo', quando: 'Há 5 dias' },
     { t: 'Marcar uma consulta', quando: 'Há 1 semana' },
+    { t: 'Agendar doação de sangue', quando: 'Há 2 semanas' },
+    { t: 'Consultar contracheque', quando: 'Há 3 semanas' },
+    { t: 'Boletim escolar', quando: 'Há 1 mês' },
+    { t: 'Segunda via da conta de água', quando: 'Há 1 mês' },
   ];
 }
 
