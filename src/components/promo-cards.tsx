@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   left: { flex: 1, gap: 8, zIndex: 1 },
   kicker: { flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 3 },
   title: { fontFamily: font.semibold, fontSize: 19, lineHeight: 23, letterSpacing: -0.2 },
-  cta: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
+  cta: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', backgroundColor: color.white, borderRadius: radius.sm, paddingHorizontal: 12, paddingVertical: 6 },
   art: { zIndex: 1, transform: [{ rotate: '-3deg' }, { scale: 0.9 }] },
   bubble: { borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },
   me: { alignSelf: 'flex-end', backgroundColor: '#D7F5DF', borderTopRightRadius: 2 },
