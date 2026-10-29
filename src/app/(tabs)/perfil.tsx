@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   saldoBox: { backgroundColor: color.goodBg, borderRadius: radius.lg, padding: 18, gap: 4 },
   finger: { width: 80, height: 80, borderRadius: 40, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   qr: { padding: 12, backgroundColor: color.white, borderRadius: radius.md, borderWidth: 1, borderColor: color.line },
-  proto: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: color.lineStrong, borderRadius: radius.lg, padding: 16, gap: 10 },
+  proto: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: color.lineStrong, borderRadius: radius.lg, padding: 16, gap: 10, marginTop: 16 },
   opt: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 56, padding: 12, borderRadius: radius.md, borderWidth: 1.5, borderColor: color.line, backgroundColor: color.surface },
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   radioIn: { width: 10, height: 10, borderRadius: 5, backgroundColor: color.brand },
