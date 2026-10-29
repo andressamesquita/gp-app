@@ -9,7 +9,7 @@ import { T, tap } from './ui';
 const PLACEHOLDER = 'O que você precisa resolver?';
 
 /**
- * Campo do Assistente, igual em todas as abas: robô à esquerda, frase, microfone e seta azul.
+ * Campo do Assistente, igual em todas as abas: robô à esquerda, frase e microfone.
  * - Sem `value`: é um atalho (toque abre o Assistente).
  * - Com `value`/`onChangeText`: dá para digitar (em Serviços filtra a lista) e a seta envia ao Assistente.
  */
@@ -112,10 +112,8 @@ export function AskField({
       <T v="body" c={color.muted} style={{ flex: 1, fontSize: 14, lineHeight: 20 }} numberOfLines={1}>
         {PLACEHOLDER}
       </T>
+      {/* Sem seta: o campo inteiro já abre o Assistente (a seta era só desenho) */}
       {mic}
-      <View style={styles.send}>
-        <Icon name="send" size={20} color={color.white} strokeWidth={2.2} />
-      </View>
     </Pressable>
   );
 }
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     paddingLeft: 12,
-    paddingRight: 8,
+    paddingRight: 6,
     backgroundColor: color.surface,
     borderRadius: radius.sm,
     borderWidth: 1.5,
