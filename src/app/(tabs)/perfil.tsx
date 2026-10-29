@@ -339,14 +339,14 @@ function AreaLogada() {
               ) : abaAtiva === 'recomendados' ? (
                 recomend.length ? (
                   <>
-                    <T v="small" c={color.muted}>
-                      Com base no seu perfil: {PERFIL_RESUMO}.
-                    </T>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
                       {recomend.map((s) => (
                         <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
                       ))}
                     </ScrollView>
+                    <T v="small" c={color.muted}>
+                      Com base no seu perfil: {PERFIL_RESUMO}.
+                    </T>
                   </>
                 ) : (
                   <Empty
