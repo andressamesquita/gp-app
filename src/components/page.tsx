@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { color, font } from '@/theme/tokens';
+import { bar, color, font } from '@/theme/tokens';
 import { BlueBackdrop } from './hero';
 import { useStatusBar } from './statusbar';
 import { FlatSections, ScreenHeader, T } from './ui';
@@ -55,16 +55,16 @@ export function TabTop({ title, sub, children, right, left }: { title: string; s
   const insets = useSafeAreaInsets();
   return (
     <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, overflow: 'hidden' }}>
-      <BlueBackdrop />
+      <BlueBackdrop bar />
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: left ? 4 : 0 }}>
         {left}
-        <T v="h1" c={color.white} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
+        <T v="h1" c={bar.title} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
           {title}
         </T>
         {right}
       </View>
       {sub ? (
-        <T v="small" c="rgba(255,255,255,0.9)">
+        <T v="small" c={bar.sub}>
           {sub}
         </T>
       ) : null}

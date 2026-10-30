@@ -15,7 +15,7 @@ import { Logo, T, tap } from './ui';
  */
 export function AuthShell({ title, children }: { title?: string; children: ReactNode }) {
   const insets = useSafeAreaInsets();
-  useStatusBar('light', color.brand);
+  useStatusBar('light', color.brand, true);
   return (
     <View style={{ flex: 1, backgroundColor: color.brand }}>
       <BlueBackdrop full />

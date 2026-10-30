@@ -19,7 +19,7 @@ export default function Avisos() {
   const groups = [...new Set(list.map((a) => a.group))];
 
   return (
-    <Page title="Avisos" right={<IconButton icon="sliders" label="Escolher quais avisos receber" onPress={() => router.push('/perfil')} />}>
+    <Page title="Avisos" right={<IconButton tone="bar" icon="sliders" label="Escolher quais avisos receber" onPress={() => router.push('/perfil')} />}>
       {all.length === 0 ? (
         <Empty icon="bell" title="Nenhum aviso por enquanto" text="Avisamos aqui quando houver um prazo, uma novidade ou uma etapa da sua solicitação." action={{ label: 'Escolher quais avisos receber', href: '/perfil' }} />
       ) : (

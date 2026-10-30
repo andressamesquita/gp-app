@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { color, font, radius } from '@/theme/tokens';
+import { FAIXA_BRANCA, color, font, radius } from '@/theme/tokens';
 import { Icon } from './Icon';
 import { ask, askVoice } from './nav';
 import { Robot } from './Robot';
@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: color.line,
   },
-  flat: { borderColor: 'transparent' },
+  // Dentro da faixa: sem contorno no azul; com contorno na faixa branca
+  flat: { borderColor: FAIXA_BRANCA ? color.line : 'transparent' },
   input: { flex: 1, minHeight: 54, fontFamily: font.regular, fontSize: 14, color: color.ink, outlineStyle: 'none' } as object,
   mic: { width: 36, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   send: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },

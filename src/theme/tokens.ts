@@ -89,3 +89,13 @@ export const shadow = {
     elevation: 8,
   },
 } as const;
+
+/**
+ * Faixa de menu superior (topo das abas e das telas internas).
+ * FAIXA_BRANCA = true: branca como o cabeçalho da web v23, logo colorida, título no tom escuro
+ * dos títulos das dobras (#14233A) e ícones em #192D48. false = azul com ondas (antes).
+ */
+export const FAIXA_BRANCA: boolean = true;
+export const bar = FAIXA_BRANCA
+  ? { bg: '#FFFFFF', fg: '#192D48', title: '#14233A', sub: '#44546B', line: '#E3E8EF', pressed: '#E8EEF6' }
+  : { bg: '#034EA2', fg: '#FFFFFF', title: '#FFFFFF', sub: 'rgba(255,255,255,0.85)', line: 'transparent', pressed: 'rgba(255,255,255,0.16)' };

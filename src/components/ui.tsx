@@ -18,7 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '@/state/app-state';
-import { color, font, radius, shadow, touch } from '@/theme/tokens';
+import { color, font, radius, shadow, touch, bar } from '@/theme/tokens';
 import { Icon, type IconName } from './Icon';
 
 export const tap = () => {
@@ -162,13 +162,13 @@ export function IconButton({
   icon: IconName;
   label: string;
   onPress: () => void;
-  tone?: 'onBrand' | 'plain' | 'soft';
+  tone?: 'onBrand' | 'plain' | 'soft' | 'bar';
   badge?: boolean;
   /** Cor da bolinha (padrão: vermelho de aviso). Verde = há conversas salvas. */
   badgeColor?: string;
   size?: number;
 }) {
-  const fg = tone === 'onBrand' ? color.white : color.ink;
+  const fg = tone === 'bar' ? bar.fg : tone === 'onBrand' ? color.white : color.ink;
   return (
     <Pressable
       accessibilityRole="button"
@@ -181,10 +181,10 @@ export function IconButton({
       style={({ pressed }) => [
         { width: size, height: size, borderRadius: size / 2, alignItems: 'center', justifyContent: 'center' },
         tone === 'soft' && { backgroundColor: color.surface2 },
-        pressed && { backgroundColor: tone === 'onBrand' ? 'rgba(255,255,255,0.16)' : color.surface2 },
+        pressed && { backgroundColor: tone === 'bar' ? bar.pressed : tone === 'onBrand' ? 'rgba(255,255,255,0.16)' : color.surface2 },
       ]}>
       <Icon name={icon} size={22} color={fg} />
-      {badge && <View style={[styles.badge, { borderColor: tone === 'onBrand' ? color.brand : color.white }, badgeColor ? { backgroundColor: badgeColor } : null]} />}
+      {badge && <View style={[styles.badge, { borderColor: tone === 'bar' ? bar.bg : tone === 'onBrand' ? color.brand : color.white }, badgeColor ? { backgroundColor: badgeColor } : null]} />}
     </Pressable>
   );
 }
@@ -441,16 +441,17 @@ export function ScreenHeader({
   return (
     <View style={[styles.header, { paddingTop: insets.top + 6 }]}>
       <IconButton
+        tone="bar"
         icon={close ? 'close' : 'back'}
         label={close ? 'Fechar' : 'Voltar'}
         onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace('/')))}
       />
       <View style={{ flex: 1 }}>
-        <T v="h2" c={color.white} accessibilityRole="header" numberOfLines={1}>
+        <T v="h2" c={bar.title} accessibilityRole="header" numberOfLines={1}>
           {title}
         </T>
         {sub ? (
-          <T v="caption" c="rgba(255,255,255,0.85)" numberOfLines={1}>
+          <T v="caption" c={bar.sub} numberOfLines={1}>
             {sub}
           </T>
         ) : null}
@@ -549,7 +550,9 @@ const styles = StyleSheet.create({
   rowLine: { borderBottomWidth: 1, borderBottomColor: color.line },
   rowIco: { width: 40, height: 40, borderRadius: 10, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   header: {
-    backgroundColor: color.brand,
+    backgroundColor: bar.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: bar.line,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,

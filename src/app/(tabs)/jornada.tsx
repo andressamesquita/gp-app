@@ -25,7 +25,7 @@ function JornadaLogged() {
     {/* Faixa azul fixa (mesma altura das abas), com voltar para a Área do cidadão */}
     <TabTop
       title="Minha jornada"
-      left={<View style={{ marginLeft: -10 }}><IconButton icon="back" label="Voltar para a Área do cidadão" onPress={() => router.navigate('/perfil')} /></View>}
+      left={<View style={{ marginLeft: -10 }}><IconButton tone="bar" icon="back" label="Voltar para a Área do cidadão" onPress={() => router.navigate('/perfil')} /></View>}
     />
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 44 }}>
 

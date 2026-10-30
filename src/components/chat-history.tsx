@@ -20,7 +20,7 @@ export function useHasChats() {
 /** Ícone de conversas para a faixa azul, com bolinha verde quando há conversas salvas. */
 export function ChatHistoryButton({ onPress }: { onPress: () => void }) {
   const has = useHasChats();
-  return <IconButton icon="chats" label={has ? 'Conversas, há conversas salvas' : 'Conversas'} tone="onBrand" badge={has} badgeColor={CHAT_DOT} onPress={onPress} />;
+  return <IconButton icon="chats" label={has ? 'Conversas, há conversas salvas' : 'Conversas'} tone="bar" badge={has} badgeColor={CHAT_DOT} onPress={onPress} />;
 }
 
 /** Folha com o histórico de conversas: da sessão (sem login) ou da sessão + conta (com login). */

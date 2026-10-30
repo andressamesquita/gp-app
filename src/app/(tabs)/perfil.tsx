@@ -18,7 +18,7 @@ import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@
 import { CATEGORIES, SERVICES } from '@/data/catalog';
 import { MEDALS, PERSON, SALDO, earnedMedals, forMe, PERFIL_RESUMO, recentes, recomendados, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, kind, radius } from '@/theme/tokens';
+import { color, font, kind, radius, FAIXA_BRANCA, bar } from '@/theme/tokens';
 
 const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
   { id: 'padrao', t: 'Com histórico', d: 'Solicitações em andamento e carteiras' },
@@ -116,22 +116,22 @@ function AreaLogada() {
     <View style={{ flex: 1 }}>
       {/* ---------- Faixa azul fixa: título, saldo, avisos e foto (abre Minha conta) ---------- */}
       <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }]}>
-        <BlueBackdrop />
-        <T v="h2" c={color.white} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
+        <BlueBackdrop bar />
+        <T v="h2" c={bar.title} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
           Área do cidadão
         </T>
         <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
-          <Icon name="coins" size={16} color={color.white} />
-          <T v="smallStrong" c={color.white}>
+          <Icon name="coins" size={16} color={FAIXA_BRANCA ? color.brand : color.white} />
+          <T v="smallStrong" c={FAIXA_BRANCA ? color.brand : color.white}>
             {SALDO.valor}
           </T>
         </Pressable>
-        <IconButton icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
+        <IconButton tone="bar" icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={AS_ABRE === 'conta' ? 'Minha conta' : `Minhas conquistas: ${earned.length} de ${MEDALS.length}`}
           onPress={() => router.push(AS_ABRE === 'conta' ? '/minha-conta' : '/conquistas')}>
-          <Avatar initials={PERSON.initials} light size={36} uri={app.photo} />
+          <Avatar initials={PERSON.initials} light={!FAIXA_BRANCA} size={36} uri={app.photo} />
         </Pressable>
       </View>
       <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
@@ -518,13 +518,13 @@ export default function AreaDoCidadao() {
 }
 
 const styles = StyleSheet.create({
-  saldo: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.pill, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)', backgroundColor: 'rgba(255,255,255,0.12)' },
+  saldo: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.pill, borderWidth: 1, borderColor: FAIXA_BRANCA ? color.line : 'rgba(255,255,255,0.45)', backgroundColor: FAIXA_BRANCA ? color.brandTint : 'rgba(255,255,255,0.12)' },
   camBadge: { position: 'absolute', right: -2, bottom: -2, width: 24, height: 24, borderRadius: 12, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: color.brand },
   level: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)' },
   conq: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radius.md, padding: 14, gap: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' },
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
-  stickyBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden', zIndex: 10 },
+  stickyBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden', zIndex: 10 },
   sheetBody: { backgroundColor: color.surface, padding: 16, paddingTop: 16, gap: 8 },
   // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 16 },

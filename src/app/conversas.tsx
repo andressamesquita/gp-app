@@ -23,6 +23,7 @@ export default function Conversas() {
       title="Conversas"
       right={
         <IconButton
+          tone="bar"
           icon="edit"
           label="Nova conversa"
           onPress={() => {

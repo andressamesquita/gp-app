@@ -15,7 +15,7 @@ import { Avatar, Button, IconButton, LinkText, Logo, T, tap } from '@/components
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, radius } from '@/theme/tokens';
+import { color, font, radius, FAIXA_BRANCA, bar } from '@/theme/tokens';
 
 /* ---------------- Banners ---------------- */
 type Banner = { id: string; img: ImageSourcePropType; label: string; onPress: () => void };
@@ -78,24 +78,24 @@ export default function Inicio() {
         })}>
         {/* ---------- Topo azul ---------- */}
         <View style={[styles.head, { paddingTop: insets.top + 14 }]}>
-          <BlueBackdrop />
+          <BlueBackdrop bar />
           <View style={styles.headRow}>
-            <Logo size={17} />
+            <Logo size={17} light={!FAIXA_BRANCA} />
             <View style={{ flex: 1 }} />
             <ChatHistoryButton onPress={() => setHistory(true)} />
             {app.logged ? (
               <>
-                <IconButton icon="bell" label="Avisos" tone="onBrand" badge onPress={() => router.push('/avisos')} />
+                <IconButton icon="bell" label="Avisos" tone="bar" badge onPress={() => router.push('/avisos')} />
                 <Pressable accessibilityRole="button" accessibilityLabel="Abrir Área do cidadão" onPress={() => router.navigate('/perfil')}>
-                  <Avatar initials={PERSON.initials} size={38} light uri={app.photo} />
+                  <Avatar initials={PERSON.initials} size={38} light={!FAIXA_BRANCA} uri={app.photo} />
                 </Pressable>
               </>
             ) : (
-              <Button small kind="onBrand" icon="user" label="Entrar" href="/entrar" style={{ marginLeft: 4 }} />
+              <Button small kind={FAIXA_BRANCA ? 'primary' : 'onBrand'} icon="user" label="Entrar" href="/entrar" style={{ marginLeft: 4 }} />
             )}
           </View>
           {app.logged ? (
-            <T v="h1" c={color.white} style={{ marginTop: 14 }} accessibilityRole="header">
+            <T v="h1" c={bar.title} style={{ marginTop: 14 }} accessibilityRole="header">
               Olá, {PERSON.first}!
             </T>
           ) : null}
@@ -282,10 +282,10 @@ function Carousel({ items }: { items: Banner[] }) {
 }
 
 const styles = StyleSheet.create({
-  head: { backgroundColor: color.brand, paddingHorizontal: 20, paddingBottom: 46, overflow: 'hidden' },
+  head: { backgroundColor: bar.bg, paddingHorizontal: 20, paddingBottom: 46, overflow: 'hidden' },
   headRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
   searchPos: { marginTop: -28, marginHorizontal: 16 },
-  stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: color.brand, paddingBottom: 10, zIndex: 10 },
+  stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: bar.line, paddingBottom: 10, zIndex: 10 },
   suggest: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface, justifyContent: 'center' },
   banner: { aspectRatio: 2.23, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: color.surface2, borderWidth: 1, borderColor: color.line },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12 },

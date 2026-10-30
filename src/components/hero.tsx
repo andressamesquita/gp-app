@@ -4,7 +4,7 @@ import { Animated, Pressable, StyleSheet, TextInput, View, type StyleProp, type 
 import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { PROMPT_EXAMPLES } from '@/data/mock';
-import { color, font, radius, shadow } from '@/theme/tokens';
+import { FAIXA_BRANCA, bar, color, font, radius, shadow } from '@/theme/tokens';
 import { Icon } from './Icon';
 import { T, tap } from './ui';
 
@@ -12,7 +12,8 @@ import { T, tap } from './ui';
  * Fundo azul da primeira dobra: degradê #0B5CBD → #034EA2 → #023C7E,
  * dois brilhos radiais e o padrão de ondas da Proposta web.
  */
-export function BlueBackdrop({ style, tone = 'blue', full }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green'; /** ondas na tela inteira (telas de fundo azul, como o login) */ full?: boolean }) {
+export function BlueBackdrop({ style, tone = 'blue', full, bar: isBar }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green'; /** ondas na tela inteira (telas de fundo azul, como o login) */ full?: boolean; /** fundo da faixa de menu superior: branco quando FAIXA_BRANCA */ bar?: boolean }) {
+  if (isBar && FAIXA_BRANCA) return <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: bar.line }, style]} />;
   const waves = full ? Array.from({ length: 22 }, (_, i) => -160 + i * 26) : [300, 270, 240, 210, 180, 150, 120, 90];
   // 'green' = mesmo desenho em tons de verde, para o que é do WhatsApp (Zap do Cidadão)
   const g = tone === 'green' ? { c: ['#1FA060', '#0E7A3B', '#075A2B'] as const, a: '#8AF0B4', b: '#2BD27A' } : { c: ['#0B5CBD', '#034EA2', '#023C7E'] as const, a: '#6EBEFF', b: '#00AAE6' };

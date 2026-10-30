@@ -24,7 +24,7 @@ import { Avatar, Button, IconButton, Logo, T, tap } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import type { Action, Msg } from '@/state/assistant';
 import { useApp } from '@/state/app-state';
-import { color, font, radius, shadow } from '@/theme/tokens';
+import { color, font, radius, shadow, FAIXA_BRANCA, bar } from '@/theme/tokens';
 
 const CHIPS_OUT = ['Renovar minha CNH', 'Meu remédio acabou', 'Perdi minha CNH', 'Ver todos os serviços'];
 const CHIPS_IN = ['Renovar minha CNH', 'Resgatar meus créditos da Nota Piauiense', 'Ver minha carteira', 'Perdi minha CNH'];
@@ -92,39 +92,39 @@ export default function Assistente() {
       {/* ---------- Barra superior ---------- */}
       {empty ? (
         <View style={[styles.appbar, { paddingTop: insets.top + 8 }]}>
-          <BlueBackdrop />
-          <Logo size={17} />
+          <BlueBackdrop bar />
+          <Logo size={17} light={!FAIXA_BRANCA} />
           <View style={{ flex: 1 }} />
           {app.logged ? (
             <>
-              <IconButton icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />
+              <IconButton tone="bar" icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />
               <Pressable accessibilityRole="button" accessibilityLabel={`Seu perfil, ${PERSON.name}`} onPress={() => router.navigate('/perfil')} hitSlop={6} style={{ marginLeft: 4 }}>
-                <Avatar initials={PERSON.initials} size={38} light uri={app.photo} />
+                <Avatar initials={PERSON.initials} size={38} light={!FAIXA_BRANCA} uri={app.photo} />
               </Pressable>
             </>
           ) : (
-            <Button small kind="onBrand" icon="user" label="Entrar" href="/entrar" />
+            <Button small kind={FAIXA_BRANCA ? 'primary' : 'onBrand'} icon="user" label="Entrar" href="/entrar" />
           )}
         </View>
       ) : (
         <View style={[styles.chatbar, { paddingTop: insets.top + 6 }]}>
-          <BlueBackdrop />
+          <BlueBackdrop bar />
           <View style={[styles.side, { flexDirection: 'row' }]}>
-            <IconButton icon="back" label="Voltar" onPress={() => (router.canGoBack() ? router.back() : router.navigate('/inicio'))} />
-            {app.logged && <IconButton icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />}
+            <IconButton tone="bar" icon="back" label="Voltar" onPress={() => (router.canGoBack() ? router.back() : router.navigate('/inicio'))} />
+            {app.logged && <IconButton tone="bar" icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />}
           </View>
           <View style={{ flex: 1, alignItems: 'center', gap: 4 }}>
             <View style={styles.robotHalo}>
               <Robot size={40} blink />
             </View>
             <View style={styles.namePill}>
-              <T v="caption" c={color.white} style={{ fontFamily: font.semibold }}>
+              <T v="caption" c={FAIXA_BRANCA ? color.brand : color.white} style={{ fontFamily: font.semibold }}>
                 Assistente Gov.pi
               </T>
             </View>
           </View>
           <View style={[styles.side, { alignItems: 'flex-end' }]}>
-            <IconButton icon="close" label="Finalizar conversa" onPress={app.newChat} />
+            <IconButton tone="bar" icon="close" label="Finalizar conversa" onPress={app.newChat} />
           </View>
         </View>
       )}
@@ -383,11 +383,11 @@ function AssistantComposer({
 }
 
 const styles = StyleSheet.create({
-  appbar: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden' },
-  chatbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingBottom: 10, backgroundColor: color.brand, overflow: 'hidden' },
-  robotHalo: { width: 54, height: 54, borderRadius: 27, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center' },
+  appbar: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden' },
+  chatbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden' },
+  robotHalo: { width: 54, height: 54, borderRadius: 27, backgroundColor: color.white, borderWidth: FAIXA_BRANCA ? 1 : 0, borderColor: color.line, alignItems: 'center', justifyContent: 'center' },
   side: { width: 96 },
-  namePill: { flex: 0, alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 3, borderRadius: radius.pill, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)', backgroundColor: 'rgba(255,255,255,0.14)' },
+  namePill: { flex: 0, alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 3, borderRadius: radius.pill, borderWidth: 1, borderColor: FAIXA_BRANCA ? color.line : 'rgba(255,255,255,0.45)', backgroundColor: FAIXA_BRANCA ? color.brandTint : 'rgba(255,255,255,0.14)' },
   hero: { flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 24, gap: 6 },
   question: { textAlign: 'center', fontFamily: font.semibold, fontSize: 20, lineHeight: 26, marginTop: 4, maxWidth: 300 },
   glow: { position: 'absolute', left: 0, right: 0, bottom: -40, height: 300 },
