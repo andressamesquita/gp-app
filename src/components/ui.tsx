@@ -457,7 +457,7 @@ export function ScreenHeader({
         onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace('/')))}
       />
       <View style={{ flex: 1 }}>
-        <T v="h2" c={bar.title} accessibilityRole="header" numberOfLines={1}>
+        <T v="h1" c={bar.title} accessibilityRole="header" numberOfLines={1}>
           {title}
         </T>
         {sub ? (

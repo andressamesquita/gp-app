@@ -117,9 +117,9 @@ function AreaLogada() {
   return (
     <View style={{ flex: 1 }}>
       {/* ---------- Faixa azul fixa: título, saldo, avisos e foto (abre Minha conta) ---------- */}
-      <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }, rolou && BAR_SHADOW]}>
+      <View style={[styles.stickyBar, { paddingTop: insets.top + 8, minHeight: insets.top + 8 + 48 + 10 }, rolou && BAR_SHADOW]}>
         <BlueBackdrop bar />
-        <T v="h2" c={bar.title} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
+        <T v="h1" c={bar.title} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
           Área do cidadão
         </T>
         <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
@@ -128,7 +128,6 @@ function AreaLogada() {
             {SALDO.valor}
           </T>
         </Pressable>
-        <IconButton tone="bar" icon="bell" label="Avisos, há avisos não lidos" badge onPress={() => router.push('/avisos')} />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={AS_ABRE === 'conta' ? 'Minha conta' : `Minhas conquistas: ${earned.length} de ${MEDALS.length}`}

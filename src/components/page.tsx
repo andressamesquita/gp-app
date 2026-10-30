@@ -59,7 +59,7 @@ export function TabTop({ title, sub, children, right, left, elevated, noInset }:
       <BlueBackdrop bar style={semLinha ? { borderBottomWidth: 0 } : undefined} />
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: left ? 4 : 0 }}>
         {left}
-        <T v="h2" c={bar.title} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
+        <T v="h1" c={bar.title} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
           {title}
         </T>
         {right}
