@@ -6,12 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ServiceCardCompact } from '@/components/blocks';
 import { AskField } from '@/components/ask-field';
 import { PrismaPromo, ZapPromo } from '@/components/promo-cards';
-import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
+import { TopBarRow } from '@/components/top-bar';
 import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, Button, IconButton, LinkText, Logo, T, tap } from '@/components/ui';
+import { LinkText, T, tap } from '@/components/ui';
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
@@ -43,7 +43,6 @@ export default function Inicio() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [searchY, setSearchY] = useState(400);
   const [stuck, setStuck] = useState(false);
-  const [history, setHistory] = useState(false);
   const [heroY, setHeroY] = useState(0);
   // Com a dobra clara, o campo fica dentro dela (sem margem negativa)
   const stickAt = DOBRA_CLARA ? Math.max(1, heroY + searchY - insets.top - 8) : Math.max(1, searchY - 28 - insets.top - 8); // 28 = margem negativa do campo sobre o topo azul
@@ -84,21 +83,7 @@ export default function Inicio() {
         {/* ---------- Topo azul ---------- */}
         <View style={[styles.head, DOBRA_CLARA && styles.headCompact, { paddingTop: insets.top + (DOBRA_CLARA ? 8 : 14) }]}>
           <BlueBackdrop bar />
-          <View style={styles.headRow}>
-            <Logo size={17} light={!FAIXA_BRANCA} />
-            <View style={{ flex: 1 }} />
-            <ChatHistoryButton onPress={() => setHistory(true)} />
-            {app.logged ? (
-              <>
-                <IconButton icon="bell" label="Avisos" tone="bar" badge onPress={() => router.push('/avisos')} />
-                <Pressable accessibilityRole="button" accessibilityLabel="Abrir Área do cidadão" onPress={() => router.navigate('/perfil')}>
-                  <Avatar initials={PERSON.initials} size={38} light={!FAIXA_BRANCA} uri={app.photo} />
-                </Pressable>
-              </>
-            ) : (
-              <Button small kind={FAIXA_BRANCA ? 'primary' : 'onBrand'} icon="user" label="Entrar" href="/entrar" style={{ marginLeft: 4 }} />
-            )}
-          </View>
+          <TopBarRow />
           {app.logged && !DOBRA_CLARA ? (
             <T v="h1" c={bar.title} style={{ marginTop: 14 }} accessibilityRole="header">
               Olá, {PERSON.first}!
@@ -217,7 +202,6 @@ export default function Inicio() {
         </View>
       </Animated.View>
 
-      <ChatHistorySheet visible={history} onClose={() => setHistory(false)} />
     </View>
   );
 }

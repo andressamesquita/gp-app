@@ -20,7 +20,8 @@ import { CardView } from '@/components/chat-cards';
 import { Icon } from '@/components/Icon';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
-import { Avatar, Button, IconButton, Logo, T, tap } from '@/components/ui';
+import { TopBarRow } from '@/components/top-bar';
+import { Button, IconButton, T, tap } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import type { Action, Msg } from '@/state/assistant';
 import { useApp } from '@/state/app-state';
@@ -91,20 +92,12 @@ export default function Assistente() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: color.white }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       {/* ---------- Barra superior ---------- */}
       {empty ? (
+        // Mesma faixa da Início
         <View style={[styles.appbar, { paddingTop: insets.top + 8 }]}>
           <BlueBackdrop bar />
-          <Logo size={17} light={!FAIXA_BRANCA} />
-          <View style={{ flex: 1 }} />
-          {app.logged ? (
-            <>
-              <IconButton tone="bar" icon="chats" label="Conversas anteriores" onPress={() => router.push('/conversas')} />
-              <Pressable accessibilityRole="button" accessibilityLabel={`Seu perfil, ${PERSON.name}`} onPress={() => router.navigate('/perfil')} hitSlop={6} style={{ marginLeft: 4 }}>
-                <Avatar initials={PERSON.initials} size={38} light={!FAIXA_BRANCA} uri={app.photo} />
-              </Pressable>
-            </>
-          ) : (
-            <Button small kind={FAIXA_BRANCA ? 'primary' : 'onBrand'} icon="user" label="Entrar" href="/entrar" />
-          )}
+          <View style={{ flex: 1 }}>
+            <TopBarRow />
+          </View>
         </View>
       ) : (
         <View style={[styles.chatbar, { paddingTop: insets.top + 6 }]}>
@@ -383,7 +376,7 @@ function AssistantComposer({
 }
 
 const styles = StyleSheet.create({
-  appbar: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden' },
+  appbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden' },
   chatbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden' },
   robotHalo: { width: 54, height: 54, borderRadius: 27, backgroundColor: color.white, borderWidth: FAIXA_BRANCA ? 1 : 0, borderColor: color.line, alignItems: 'center', justifyContent: 'center' },
   side: { width: 96 },
