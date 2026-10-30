@@ -18,9 +18,9 @@ export default function MinhaConta() {
   const earned = useMemo(() => {
     const e = earnedMedals(app.scenario);
     if (app.prefs.zapAvisos) e.push('zap');
-    if (app.posts.length) e.push('publicou');
+    if (app.posts.some((x) => x.status === 'publicada')) e.push('publicou');
     return e;
-  }, [app.scenario, app.prefs.zapAvisos, app.posts.length]);
+  }, [app.scenario, app.prefs.zapAvisos, app.posts]);
   const next = MEDALS.find((m) => !earned.includes(m.id));
   const pct = earned.length / MEDALS.length;
 

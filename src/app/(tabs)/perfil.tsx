@@ -70,14 +70,13 @@ function AreaLogada() {
   const { scenario, cnhStarted } = app;
   const [sheet, setSheet] = useState<SheetName>(null);
   const [rolou, onScroll] = useRolou();
-  const [net, setNet] = useState<'WhatsApp' | 'Instagram'>('WhatsApp');
   const [filter, setFilter] = useState<F>('andamento');
   const earned = useMemo(() => {
     const e = earnedMedals(scenario);
     if (app.prefs.zapAvisos) e.push('zap');
-    if (app.posts.length) e.push('publicou');
+    if (app.posts.some((x) => x.status === 'publicada')) e.push('publicou');
     return e;
-  }, [scenario, app.prefs.zapAvisos, app.posts.length]);
+  }, [scenario, app.prefs.zapAvisos, app.posts]);
   const all = requests(scenario, cnhStarted);
   const andamento = all.filter((r) => !/conclu/i.test(r.status));
   const list = all.filter((r) => (filter === 'todas' ? true : filter === 'concluidas' ? /conclu/i.test(r.status) : !/conclu/i.test(r.status)));
@@ -92,7 +91,8 @@ function AreaLogada() {
   const abaAtiva = aba;
   const pct = earned.length / MEDALS.length;
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
-  const alreadyPublished = app.posts.length > 0;
+  // A conquista some da Área do cidadão depois de publicada ou guardada (lixeira); fica em Publicações
+  const conquistaResolvida = app.posts.some((x) => x.conquista === 'cnh');
 
   const SHORTCUTS: { label: string; text?: string; icon: IconName; k: number; badge?: string; onPress: () => void }[] = [
     { label: 'Meu perfil', icon: 'user', k: 0, onPress: () => router.push('/meu-perfil') },
@@ -188,7 +188,7 @@ function AreaLogada() {
           </View>
 
           {/* ---------- Compartilhe suas conquistas (após concluir) ---------- */}
-          {scenario === 'concluida' && (
+          {scenario === 'concluida' && !conquistaResolvida && (
             <Section flat title="Compartilhe suas conquistas">
               {/* Versão compacta do post da web: cabeçalho, texto, ilustração, faixa com o título e rodapé "Publicar em" */}
               <View style={styles.post}>
@@ -201,6 +201,17 @@ function AreaLogada() {
                         Conquista gerada pelo Gov.pi Cidadão
                       </T>
                     </View>
+                    {/* Lixeira: tira daqui sem apagar; fica em Publicações como não publicada */}
+                    <IconButton
+                      tone="plain"
+                      icon="trash"
+                      size={40}
+                      label="Remover da Área do cidadão. A conquista fica em Publicações, sem publicar"
+                      onPress={() => {
+                        app.guardarSemPublicar({ text: shareText, conquista: 'cnh' });
+                        app.showToast('Removida daqui. Ela fica em Publicações, como não publicada.');
+                      }}
+                    />
                   </View>
                   <T v="small">{shareText}</T>
                 </View>
@@ -219,35 +230,9 @@ function AreaLogada() {
                     Renovação da CNH · DETRAN
                   </T>
                 </View>
-                {alreadyPublished ? (
-                  <View style={[styles.postFoot, { backgroundColor: color.goodBg }]} accessibilityLiveRegion="polite">
-                    <Icon name="check" size={18} color={color.good} strokeWidth={2.4} />
-                    <T v="small" style={{ flex: 1 }}>
-                      Você está levando o Gov.pi a mais pessoas, obrigado por colaborar!
-                    </T>
-                  </View>
-                ) : (
-                  <View style={styles.postFoot}>
-                    <T v="small" c={color.muted} style={{ marginRight: 'auto' }}>
-                      Publicar em
-                    </T>
-                    {(['WhatsApp', 'Instagram'] as const).map((n) => (
-                      <Pressable
-                        key={n}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Publicar no ${n}`}
-                        onPress={() => {
-                          tap();
-                          setNet(n);
-                          setSheet('publicar');
-                        }}
-                        style={({ pressed }) => [styles.netBtn, pressed && { backgroundColor: color.bg }]}>
-                        {n === 'WhatsApp' ? <Icon name="whats" size={18} color={color.whats} /> : <InstaIcon />}
-                        <T v="label">{n}</T>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
+                <View style={styles.postFoot}>
+                  <Button label="Publicar" icon="share" small onPress={() => setSheet('publicar')} style={{ flex: 1 }} />
+                </View>
               </View>
             </Section>
           )}
@@ -493,26 +478,26 @@ function AreaLogada() {
         <MedalGrid medals={MEDALS} earned={earned} onPress={(m) => app.showToast(earned.includes(m.id) ? `${m.t}: conquistada!` : `Como ganhar: ${m.how}`)} />
       </Sheet>
 
-      <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title={`Publicar no ${net}?`} sub="Confira o que será publicado antes de confirmar.">
-        <View style={styles.postPreview}>
-          <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
-          <T v="small">{shareText}</T>
+      <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title="Onde você quer publicar?" sub="Escolha a rede social. A publicação não mostra CPF, protocolo nem endereço.">
+        <View>
+          {(['WhatsApp', 'Instagram'] as const).map((n, i) => (
+            <Row
+              key={n}
+              title={n}
+              sub={n === 'WhatsApp' ? 'Status ou conversa' : 'Feed ou stories'}
+              right={n === 'WhatsApp' ? <Icon name="whats" size={24} color={color.whats} /> : <InstaIcon size={24} />}
+              last={i === 1}
+              onPress={() => {
+                setSheet(null);
+                app.publish({ text: shareText, net: n, conquista: 'cnh' });
+                app.showToast('Você está levando o Gov.pi a mais pessoas, obrigado por colaborar!');
+              }}
+            />
+          ))}
         </View>
         <T v="caption" c={color.muted}>
-          {app.prefs.nomeConquistas ? 'A publicação aparecerá com o seu nome. Você pode mudar isso em Configurações.' : 'A publicação não mostra o seu nome.'}
+          {app.prefs.nomeConquistas ? 'A publicação aparece com o seu nome. Você pode mudar isso em Configurações.' : 'A publicação não mostra o seu nome.'}
         </T>
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <Button kind="secondary" label="Cancelar" onPress={() => setSheet(null)} style={{ flex: 1 }} />
-          <Button
-            label="Publicar"
-            onPress={() => {
-              setSheet(null);
-              app.publish({ text: shareText, net });
-              app.showToast(`Publicado no ${net} (simulação).`);
-            }}
-            style={{ flex: 1 }}
-          />
-        </View>
       </Sheet>
     </View>
   );
@@ -550,7 +535,6 @@ const styles = StyleSheet.create({
   postImg: { width: '100%', aspectRatio: 2.6, overflow: 'hidden', backgroundColor: color.brandTint },
   postCap: { paddingHorizontal: 14, paddingVertical: 10, gap: 2, backgroundColor: '#EEF4FB' },
   postFoot: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: 1, borderTopColor: color.divider },
-  netBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.md, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface },
   // Últimos acessos: ícone + nome em 2 linhas + quando
   rec: { width: 96, alignItems: 'center', gap: 6, paddingVertical: 4, paddingHorizontal: 4 },
   recIco: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
@@ -567,9 +551,9 @@ const styles = StyleSheet.create({
 });
 
 /** Ícone do Instagram (gradiente da marca), só para o botão de publicar. */
-function InstaIcon() {
+function InstaIcon({ size = 18 }: { size?: number }) {
   return (
-    <Svg width={18} height={18} viewBox="0 0 24 24">
+    <Svg width={size} height={size} viewBox="0 0 24 24">
       <Defs>
         <LinearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
           <Stop offset="0" stopColor="#FEDA75" />

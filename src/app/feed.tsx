@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
 import { FlatBlock, Page } from '@/components/page';
-import { Avatar, Empty, T } from '@/components/ui';
+import { Avatar, Empty, T, Tag } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color } from '@/theme/tokens';
@@ -19,12 +19,16 @@ export default function Feed() {
               <View style={{ flex: 1 }}>
                 <T v="smallStrong">{app.prefs.nomeConquistas ? PERSON.name : 'Cidadã do Piauí'}</T>
                 <T v="caption" c={color.muted}>
-                  {p.when} · publicado no {p.net}
+                  {p.when}
                 </T>
               </View>
-              <Icon name={p.net === 'WhatsApp' ? 'whats' : 'image'} size={20} color={p.net === 'WhatsApp' ? color.whats : '#A12A78'} />
+              {p.net ? <Icon name={p.net === 'WhatsApp' ? 'whats' : 'image'} size={20} color={p.net === 'WhatsApp' ? color.whats : '#A12A78'} /> : null}
             </View>
             <T v="body">{p.text}</T>
+            {/* Situação da publicação */}
+            <View style={{ flexDirection: 'row' }}>
+              {p.status === 'publicada' ? <Tag label={`Publicada no ${p.net}`} tone="good" /> : <Tag label="Não publicada" tone="muted" />}
+            </View>
           </FlatBlock>
         ))
       ) : (

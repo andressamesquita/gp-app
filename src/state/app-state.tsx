@@ -8,7 +8,8 @@ type Prefs = {
   prazos: boolean; dadosEstado: boolean; canais: boolean; compartilhar: boolean; notifApp: boolean; notifWhats: boolean; notifEmail: boolean;
   nomeConquistas: boolean; zapAvisos: boolean; historico: boolean; biometria: boolean; contraste: boolean; reduzirAnim: boolean; libras: boolean;
 };
-export type Post = { id: string; text: string; net: 'WhatsApp' | 'Instagram'; when: string };
+/** Publicação de uma conquista: publicada numa rede ou guardada sem publicar (tirada da Área do cidadão pela lixeira). */
+export type Post = { id: string; text: string; net?: 'WhatsApp' | 'Instagram'; when: string; status: 'publicada' | 'nao_publicada'; conquista?: string };
 
 type AppState = {
   logged: boolean;
@@ -28,7 +29,9 @@ type AppState = {
   textScale: number;
   setTextScale: (n: number) => void;
   posts: Post[];
-  publish: (p: Omit<Post, 'id' | 'when'>) => void;
+  publish: (p: Omit<Post, 'id' | 'when' | 'status'>) => void;
+  /** Tira a conquista da Área do cidadão e guarda em Publicações como não publicada */
+  guardarSemPublicar: (p: { text: string; conquista: string }) => void;
   /* Conversa */
   messages: Msg[];
   /** Texto de status do carregamento atual (null quando o assistente não está pensando). */
@@ -170,7 +173,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       textScale,
       setTextScale,
       posts,
-      publish: (p) => setPosts((list) => [{ ...p, id: mid(), when: 'Agora' }, ...list]),
+      publish: (p) =>
+        setPosts((list) => [{ ...p, id: mid(), when: 'Agora', status: 'publicada' as const }, ...list.filter((x) => !(p.conquista && x.conquista === p.conquista && x.status === 'nao_publicada'))]),
+      guardarSemPublicar: (p) => setPosts((list) => [{ ...p, id: mid(), when: 'Agora', status: 'nao_publicada' as const }, ...list]),
       messages,
       thinking,
       thinkStep,
