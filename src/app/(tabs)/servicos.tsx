@@ -123,7 +123,7 @@ export default function Servicos() {
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
-              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : 'Mais procurados'}
+              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : 'Mais procurados no Gov.pi'}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
               {shown.length < list.length ? `${shown.length} de ${list.length} serviços` : `${list.length} ${list.length === 1 ? 'serviço' : 'serviços'}`}
