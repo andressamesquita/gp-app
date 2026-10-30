@@ -17,7 +17,7 @@ import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES } from '@/data/catalog';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, PERFIL_RESUMO, recentes, recomendados, requests, type Scenario } from '@/data/mock';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, recentes, recomendados, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius, FAIXA_BRANCA, bar, BAR_SHADOW } from '@/theme/tokens';
 
@@ -317,9 +317,6 @@ function AreaLogada() {
                         <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
                       ))}
                     </ScrollView>
-                    <T v="small" c={color.muted}>
-                      Com base no seu perfil: {PERFIL_RESUMO}.
-                    </T>
                   </>
                 ) : (
                   <Empty
