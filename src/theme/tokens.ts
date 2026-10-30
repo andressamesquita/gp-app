@@ -95,7 +95,19 @@ export const shadow = {
  * FAIXA_BRANCA = true: branca como o cabeçalho da web v23, logo colorida, título no tom escuro
  * dos títulos das dobras (#14233A) e ícones em #192D48. false = azul com ondas (antes).
  */
-export const FAIXA_BRANCA: boolean = true;
+/**
+ * Teste das opções de faixa com a logo colorida (uma por vez):
+ *   1 = faixa branca compacta + primeira dobra azul-clara na Início (saudação e campo)
+ *   2 = (próximo teste) faixa transparente que fica branca ao rolar
+ *   3 = (próximo teste) faixa branca com sombra ao rolar
+ *   4 = (próximo teste) logo colorida num selo branco dentro da faixa azul
+ *   5 = faixa azul com a logo branca (último caso)
+ *   0 = faixa branca simples (versão anterior)
+ */
+export const ESTILO_FAIXA = 1 as 0 | 1 | 2 | 3 | 4 | 5;
+export const FAIXA_BRANCA: boolean = ESTILO_FAIXA !== 5 && ESTILO_FAIXA !== 4;
+/** Fundo da primeira dobra clara (mesmo --hero da web) */
+export const HERO_CLARO = '#E3EDFB';
 export const bar = FAIXA_BRANCA
   ? { bg: '#FFFFFF', fg: '#192D48', title: '#14233A', sub: '#44546B', line: '#E3E8EF', pressed: '#E8EEF6' }
   : { bg: '#034EA2', fg: '#FFFFFF', title: '#FFFFFF', sub: 'rgba(255,255,255,0.85)', line: 'transparent', pressed: 'rgba(255,255,255,0.16)' };

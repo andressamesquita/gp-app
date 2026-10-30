@@ -7,7 +7,7 @@ import { ServiceCardCompact } from '@/components/blocks';
 import { AskField } from '@/components/ask-field';
 import { PrismaPromo, ZapPromo } from '@/components/promo-cards';
 import { ChatHistoryButton, ChatHistorySheet } from '@/components/chat-history';
-import { BlueBackdrop } from '@/components/hero';
+import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
 import { ask } from '@/components/nav';
 import { useStatusBar } from '@/components/statusbar';
@@ -15,7 +15,7 @@ import { Avatar, Button, IconButton, LinkText, Logo, T, tap } from '@/components
 import { SERVICES } from '@/data/catalog';
 import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, radius, FAIXA_BRANCA, bar } from '@/theme/tokens';
+import { color, font, radius, FAIXA_BRANCA, bar, ESTILO_FAIXA } from '@/theme/tokens';
 
 /* ---------------- Banners ---------------- */
 type Banner = { id: string; img: ImageSourcePropType; label: string; onPress: () => void };
@@ -33,6 +33,9 @@ const MAIS_ACESSADOS = [
   'Boletim escolar',
 ];
 
+/** Opção 1 (e 2) da faixa: primeira dobra azul-clara abaixo da faixa branca */
+const DOBRA_CLARA = ESTILO_FAIXA === 1 || ESTILO_FAIXA === 2;
+
 export default function Inicio() {
   const app = useApp();
   const insets = useSafeAreaInsets();
@@ -41,7 +44,9 @@ export default function Inicio() {
   const [searchY, setSearchY] = useState(400);
   const [stuck, setStuck] = useState(false);
   const [history, setHistory] = useState(false);
-  const stickAt = Math.max(1, searchY - 28 - insets.top - 8); // 28 = margem negativa do campo sobre o topo azul
+  const [heroY, setHeroY] = useState(0);
+  // Com a dobra clara, o campo fica dentro dela (sem margem negativa)
+  const stickAt = DOBRA_CLARA ? Math.max(1, heroY + searchY - insets.top - 8) : Math.max(1, searchY - 28 - insets.top - 8); // 28 = margem negativa do campo sobre o topo azul
 
   const banners: Banner[] = [
     {
@@ -77,7 +82,7 @@ export default function Inicio() {
           listener: (e: { nativeEvent: { contentOffset: { y: number } } }) => setStuck(e.nativeEvent.contentOffset.y > stickAt),
         })}>
         {/* ---------- Topo azul ---------- */}
-        <View style={[styles.head, { paddingTop: insets.top + 14 }]}>
+        <View style={[styles.head, DOBRA_CLARA && styles.headCompact, { paddingTop: insets.top + (DOBRA_CLARA ? 8 : 14) }]}>
           <BlueBackdrop bar />
           <View style={styles.headRow}>
             <Logo size={17} light={!FAIXA_BRANCA} />
@@ -94,14 +99,47 @@ export default function Inicio() {
               <Button small kind={FAIXA_BRANCA ? 'primary' : 'onBrand'} icon="user" label="Entrar" href="/entrar" style={{ marginLeft: 4 }} />
             )}
           </View>
-          {app.logged ? (
+          {app.logged && !DOBRA_CLARA ? (
             <T v="h1" c={bar.title} style={{ marginTop: 14 }} accessibilityRole="header">
               Olá, {PERSON.first}!
             </T>
           ) : null}
         </View>
 
-        {/* ---------- Campo que leva ao Assistente ---------- */}
+        {DOBRA_CLARA ? (
+          // Opção 1: primeira dobra azul-clara (como o --hero da web) com saudação, campo e sugestões
+          <View style={styles.hero} onLayout={(e) => setHeroY(e.nativeEvent.layout.y)}>
+            <LightBackdrop />
+            {app.logged ? (
+              <T v="h1" c={color.ink} accessibilityRole="header" style={{ paddingHorizontal: 16 }}>
+                Olá, {PERSON.first}!
+              </T>
+            ) : null}
+            <View onLayout={(e) => setSearchY(e.nativeEvent.layout.y)} style={{ paddingHorizontal: 16 }}>
+              <AskField />
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingTop: 0 }}>
+            {SUGESTOES.map((t) => (
+              <Pressable
+                key={t}
+                accessibilityRole="button"
+                accessibilityLabel={`Perguntar ao Assistente: ${t}`}
+                onPress={() => {
+                  tap();
+                  ask(t);
+                }}
+                style={({ pressed }) => [styles.suggest, pressed && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
+                <T v="smallStrong">
+                  {t}
+                </T>
+              </Pressable>
+            ))}
+            </ScrollView>
+          </View>
+        ) : (
+          <>
+          {/* ---------- Campo que leva ao Assistente ---------- */}
+
         <View onLayout={(e) => setSearchY(e.nativeEvent.layout.y)}>
           <SearchField />
         </View>
@@ -123,6 +161,9 @@ export default function Inicio() {
             </Pressable>
           ))}
         </ScrollView>
+
+          </>
+        )}
 
         {/* ---------- Destaques (carrossel de banners) ---------- */}
         <SectionHead title="Destaques" />
@@ -283,6 +324,8 @@ function Carousel({ items }: { items: Banner[] }) {
 
 const styles = StyleSheet.create({
   head: { backgroundColor: bar.bg, paddingHorizontal: 20, paddingBottom: 46, overflow: 'hidden' },
+  headCompact: { paddingHorizontal: 16, paddingBottom: 10 },
+  hero: { paddingTop: 20, paddingBottom: 18, gap: 14, overflow: 'hidden' },
   headRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
   searchPos: { marginTop: -28, marginHorizontal: 16 },
   stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: bar.line, paddingBottom: 10, zIndex: 10 },

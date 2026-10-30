@@ -4,7 +4,7 @@ import { Animated, Pressable, StyleSheet, TextInput, View, type StyleProp, type 
 import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { PROMPT_EXAMPLES } from '@/data/mock';
-import { FAIXA_BRANCA, bar, color, font, radius, shadow } from '@/theme/tokens';
+import { FAIXA_BRANCA, HERO_CLARO, bar, color, font, radius, shadow } from '@/theme/tokens';
 import { Icon } from './Icon';
 import { T, tap } from './ui';
 
@@ -42,6 +42,20 @@ export function BlueBackdrop({ style, tone = 'blue', full, bar: isBar }: { style
             strokeWidth={1.2}
             fill="none"
           />
+        ))}
+      </Svg>
+    </View>
+  );
+}
+
+/** Fundo da primeira dobra clara (opção 1 da faixa): azul-claro da web com ondas bem suaves. */
+export function LightBackdrop({ style }: { style?: StyleProp<ViewStyle> }) {
+  const waves = [300, 270, 240, 210, 180, 150];
+  return (
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: HERO_CLARO }, style]} pointerEvents="none">
+      <Svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 300" style={StyleSheet.absoluteFill}>
+        {waves.map((y) => (
+          <Path key={y} d={`M-20 ${y - 40}C80 ${y - 100} 150 ${y - 10} 250 ${y - 70}S400 ${y - 150} 540 ${y - 90}`} stroke={color.brand} strokeOpacity={0.07} strokeWidth={1.2} fill="none" />
         ))}
       </Svg>
     </View>
