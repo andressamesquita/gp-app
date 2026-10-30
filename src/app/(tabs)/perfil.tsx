@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AskField } from '@/components/ask-field';
 import { ForMeCard, MedalGrid, RequestCard, ServiceCardCompact } from '@/components/blocks';
-import { BlueBackdrop } from '@/components/hero';
+import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
@@ -86,10 +86,10 @@ function AreaLogada() {
   // Últimos acessos: some numa conta nova; "Limpar" esvazia a lista neste aparelho
   const [recLimpos, setRecLimpos] = useState(false);
   const recs = recLimpos ? [] : recentes(scenario).map((r) => ({ ...r, s: SERVICES.find((x) => x.t === r.t) })).filter((r) => r.s);
-  const [aba, setAba] = useState<'recentes' | 'recomendados' | 'favoritos'>('recentes');
+  const [aba, setAba] = useState<'recomendados' | 'favoritos'>('recomendados');
   // Recomendados pelo perfil; respeita “Usar meu histórico para sugerir serviços” em Configurações
   const recomend = app.prefs.historico ? recomendados(scenario).map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x) : [];
-  const abaAtiva = !recs.length && aba === 'recentes' ? 'recomendados' : aba;
+  const abaAtiva = aba;
   const pct = earned.length / MEDALS.length;
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
   const alreadyPublished = app.posts.length > 0;
@@ -145,7 +145,9 @@ function AreaLogada() {
 
           {/* ---------- Bem-vinda + campo de conversa (logo após o Zap; some com MOSTRAR_BEM_VINDA = false) ---------- */}
           {MOSTRAR_BEM_VINDA && (
-          <View style={[styles.welcome, !MOSTRAR_ZAP && { paddingTop: 4 }]}>
+          <View style={[styles.welcome, !MOSTRAR_ZAP && styles.welcomeClara]}>
+            {/* Mesmo fundo da primeira dobra da Início: azul-claro com ondas suaves */}
+            {!MOSTRAR_ZAP && <LightBackdrop />}
             <T v="h2" accessibilityRole="header">
               Bem-vinda, {PERSON.name}!
             </T>
@@ -297,48 +299,17 @@ function AreaLogada() {
             )}
           </Section>
 
-          {/* ---------- Seus serviços: Recentes | Favoritos (MOSTRAR_SEUS_SERVICOS) ---------- */}
+          {/* ---------- Seus serviços: Recomendados | Favoritos (MOSTRAR_SEUS_SERVICOS) ---------- */}
           {MOSTRAR_SEUS_SERVICOS ? (
             <Section
               flat
               title="Seus serviços"
-              action={abaAtiva === 'recentes' ? { label: 'Limpar', onPress: () => { setRecLimpos(true); app.showToast('Últimos acessos apagados deste aparelho.'); } } : { label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
+              action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
               <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
-                {recs.length ? <Chip label="Recentes" on={abaAtiva === 'recentes'} onPress={() => setAba('recentes')} /> : null}
                 <Chip label="Recomendados" on={abaAtiva === 'recomendados'} onPress={() => setAba('recomendados')} />
                 <Chip label="Favoritos" count={favs.length || undefined} on={abaAtiva === 'favoritos'} onPress={() => setAba('favoritos')} />
               </View>
-              {abaAtiva === 'recentes' && RECENTES_LAYOUT === 'paginas' ? (
-                <RecentesPaginados itens={recs.map((r) => ({ s: r.s!, quando: r.quando }))} onOpen={(s) => ask(s.q)} />
-              ) : abaAtiva === 'recentes' ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}>
-                  {recs.map(({ s, quando }) => {
-                    const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s!.c));
-                    const k = kind[ci % 4];
-                    return (
-                      <Pressable
-                        key={s!.t}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${s!.t}, ${s!.o}, acessado ${quando.toLowerCase()}`}
-                        onPress={() => {
-                          tap();
-                          ask(s!.q);
-                        }}
-                        style={({ pressed }) => [styles.rec, pressed && { opacity: 0.7 }]}>
-                        <View style={[styles.recIco, { backgroundColor: k.bg }]}>
-                          <Icon name={(CATEGORIES[ci]?.icon ?? 'grid') as IconName} size={22} color={k.fg} />
-                        </View>
-                        <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16 }}>
-                          {s!.t}
-                        </T>
-                        <T v="caption" c={color.muted}>
-                          {quando}
-                        </T>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              ) : abaAtiva === 'recomendados' ? (
+              {abaAtiva === 'recomendados' ? (
                 recomend.length ? (
                   <>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
@@ -382,6 +353,43 @@ function AreaLogada() {
             )}
           </Section>
           )}
+
+          {/* ---------- Acessados recentemente (some numa conta nova ou depois de "Limpar") ---------- */}
+          {recs.length ? (
+            <Section flat title="Acessados recentemente" action={{ label: 'Limpar', onPress: () => { setRecLimpos(true); app.showToast('Últimos acessos apagados deste aparelho.'); } }}>
+              {RECENTES_LAYOUT === 'paginas' ? (
+                <RecentesPaginados itens={recs.map((r) => ({ s: r.s!, quando: r.quando }))} onOpen={(s) => ask(s.q)} />
+              ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}>
+                  {recs.map(({ s, quando }) => {
+                    const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s!.c));
+                    const k = kind[ci % 4];
+                    return (
+                      <Pressable
+                        key={s!.t}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${s!.t}, ${s!.o}, acessado ${quando.toLowerCase()}`}
+                        onPress={() => {
+                          tap();
+                          ask(s!.q);
+                        }}
+                        style={({ pressed }) => [styles.rec, pressed && { opacity: 0.7 }]}>
+                        <View style={[styles.recIco, { backgroundColor: k.bg }]}>
+                          <Icon name={(CATEGORIES[ci]?.icon ?? 'grid') as IconName} size={22} color={k.fg} />
+                        </View>
+                        <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16 }}>
+                          {s!.t}
+                        </T>
+                        <T v="caption" c={color.muted}>
+                          {quando}
+                        </T>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              )}
+            </Section>
+          ) : null}
 
           {/* ---------- Só para o protótipo ---------- */}
           <View style={styles.proto}>
@@ -535,6 +543,7 @@ const styles = StyleSheet.create({
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
   // Sem card: saudação e campo direto no fundo, entre divisórias claras (padrão das seções)
+  welcomeClara: { marginTop: -16, paddingTop: 20, overflow: 'hidden' },
   welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 20, paddingBottom: 20, gap: 12, marginBottom: 16, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
