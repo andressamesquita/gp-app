@@ -157,10 +157,19 @@ export function WalletCard({ doc, compact }: { doc: WalletDoc; compact?: boolean
 /* =========================================================
    Medalhas (círculo, quadrado e hexágono, como na web)
    ========================================================= */
+/** Cores das ondas da logo do Gov.pi, na ordem de Medal.k (0 azul, 1 verde, 2 vermelho, 3 amarelo) */
+const LOGO_ONDAS = [
+  { cor: '#034EA2', icone: '#FFFFFF' },
+  { cor: '#007932', icone: '#FFFFFF' },
+  { cor: '#EF4123', icone: '#FFFFFF' },
+  { cor: '#FDB913', icone: '#192D48' }, // ícone escuro: branco sobre amarelo fica sem contraste
+] as const;
+
 export function MedalBadge({ m, earned, size = 58 }: { m: Medal; earned: boolean; size?: number }) {
-  const k = kind[m.k];
-  const fill = earned ? k.bg : color.surface2;
-  const stroke = earned ? k.ring : color.lineStrong;
+  // Conquistada: cor cheia das ondas da logo do Gov.pi (azul, verde, vermelho, amarelo)
+  const k = LOGO_ONDAS[m.k];
+  const fill = earned ? k.cor : color.surface2;
+  const stroke = earned ? k.cor : color.lineStrong;
   const dash = earned ? undefined : '4 4';
   const s = size;
   return (
@@ -180,7 +189,7 @@ export function MedalBadge({ m, earned, size = 58 }: { m: Medal; earned: boolean
         )}
       </Svg>
       <View style={{ zIndex: 1 }}>
-        <Icon name={earned ? m.icon : 'lock'} size={s * 0.4} color={earned ? k.fg : color.muted} />
+        <Icon name={earned ? m.icon : 'lock'} size={s * 0.4} color={earned ? k.icone : color.muted} strokeWidth={earned ? 2.2 : undefined} />
       </View>
     </View>
   );
