@@ -252,11 +252,11 @@ export function moments(s: Scenario, cnhStarted = false): Moment[] {
 /* ---------- Avisos ---------- */
 export type Aviso = {
   id: string;
-  group: 'Hoje' | 'Esta semana';
+  group: 'Hoje' | 'Esta semana' | 'Indicados para você';
   tags: string[];
   title: string;
   body: string;
-  cat: 'pendente' | 'andamento' | 'info';
+  cat: 'pendente' | 'andamento' | 'info' | 'recomendado';
   action?: { label: string; to: string; q?: string };
   why?: boolean;
 };
@@ -320,4 +320,18 @@ export const PERFIL_RESUMO = 'condutora, doadora de sangue e servidora estadual'
 export function recomendados(s: Scenario): string[] {
   const cnh = s === 'concluida' ? 'Consultar a minha CNH' : 'Renovar CNH';
   return [cnh, 'Agendar doação de sangue', 'Consultar contracheque', 'Realizar prova de vida', 'Boletim escolar', 'Resgatar créditos da Nota Piauiense'];
+}
+
+/* ---------- Para mim > Recomendados: ações e serviços indicados pelo perfil ---------- */
+export function avisosRecomendados(s: Scenario): Aviso[] {
+  if (s === 'novo') return [];
+  const g = 'Indicados para você' as const;
+  // A renovação da CNH já aparece em Pendentes; aqui entra só o que é indicação
+  return [
+    { id: 'r-pontos', group: g, tags: ['Condutora'], title: 'Acompanhe a pontuação da sua CNH', body: 'Veja pontos e infrações sempre que precisar.', cat: 'recomendado', action: { label: 'Consultar', to: '/', q: 'Quero consultar a minha CNH' } },
+    { id: 'r-doacao', group: g, tags: ['Doadora de sangue'], title: 'Você já pode doar sangue de novo', body: 'Sua última doação foi em 12/08. Agende no Hemopi.', cat: 'recomendado', action: { label: 'Agendar', to: '/', q: 'Quero agendar doação de sangue' } },
+    { id: 'r-prova', group: g, tags: ['Servidora estadual'], title: 'Faça a prova de vida', body: 'Pelo celular, em poucos minutos, sem ir a um posto.', cat: 'recomendado', action: { label: 'Fazer agora', to: '/', q: 'Quero realizar a prova de vida' } },
+    { id: 'r-contracheque', group: g, tags: ['Servidora estadual'], title: 'Contracheque de outubro disponível', body: 'Veja ou baixe o seu contracheque.', cat: 'recomendado', action: { label: 'Ver contracheque', to: '/', q: 'Quero consultar meu contracheque' } },
+    { id: 'r-zap', group: g, tags: ['Sugestão'], title: 'Receba seus avisos pelo WhatsApp', body: 'Ative o Zap do Cidadão para não perder prazos.', cat: 'recomendado', action: { label: 'Ativar', to: '/configuracoes' } },
+  ];
 }

@@ -3,45 +3,52 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ask } from '@/components/nav';
-import { Page } from '@/components/page';
-import { Button, Chip, Empty, IconButton, LinkText, T, Tag } from '@/components/ui';
-import { avisos } from '@/data/mock';
+import { FlatBlock, Page } from '@/components/page';
+import { Button, Chip, Empty, LinkText, T, Tag } from '@/components/ui';
+import { avisos, avisosRecomendados } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, radius } from '@/theme/tokens';
+import { color } from '@/theme/tokens';
 
-type F = 'todos' | 'pendente' | 'andamento';
+type F = 'todos' | 'pendente' | 'recomendado';
 
-export default function Avisos() {
+/**
+ * Para mim: o que precisa da pessoa e o que é indicado para ela.
+ * O que está em andamento fica em Acompanhamento (Área do cidadão), não aqui.
+ * Padrão sem cards: blocos separados por divisórias.
+ */
+export default function ParaMim() {
   const { scenario, cnhStarted } = useApp();
-  const all = avisos(scenario, cnhStarted);
+  const all = [...avisos(scenario, cnhStarted).filter((a) => a.cat !== 'andamento'), ...avisosRecomendados(scenario)];
   const [f, setF] = useState<F>('todos');
   const list = all.filter((a) => f === 'todos' || a.cat === f);
   const groups = [...new Set(list.map((a) => a.group))];
 
   return (
-    <Page title="Avisos" right={<IconButton tone="bar" icon="sliders" label="Escolher quais avisos receber" onPress={() => router.push('/perfil')} />}>
+    <Page title="Para mim" flat>
       {all.length === 0 ? (
-        <Empty icon="bell" title="Nenhum aviso por enquanto" text="Avisamos aqui quando houver um prazo, uma novidade ou uma etapa da sua solicitação." action={{ label: 'Escolher quais avisos receber', href: '/perfil' }} />
+        <View style={{ paddingTop: 16 }}>
+          <Empty icon="bell" title="Nada por aqui ainda" text="Avisamos aqui quando houver um prazo, uma novidade ou um serviço indicado para você." action={{ label: 'Escolher quais avisos receber', href: '/configuracoes' }} />
+        </View>
       ) : (
         <>
-          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap', paddingVertical: 16 }} accessibilityRole="tablist">
             <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
             <Chip label="Pendentes" on={f === 'pendente'} onPress={() => setF('pendente')} />
-            <Chip label="Em andamento" on={f === 'andamento'} onPress={() => setF('andamento')} />
+            <Chip label="Recomendados" on={f === 'recomendado'} onPress={() => setF('recomendado')} />
           </View>
           {groups.map((g) => (
-            <View key={g} style={{ gap: 10 }}>
-              <T v="eyebrow" c={color.muted}>
+            <FlatBlock key={g} style={{ gap: 0, paddingBottom: 4 }}>
+              <T v="eyebrow" c={color.muted} style={{ marginBottom: 4 }}>
                 {g}
               </T>
               {list
                 .filter((a) => a.group === g)
-                .map((a) => (
-                  <View key={a.id} style={[styles.card, a.tags.includes('Precisa de você') && { borderColor: color.waveYellow, borderWidth: 1.5 }]}>
+                .map((a, i, arr) => (
+                  <View key={a.id} style={[styles.item, i < arr.length - 1 && styles.itemLine]}>
                     {a.tags.length > 0 && (
                       <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
                         {a.tags.map((t) => (
-                          <Tag key={t} label={t} tone={t === 'Nova' ? 'dark' : t === 'Pelo WhatsApp' ? 'good' : 'warn'} />
+                          <Tag key={t} label={t} tone={t === 'Nova' ? 'dark' : t === 'Pelo WhatsApp' ? 'good' : a.cat === 'recomendado' ? 'brand' : 'warn'} />
                         ))}
                       </View>
                     )}
@@ -49,22 +56,26 @@ export default function Avisos() {
                     <T v="small" c={color.muted}>
                       {a.body}
                     </T>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 2 }}>
-                      {a.action && (
-                        <Button
-                          small
-                          kind={a.cat === 'pendente' ? 'primary' : 'secondary'}
-                          label={a.action.label}
-                          onPress={() => (a.action!.q ? ask(a.action!.q) : router.push(a.action!.to as Href))}
-                        />
-                      )}
-                      {a.why && <LinkText label="Por que recebi isso?" href="/por-que" />}
-                    </View>
+                    {a.action || a.why ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 4 }}>
+                        {a.action && (
+                          <Button
+                            small
+                            kind={a.cat === 'pendente' ? 'primary' : 'secondary'}
+                            label={a.action.label}
+                            onPress={() => (a.action!.q ? ask(a.action!.q) : router.push(a.action!.to as Href))}
+                          />
+                        )}
+                        {a.why && <LinkText label="Por que recebi isso?" href="/por-que" />}
+                      </View>
+                    ) : null}
                   </View>
                 ))}
-            </View>
+            </FlatBlock>
           ))}
-          <LinkText label="Escolher quais avisos receber e por onde" href="/perfil" icon="right" />
+          <FlatBlock>
+            <LinkText label="Escolher quais avisos receber e por onde" href="/configuracoes" icon="right" />
+          </FlatBlock>
         </>
       )}
     </Page>
@@ -72,5 +83,6 @@ export default function Avisos() {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, padding: 16, gap: 6 },
+  item: { gap: 6, paddingVertical: 16 },
+  itemLine: { borderBottomWidth: 1, borderBottomColor: color.divider },
 });
