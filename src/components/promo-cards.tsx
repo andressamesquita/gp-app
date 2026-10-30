@@ -129,13 +129,13 @@ function PrismaArt() {
 export function ZapPromo({ onPress }: { onPress: () => void }) {
   return (
     <PromoCard
-      colors={['#25B864', '#0E8A43', '#065C2B']}
+      colors={['#25B864', '#13994A', '#007932']}
       kicker="Zap do Cidadão"
       kickerIcon="whats"
       title={'Resolva pelo\nWhatsApp'}
       cta="Iniciar conversa"
       ctaIcon="ext"
-      ctaInk="#0E7A3B"
+      ctaInk="#007932"
       a11y="Zap do Cidadão. Resolva pelo WhatsApp, sem sair de casa. Iniciar conversa"
       onPress={onPress}
       art={<ZapArt />}
@@ -175,7 +175,7 @@ function AvisosArt() {
 export function ZapAvisosPromo({ onPress, ativo }: { onPress: () => void; ativo?: boolean }) {
   return (
     <PromoCard
-      colors={['#2F7BE0', '#034EA2', '#012F66']}
+      colors={['#2F7BE0', '#1A63C2', '#034EA2']}
       kicker="Zap do Cidadão"
       kickerIcon="whats"
       title={'Seus avisos no\nWhatsApp'}
@@ -192,7 +192,7 @@ export function ZapAvisosPromo({ onPress, ativo }: { onPress: () => void; ativo?
 export function PrismaPromo({ onPress }: { onPress: () => void }) {
   return (
     <PromoCard
-      colors={['#2F7BE0', '#034EA2', '#012F66']}
+      colors={['#2F7BE0', '#1A63C2', '#034EA2']}
       kicker="Prisma Lab"
       kickerIcon="prism"
       title={'Contribua com\no Gov.pi'}
