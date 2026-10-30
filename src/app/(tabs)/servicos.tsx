@@ -7,12 +7,13 @@ import { CategoryIcon } from '@/components/category-icon';
 import { ServiceCard, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
 import { TabTop, useRolou } from '@/components/page';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Button, LinkText, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
 import { norm } from '@/state/assistant';
-import { BAR_SHADOW, color, font, radius } from '@/theme/tokens';
+import { BAR_SHADOW, bar, color, font, radius } from '@/theme/tokens';
 
 /* Atalhos rápidos, como na web: Detran, Empresas, Servidor.
    Os três são CATEGORIAS (Detran = Transporte e Veículos), então só um fica ativo por vez
@@ -33,7 +34,9 @@ export default function Servicos() {
   const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
   const [all, setAll] = useState(false);
   const open = useServiceOpen();
-  const [rolou, onScroll] = useRolou();
+  const insets = useSafeAreaInsets();
+  // Sombra quando o título já saiu e a busca está grudada no topo
+  const [rolou, onScroll] = useRolou(56);
 
   const list = useMemo(() => {
     const n = norm(q.trim());
@@ -56,58 +59,67 @@ export default function Servicos() {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.surface }}>
-      {/* Faixa azul, busca e filtros ficam fixos; só a lista rola */}
-      <View style={[{ zIndex: 5 }, rolou && BAR_SHADOW]}>
-        {/* Campo do Assistente dentro da faixa azul, fixo ao rolar (como a barra do Início) */}
-        <TabTop title="Serviços para você">
-          <AskField value={q} onChangeText={setQ} flat search />
-        </TabTop>
+      {/* Espaço da barra de status: fica parado em cima de tudo */}
+      <View style={{ height: insets.top, backgroundColor: bar.bg, zIndex: 6 }} />
+      {/* Ao rolar, o título sobe e fica fixo a partir do campo de busca (busca + filtros) */}
+      <ScrollView
+        style={{ flex: 1, backgroundColor: '#F5F8FC' }}
+        stickyHeaderIndices={[1]}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingBottom: 44 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <TabTop title="Serviços para você" noInset />
 
-        {/* Filtros em chips, como na web */}
-        <View style={styles.cats}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
-            <FilterChip label={catLabel} on={!!cat && !quickCat} caret onPress={() => setSheet('cat')} />
-            <FilterChip
-              label={orgLabel}
-              on={otherOrgs.length > 0}
-              caret
-              onPress={() => {
-                setDraft(orgsSel);
-                setOrgQ('');
-                setSheet('org');
-              }}
-            />
-            {QUICK.map((x) => {
-              const on = x.cat ? cat === x.cat : orgsSel.includes(x.org as string);
-              return (
-                <FilterChip
-                  key={x.label}
-                  label={x.label}
-                  on={on}
-                  onPress={() => {
-                    if (x.cat) setCat(on ? null : x.cat);
-                    // Regra: no máximo 1 categoria e 1 órgão ao mesmo tempo (atalhos trocam a escolha anterior)
-                    if (x.org) setOrgsSel(on ? [] : [x.org as string]);
-                  }}
-                />
-              );
-            })}
-            {any ? (
+        <View style={[{ backgroundColor: bar.bg, zIndex: 5 }, rolou && BAR_SHADOW]}>
+          <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 12, backgroundColor: bar.bg }}>
+            <AskField value={q} onChangeText={setQ} flat search />
+          </View>
+          {/* Filtros em chips, como na web */}
+          <View style={styles.cats}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
+              <FilterChip label={catLabel} on={!!cat && !quickCat} caret onPress={() => setSheet('cat')} />
               <FilterChip
-                label="Limpar filtros"
-                icon="close"
+                label={orgLabel}
+                on={otherOrgs.length > 0}
+                caret
                 onPress={() => {
-                  setCat(null);
-                  setOrgsSel([]);
+                  setDraft(orgsSel);
+                  setOrgQ('');
+                  setSheet('org');
                 }}
               />
-            ) : null}
-          </ScrollView>
+              {QUICK.map((x) => {
+                const on = x.cat ? cat === x.cat : orgsSel.includes(x.org as string);
+                return (
+                  <FilterChip
+                    key={x.label}
+                    label={x.label}
+                    on={on}
+                    onPress={() => {
+                      if (x.cat) setCat(on ? null : x.cat);
+                      // Regra: no máximo 1 categoria e 1 órgão ao mesmo tempo (atalhos trocam a escolha anterior)
+                      if (x.org) setOrgsSel(on ? [] : [x.org as string]);
+                    }}
+                  />
+                );
+              })}
+              {any ? (
+                <FilterChip
+                  label="Limpar filtros"
+                  icon="close"
+                  onPress={() => {
+                    setCat(null);
+                    setOrgsSel([]);
+                  }}
+                />
+              ) : null}
+            </ScrollView>
+          </View>
+
         </View>
 
-      </View>
-
-      <ScrollView style={{ flex: 1, backgroundColor: '#F5F8FC' }} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: 44 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">

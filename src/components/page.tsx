@@ -51,11 +51,12 @@ export function FlatBlock({ children, style, first }: { children: ReactNode; sty
 }
 
 /** Topo das abas: faixa azul compacta (mesma altura da Área do cidadão), título e um apoio opcional (ex.: campo do Assistente). */
-export function TabTop({ title, sub, children, right, left, elevated }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; /** antes do título (ex.: voltar) */ left?: ReactNode; /** sombra: o conteúdo está rolando por baixo */ elevated?: boolean }) {
+export function TabTop({ title, sub, children, right, left, elevated, noInset }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; /** antes do título (ex.: voltar) */ left?: ReactNode; /** sombra: o conteúdo está rolando por baixo */ elevated?: boolean; /** sem o espaço da barra de status (quando a tela já reserva esse espaço) */ noInset?: boolean }) {
+  const semLinha = noInset; // título que rola junto com a busca: sem a linha embaixo
   const insets = useSafeAreaInsets();
   return (
-    <View style={[{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, zIndex: 5 }, elevated && BAR_SHADOW]}>
-      <BlueBackdrop bar />
+    <View style={[{ paddingTop: (noInset ? 0 : insets.top) + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : noInset ? 0 : 10, gap: 8, zIndex: 5 }, elevated && BAR_SHADOW]}>
+      <BlueBackdrop bar style={semLinha ? { borderBottomWidth: 0 } : undefined} />
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: left ? 4 : 0 }}>
         {left}
         <T v="h1" c={bar.title} accessibilityRole="header" style={{ flex: 1, fontFamily: font.semibold }}>
@@ -79,11 +80,11 @@ const styles = StyleSheet.create({
 });
 
 /** Diz se o conteúdo já rolou (para mostrar a sombra da faixa fixa). Use: const [rolou, onScroll] = useRolou(); <ScrollView onScroll={onScroll} scrollEventThrottle={16}> */
-export function useRolou(): [boolean, (e: { nativeEvent: { contentOffset: { y: number } } }) => void] {
+export function useRolou(limite = 2): [boolean, (e: { nativeEvent: { contentOffset: { y: number } } }) => void] {
   const [rolou, setRolou] = useState(false);
   const onScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
-    const r = e.nativeEvent.contentOffset.y > 2;
+    const r = e.nativeEvent.contentOffset.y > limite;
     setRolou((x) => (x === r ? x : r));
-  }, []);
+  }, [limite]);
   return [rolou, onScroll];
 }
