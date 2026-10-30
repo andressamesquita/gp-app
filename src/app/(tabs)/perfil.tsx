@@ -5,7 +5,8 @@ import Svg, { Circle, Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ForMeCard, MedalGrid, RequestCard, ServiceCardCompact } from '@/components/blocks';
-import { BlueBackdrop } from '@/components/hero';
+import { AskField } from '@/components/ask-field';
+import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
@@ -141,12 +142,14 @@ function AreaLogada() {
           <ZapAvisosPromo ativo={app.prefs.zapAvisos} onPress={() => setSheet('zap')} />
           )}
 
-          {/* ---------- Bem-vinda: saudação em fundo branco, sem o campo do Assistente (some com MOSTRAR_BEM_VINDA = false) ---------- */}
+          {/* ---------- Bem-vinda + campo do Assistente na dobra azul-clara (some com MOSTRAR_BEM_VINDA = false) ---------- */}
           {MOSTRAR_BEM_VINDA && (
-          <View style={[styles.welcome, !MOSTRAR_ZAP && { paddingTop: 4 }]}>
+          <View style={[styles.welcome, !MOSTRAR_ZAP && styles.welcomeClara]}>
+            {!MOSTRAR_ZAP && <LightBackdrop />}
             <T v="h2" accessibilityRole="header">
               Bem-vinda, {PERSON.name}!
             </T>
+            <AskField />
           </View>
           )}
 
@@ -520,7 +523,8 @@ const styles = StyleSheet.create({
   tileWhite: { backgroundColor: color.surface, borderWidth: 1, borderColor: color.line },
   badge: { position: 'absolute', bottom: -8, alignSelf: 'center', minWidth: 22, paddingHorizontal: 7, paddingVertical: 1, borderRadius: radius.pill, backgroundColor: color.brand, alignItems: 'center', borderWidth: 2, borderColor: color.surface },
   // Sem card: saudação e campo direto no fundo, entre divisórias claras (padrão das seções)
-  welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 20, paddingBottom: 4, gap: 12, marginBottom: 8 },
+  welcomeClara: { marginTop: -16, paddingTop: 20, overflow: 'hidden' },
+  welcome: { marginHorizontal: -16, paddingHorizontal: 16, paddingTop: 20, paddingBottom: 20, gap: 12, marginBottom: 16, borderBottomWidth: 1, borderColor: color.divider },
   fakeInput: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 56, paddingLeft: 16, paddingRight: 6, borderWidth: 1.5, borderColor: color.lineStrong, borderRadius: radius.sm },
   fakeSend: { width: 44, height: 44, borderRadius: radius.sm, backgroundColor: color.brand, alignItems: 'center', justifyContent: 'center' },
   post: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, overflow: 'hidden' },
