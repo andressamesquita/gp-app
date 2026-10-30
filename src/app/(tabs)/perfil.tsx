@@ -123,8 +123,8 @@ function AreaLogada() {
           Área do cidadão
         </T>
         <Pressable accessibilityRole="button" accessibilityLabel={`Saldo da Nota Piauiense: ${SALDO.valor}`} onPress={() => setSheet('saldo')} style={styles.saldo}>
-          <Icon name="coins" size={16} color={FAIXA_BRANCA ? color.brand : color.white} />
-          <T v="smallStrong" c={FAIXA_BRANCA ? color.brand : color.white}>
+          <Icon name="coins" size={16} color={FAIXA_BRANCA ? '#007932' : color.white} />
+          <T v="smallStrong" c={FAIXA_BRANCA ? '#007932' : color.white}>
             {SALDO.valor}
           </T>
         </Pressable>
@@ -509,7 +509,7 @@ export default function AreaDoCidadao() {
 }
 
 const styles = StyleSheet.create({
-  saldo: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.pill, borderWidth: 1, borderColor: FAIXA_BRANCA ? color.line : 'rgba(255,255,255,0.45)', backgroundColor: FAIXA_BRANCA ? color.brandTint : 'rgba(255,255,255,0.12)' },
+  saldo: { flexDirection: 'row', alignItems: 'center', gap: 6, height: 36, paddingHorizontal: 12, borderRadius: radius.pill, borderWidth: 1, borderColor: FAIXA_BRANCA ? '#BFE3CC' : 'rgba(255,255,255,0.45)', backgroundColor: FAIXA_BRANCA ? '#E6F4EA' : 'rgba(255,255,255,0.12)' }, // verde da logo (#007932) no saldo
   camBadge: { position: 'absolute', right: -2, bottom: -2, width: 24, height: 24, borderRadius: 12, backgroundColor: color.white, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: color.brand },
   level: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3, borderWidth: 1, borderColor: 'rgba(255,255,255,0.45)' },
   conq: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radius.md, padding: 14, gap: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' },
