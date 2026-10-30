@@ -108,6 +108,8 @@ export const ESTILO_FAIXA = 1 as 0 | 1 | 2 | 3 | 4 | 5;
 export const FAIXA_BRANCA: boolean = ESTILO_FAIXA !== 5 && ESTILO_FAIXA !== 4;
 /** Fundo da primeira dobra clara (mesmo --hero da web) */
 export const HERO_CLARO = '#E3EDFB';
+/** Sombra da faixa fixa quando o conteúdo rola por baixo (como o cabeçalho da web ao rolar) */
+export const BAR_SHADOW = FAIXA_BRANCA ? ({ boxShadow: '0 6px 18px -4px rgba(3,40,110,0.28)', zIndex: 5 } as object) : ({ zIndex: 5 } as object);
 export const bar = FAIXA_BRANCA
   ? { bg: '#FFFFFF', fg: '#192D48', title: '#14233A', sub: '#44546B', line: '#E3E8EF', pressed: '#E8EEF6' }
   : { bg: '#034EA2', fg: '#FFFFFF', title: '#FFFFFF', sub: 'rgba(255,255,255,0.85)', line: 'transparent', pressed: 'rgba(255,255,255,0.16)' };

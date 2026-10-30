@@ -12,13 +12,14 @@ import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
 import { ZapAvisosPromo } from '@/components/promo-cards';
 import { RecentesPaginados } from '@/components/recentes';
+import { useRolou } from '@/components/page';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES } from '@/data/catalog';
 import { MEDALS, PERSON, SALDO, earnedMedals, forMe, PERFIL_RESUMO, recentes, recomendados, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, kind, radius, FAIXA_BRANCA, bar } from '@/theme/tokens';
+import { color, font, kind, radius, FAIXA_BRANCA, bar, BAR_SHADOW } from '@/theme/tokens';
 
 const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
   { id: 'padrao', t: 'Com histórico', d: 'Solicitações em andamento e carteiras' },
@@ -68,6 +69,7 @@ function AreaLogada() {
   const app = useApp();
   const { scenario, cnhStarted } = app;
   const [sheet, setSheet] = useState<SheetName>(null);
+  const [rolou, onScroll] = useRolou();
   const [net, setNet] = useState<'WhatsApp' | 'Instagram'>('WhatsApp');
   const [filter, setFilter] = useState<F>('andamento');
   const earned = useMemo(() => {
@@ -115,7 +117,7 @@ function AreaLogada() {
   return (
     <View style={{ flex: 1 }}>
       {/* ---------- Faixa azul fixa: título, saldo, avisos e foto (abre Minha conta) ---------- */}
-      <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }]}>
+      <View style={[styles.stickyBar, { paddingTop: insets.top + 8 }, rolou && BAR_SHADOW]}>
         <BlueBackdrop bar />
         <T v="h2" c={bar.title} accessibilityRole="header" style={{ flex: 1 }} numberOfLines={1}>
           Área do cidadão
@@ -134,7 +136,7 @@ function AreaLogada() {
           <Avatar initials={PERSON.initials} light={!FAIXA_BRANCA} size={36} uri={app.photo} />
         </Pressable>
       </View>
-      <ScrollView style={{ flex: 1, backgroundColor: color.surface }} contentContainerStyle={{ paddingBottom: 44 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: color.surface }} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: 44 }}>
         <View style={styles.sheetBody}>
           {/* ---------- Zap do Cidadão (primeiro bloco; some com MOSTRAR_ZAP = false) ---------- */}
           {MOSTRAR_ZAP && (
@@ -524,7 +526,7 @@ const styles = StyleSheet.create({
   conq: { backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: radius.md, padding: 14, gap: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)' },
   track: { height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.25)', overflow: 'hidden' },
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
-  stickyBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, overflow: 'hidden', zIndex: 10 },
+  stickyBar: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 10, backgroundColor: bar.bg, zIndex: 10 },
   sheetBody: { backgroundColor: color.surface, padding: 16, paddingTop: 16, gap: 8 },
   // Atalhos soltos no fundo (sem card): são navegação, não conteúdo. O respiro abaixo separa do próximo bloco.
   grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 20, marginHorizontal: -8, paddingTop: 4, marginBottom: 16 },

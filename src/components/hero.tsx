@@ -18,7 +18,7 @@ export function BlueBackdrop({ style, tone = 'blue', full, bar: isBar }: { style
   // 'green' = mesmo desenho em tons de verde, para o que é do WhatsApp (Zap do Cidadão)
   const g = tone === 'green' ? { c: ['#1FA060', '#0E7A3B', '#075A2B'] as const, a: '#8AF0B4', b: '#2BD27A' } : { c: ['#0B5CBD', '#034EA2', '#023C7E'] as const, a: '#6EBEFF', b: '#00AAE6' };
   return (
-    <View style={[StyleSheet.absoluteFill, style]} pointerEvents="none">
+    <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }, style]} pointerEvents="none">
       <LinearGradient colors={g.c} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
       <Svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 520" style={StyleSheet.absoluteFill}>
         <Defs>

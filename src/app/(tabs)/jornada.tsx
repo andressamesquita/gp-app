@@ -5,7 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { MedalGrid, ProgressBar } from '@/components/blocks';
 import { Icon } from '@/components/Icon';
-import { TabTop } from '@/components/page';
+import { TabTop, useRolou } from '@/components/page';
 import { IconButton, Section, T, Tag, statusTone, tap } from '@/components/ui';
 import { MEDALS, earnedMedals, moments } from '@/data/mock';
 import { LoginInvite } from '@/components/login-invite';
@@ -19,15 +19,17 @@ function JornadaLogged() {
   const [sel, setSel] = useState('condutora');
   const m = list.find((x) => x.id === sel) ?? list[0];
   const earned = earnedMedals(scenario);
+  const [rolou, onScroll] = useRolou();
 
   return (
     <View style={{ flex: 1, backgroundColor: color.surface }}>
     {/* Faixa azul fixa (mesma altura das abas), com voltar para a Área do cidadão */}
     <TabTop
+      elevated={rolou}
       title="Minha jornada"
       left={<View style={{ marginLeft: -10 }}><IconButton tone="bar" icon="back" label="Voltar para a Área do cidadão" onPress={() => router.navigate('/perfil')} /></View>}
     />
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 44 }}>
+    <ScrollView style={{ flex: 1 }} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: 44 }}>
 
       <View style={{ padding: 16, gap: 16 }}>
         <View style={styles.news}>

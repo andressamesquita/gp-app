@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { bar, color, font } from '@/theme/tokens';
+import { BAR_SHADOW, bar, color, font } from '@/theme/tokens';
 import { BlueBackdrop } from './hero';
 import { useStatusBar } from './statusbar';
 import { FlatSections, ScreenHeader, T } from './ui';
@@ -51,10 +51,10 @@ export function FlatBlock({ children, style, first }: { children: ReactNode; sty
 }
 
 /** Topo das abas: faixa azul compacta (mesma altura da Área do cidadão), título e um apoio opcional (ex.: campo do Assistente). */
-export function TabTop({ title, sub, children, right, left }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; /** antes do título (ex.: voltar) */ left?: ReactNode }) {
+export function TabTop({ title, sub, children, right, left, elevated }: { title: string; sub?: string; children?: ReactNode; right?: ReactNode; /** antes do título (ex.: voltar) */ left?: ReactNode; /** sombra: o conteúdo está rolando por baixo */ elevated?: boolean }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, overflow: 'hidden' }}>
+    <View style={[{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: children ? 12 : 10, gap: 8, zIndex: 5 }, elevated && BAR_SHADOW]}>
       <BlueBackdrop bar />
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, gap: left ? 4 : 0 }}>
         {left}
@@ -77,3 +77,13 @@ const styles = StyleSheet.create({
   flatBlock: { marginHorizontal: -16, paddingHorizontal: 20, paddingVertical: 20, gap: 12, borderTopWidth: 1, borderTopColor: color.divider },
   footer: { paddingHorizontal: 16, paddingTop: 12, backgroundColor: color.surface, borderTopWidth: 1, borderTopColor: color.line, gap: 8 },
 });
+
+/** Diz se o conteúdo já rolou (para mostrar a sombra da faixa fixa). Use: const [rolou, onScroll] = useRolou(); <ScrollView onScroll={onScroll} scrollEventThrottle={16}> */
+export function useRolou(): [boolean, (e: { nativeEvent: { contentOffset: { y: number } } }) => void] {
+  const [rolou, setRolou] = useState(false);
+  const onScroll = useCallback((e: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const r = e.nativeEvent.contentOffset.y > 2;
+    setRolou((x) => (x === r ? x : r));
+  }, []);
+  return [rolou, onScroll];
+}

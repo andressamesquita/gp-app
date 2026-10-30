@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WalletCard, WalletStack } from '@/components/blocks';
 import { FakeQR, Icon } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
-import { TabTop } from '@/components/page';
+import { TabTop, useRolou } from '@/components/page';
 import { Sheet as BottomSheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Button, Empty, LinkText, Row, T, tap } from '@/components/ui';
@@ -32,6 +32,7 @@ function Carteira() {
   const [sel, setSel] = useState(docParam ?? docs[0]?.id);
   const [pending, setPending] = useState<Pending>(null);
   const [detail, setDetail] = useState(false);
+  const [rolou, onScroll] = useRolou();
 
   const current = docs.find((d) => d.id === sel) ?? docs[0];
 
@@ -55,8 +56,8 @@ function Carteira() {
   return (
     <View style={{ flex: 1, backgroundColor: color.surface }}>
     {/* Faixa azul fixa: fica parada enquanto o conteúdo rola */}
-    <TabTop title="Documentos" />
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
+    <TabTop title="Documentos" elevated={rolou} />
+    <ScrollView style={{ flex: 1 }} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
       <View style={{ padding: 16, gap: 16 }}>
       {current && (
         // Fundo azul bem claro atrás da pilha e das ações (mesmo tom de "Mais procurados" em Serviços)

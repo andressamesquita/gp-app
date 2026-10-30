@@ -6,13 +6,13 @@ import { AskField } from '@/components/ask-field';
 import { CategoryIcon } from '@/components/category-icon';
 import { ServiceCard, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
-import { TabTop } from '@/components/page';
+import { TabTop, useRolou } from '@/components/page';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Button, LinkText, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
 import { norm } from '@/state/assistant';
-import { color, font, radius } from '@/theme/tokens';
+import { BAR_SHADOW, color, font, radius } from '@/theme/tokens';
 
 /* Atalhos rápidos, como na web: Detran, Empresas, Servidor.
    Os três são CATEGORIAS (Detran = Transporte e Veículos), então só um fica ativo por vez
@@ -33,6 +33,7 @@ export default function Servicos() {
   const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
   const [all, setAll] = useState(false);
   const open = useServiceOpen();
+  const [rolou, onScroll] = useRolou();
 
   const list = useMemo(() => {
     const n = norm(q.trim());
@@ -56,7 +57,7 @@ export default function Servicos() {
   return (
     <View style={{ flex: 1, backgroundColor: color.surface }}>
       {/* Faixa azul, busca e filtros ficam fixos; só a lista rola */}
-      <View style={{ zIndex: 1 }}>
+      <View style={[{ zIndex: 5 }, rolou && BAR_SHADOW]}>
         {/* Campo do Assistente dentro da faixa azul, fixo ao rolar (como a barra do Início) */}
         <TabTop title="Serviços para você">
           <AskField value={q} onChangeText={setQ} flat search />
@@ -106,7 +107,7 @@ export default function Servicos() {
 
       </View>
 
-      <ScrollView style={{ flex: 1, backgroundColor: '#F5F8FC' }} contentContainerStyle={{ paddingBottom: 44 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1, backgroundColor: '#F5F8FC' }} onScroll={onScroll} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: 44 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
