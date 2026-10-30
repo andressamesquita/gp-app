@@ -478,7 +478,7 @@ function AreaLogada() {
         <MedalGrid medals={MEDALS} earned={earned} onPress={(m) => app.showToast(earned.includes(m.id) ? `${m.t}: conquistada!` : `Como ganhar: ${m.how}`)} />
       </Sheet>
 
-      <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title="Onde você quer publicar?" sub="Escolha a rede social. A publicação não mostra CPF, protocolo nem endereço.">
+      <Sheet visible={sheet === 'publicar'} onClose={() => setSheet(null)} title="Onde você quer publicar?" sub="A publicação não mostra dados pessoais.">
         <View>
           {(['WhatsApp', 'Instagram'] as const).map((n, i) => (
             <Row
