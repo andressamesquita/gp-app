@@ -251,7 +251,7 @@ export function Chip({
   );
 }
 
-export function Tag({ label, tone = 'brand', center }: { label: string; tone?: 'brand' | 'good' | 'warn' | 'muted' | 'danger' | 'dark'; center?: boolean }) {
+export function Tag({ label, tone = 'brand', center }: { label: string; tone?: 'brand' | 'good' | 'warn' | 'muted' | 'danger' | 'dark' | 'novo'; center?: boolean }) {
   const m = {
     brand: [color.brandTint, color.brand],
     good: [color.goodBg, color.good],
@@ -259,6 +259,8 @@ export function Tag({ label, tone = 'brand', center }: { label: string; tone?: '
     muted: [color.surface2, color.muted],
     danger: [color.dangerBg, '#A8290F'],
     dark: [color.navy, color.white],
+    // Amarelo com texto branco, igual ao selo NOVO dos atalhos
+    novo: [color.waveYellow, color.white],
   }[tone];
   return (
     <View style={{ backgroundColor: m[0], borderRadius: radius.pill, paddingHorizontal: 10, paddingVertical: 3, alignSelf: center ? 'center' : 'flex-start' }}>

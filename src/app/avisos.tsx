@@ -74,7 +74,7 @@ export default function ParaMim() {
                           <T v="caption" c={color.muted} style={{ flex: 1 }} numberOfLines={1}>
                             {k.label}
                           </T>
-                          {a.tags.includes('Nova') ? <Tag label="Nova" tone="dark" /> : null}
+                          {a.tags.includes('Nova') ? <Tag label="Nova" tone="novo" /> : null}
                         </View>
                         <T v="h3">{a.title}</T>
                         <T v="small" c={color.muted} numberOfLines={2}>
