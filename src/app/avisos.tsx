@@ -33,9 +33,9 @@ export default function ParaMim() {
         all.length ? (
           // Filtros fixos em faixa branca, como em Serviços
           <View style={styles.chips} accessibilityRole="tablist">
-            <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
             <Chip label="Pendentes" on={f === 'pendente'} onPress={() => setF('pendente')} />
             <Chip label="Recomendados" on={f === 'recomendado'} onPress={() => setF('recomendado')} />
+            <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
           </View>
         ) : undefined
       }>
