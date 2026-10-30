@@ -29,7 +29,7 @@ const ONDAS = [
 
 export function LogoSplash({ onDone }: { onDone: () => void }) {
   const { width } = useWindowDimensions();
-  const w = Math.min(300, width * 0.72);
+  const w = Math.min(190, width * 0.48);
   const h = (w * BASE_H) / BASE_W;
   const s = w / BASE_W;
 
