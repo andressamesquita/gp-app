@@ -151,7 +151,7 @@ export default function Inicio() {
         )}
 
         {/* ---------- Destaques (carrossel de banners) ---------- */}
-        <SectionHead title="Destaques" />
+        <SectionHead title="Destaques" first />
         <Carousel items={banners} />
 
         {/* ---------- Entrar (só para quem ainda não entrou) ---------- */}
@@ -212,9 +212,9 @@ function SearchField({ flat }: { flat?: boolean }) {
 }
 
 /* ---------------- Título de seção: nível 1 da hierarquia ---------------- */
-function SectionHead({ title, sub, action }: { title: string; sub?: string; action?: ReactNode }) {
+function SectionHead({ title, sub, action, first }: { title: string; sub?: string; action?: ReactNode; /** logo após a primeira dobra: sem divisória nem margem extra */ first?: boolean }) {
   return (
-    <View style={styles.secHead}>
+    <View style={[styles.secHead, first && { marginTop: 0, borderTopWidth: 0 }]}>
       <View style={{ flex: 1, gap: 2 }}>
         <T v="h2" accessibilityRole="header">
           {title}
