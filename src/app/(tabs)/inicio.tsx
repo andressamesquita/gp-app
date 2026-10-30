@@ -328,7 +328,11 @@ const styles = StyleSheet.create({
   hero: { paddingTop: 20, paddingBottom: 18, gap: 14, overflow: 'hidden' },
   headRow: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 },
   searchPos: { marginTop: -28, marginHorizontal: 16 },
-  stickyBar: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: bar.line, paddingBottom: 10, zIndex: 10 },
+  // Barra fixa ao rolar: sombra como o cabeçalho da web (0 8px 24px -16px rgba(3,40,110,.4)) para destacar do conteúdo branco
+  stickyBar: {
+    position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: FAIXA_BRANCA ? '#D6DEE9' : bar.line, paddingBottom: 10, zIndex: 10,
+    ...(FAIXA_BRANCA ? { boxShadow: '0 6px 18px -4px rgba(3,40,110,0.28)' } : null),
+  } as object,
   suggest: { minHeight: 36, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1, borderColor: color.lineStrong, backgroundColor: color.surface, justifyContent: 'center' },
   banner: { aspectRatio: 2.23, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: color.surface2, borderWidth: 1, borderColor: color.line },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12 },
