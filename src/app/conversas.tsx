@@ -21,6 +21,7 @@ export default function Conversas() {
   return (
     <Page
       title="Conversas"
+      flat
       right={
         <IconButton
           tone="bar"
@@ -32,7 +33,8 @@ export default function Conversas() {
           }}
         />
       }>
-      <View style={styles.search}>
+      {/* Padrão sem cards: fundo branco, seções separadas por divisórias */}
+      <View style={[styles.search, { marginVertical: 16 }]}>
         <Icon name="search" size={20} color={color.muted} />
         <TextInput accessibilityLabel="Buscar conversa" value={q} onChangeText={setQ} placeholder="Buscar conversa" placeholderTextColor={color.muted} style={styles.input} />
       </View>
@@ -63,7 +65,7 @@ export default function Conversas() {
         </Section>
       ))}
       {!list.length && (
-        <T v="small" c={color.muted}>
+        <T v="small" c={color.muted} style={{ paddingTop: 4 }}>
           Nenhuma conversa encontrada.
         </T>
       )}
