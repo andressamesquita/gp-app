@@ -59,7 +59,8 @@ function Carteira() {
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom + 44 }} showsVerticalScrollIndicator={false}>
       <View style={{ padding: 16, gap: 16 }}>
       {current && (
-        <View style={{ gap: 12 }}>
+        // Fundo azul bem claro atrás da pilha e das ações (mesmo tom de "Mais procurados" em Serviços)
+        <View style={{ gap: 12, marginHorizontal: -16, marginTop: -16, padding: 16, paddingBottom: 20, backgroundColor: '#F5F8FC' }}>
           <WalletStack docs={docs} front={current.id} onFront={setSel} onOpen={() => setDetail(true)} />
           <View style={styles.actions}>
             <Action icon="qr" label="Mostrar QR Code" onPress={() => setPending({ action: 'qr', step: 'auth' })} />
@@ -85,7 +86,7 @@ function Carteira() {
       )}
 
       {/* divisória clara de ponta a ponta antes da seção */}
-      <View style={{ marginHorizontal: -16, marginTop: 8, borderTopWidth: 1, borderTopColor: color.divider }} />
+      <View style={{ marginHorizontal: -16, marginTop: current ? -16 : 8, borderTopWidth: 1, borderTopColor: color.divider }} />
       <T v="h2">Todos os documentos</T>
       {/* Lista no mesmo padrão de "Você no centro do Gov.pi": ícone, título, apoio e seta, separados por traço fino */}
       <View>
