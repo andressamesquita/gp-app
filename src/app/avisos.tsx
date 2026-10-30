@@ -25,19 +25,26 @@ export default function ParaMim() {
   const groups = [...new Set(list.map((a) => a.group))];
 
   return (
-    <Page title="Para mim" flat contentStyle={{ backgroundColor: '#F5F8FC', flexGrow: 1 }}>
+    <Page
+      title="Para mim"
+      flat
+      contentStyle={{ backgroundColor: '#F5F8FC', flexGrow: 1 }}
+      topo={
+        all.length ? (
+          // Filtros fixos em faixa branca, como em Serviços
+          <View style={styles.chips} accessibilityRole="tablist">
+            <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
+            <Chip label="Pendentes" on={f === 'pendente'} onPress={() => setF('pendente')} />
+            <Chip label="Recomendados" on={f === 'recomendado'} onPress={() => setF('recomendado')} />
+          </View>
+        ) : undefined
+      }>
       {all.length === 0 ? (
         <View style={{ paddingTop: 16 }}>
           <Empty icon="bell" title="Nada por aqui ainda" text="Avisamos aqui quando houver um prazo, uma novidade ou um serviço indicado para você." action={{ label: 'Escolher quais avisos receber', href: '/configuracoes' }} />
         </View>
       ) : (
         <>
-          {/* Filtros em faixa branca, como em Serviços */}
-          <View style={styles.chips} accessibilityRole="tablist">
-            <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
-            <Chip label="Pendentes" on={f === 'pendente'} onPress={() => setF('pendente')} />
-            <Chip label="Recomendados" on={f === 'recomendado'} onPress={() => setF('recomendado')} />
-          </View>
           {/* Lista em cards sobre o azul bem claro, no mesmo layout dos cards de Serviços */}
           <View style={{ gap: 20, paddingTop: 16 }}>
             {groups.map((g) => {
@@ -115,7 +122,7 @@ const KIND: Record<'pendente' | 'andamento' | 'info' | 'recomendado', { icon: Ic
 };
 
 const styles = StyleSheet.create({
-  chips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', marginHorizontal: -16, paddingHorizontal: 16, paddingVertical: 14, backgroundColor: color.surface, borderBottomWidth: 1, borderBottomColor: color.divider },
+  chips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: color.surface, borderBottomWidth: 1, borderBottomColor: color.divider },
   card: { backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line, padding: 14, gap: 6 },
   cardUrgente: { borderColor: color.waveYellow, borderWidth: 1.5 },
   ico: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },

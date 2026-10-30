@@ -18,6 +18,7 @@ export function Page({
   contentStyle,
   onBack,
   flat,
+  topo,
 }: {
   title: string;
   sub?: string;
@@ -29,13 +30,22 @@ export function Page({
   onBack?: () => void;
   /** Padrão "sem cards, com divisórias": fundo branco e Section flat. Use FlatBlock para o que não for Section. */
   flat?: boolean;
+  /** Parte fixa logo abaixo do cabeçalho (ex.: chips de filtro); não rola com o conteúdo */
+  topo?: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
   useStatusBar('light', color.brand);
+  const [rolou, onScroll] = useRolou();
   return (
     <View style={{ flex: 1, backgroundColor: flat ? color.surface : color.bg }}>
-      <ScreenHeader title={title} sub={sub} right={right} close={close} onBack={onBack} />
+      {/* Sombra padrão quando o conteúdo rola por baixo: no cabeçalho, ou na parte fixa se houver */}
+      <View style={[{ zIndex: 5 }, rolou && !topo && BAR_SHADOW]}>
+        <ScreenHeader title={title} sub={sub} right={right} close={close} onBack={onBack} />
+      </View>
+      {topo ? <View style={[{ zIndex: 5, backgroundColor: color.surface }, rolou && BAR_SHADOW]}>{topo}</View> : null}
       <ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         contentContainerStyle={[{ padding: 16, gap: 16, paddingBottom: footer ? 16 : insets.bottom + 32 }, flat && { paddingTop: 0, gap: 0 }, contentStyle]}
         keyboardShouldPersistTaps="handled">
         <FlatSections.Provider value={!!flat}>{children}</FlatSections.Provider>
