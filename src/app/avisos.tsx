@@ -20,7 +20,7 @@ type F = 'todos' | 'pendente' | 'recomendado';
 export default function ParaMim() {
   const { scenario, cnhStarted } = useApp();
   const all = [...avisos(scenario, cnhStarted).filter((a) => a.cat !== 'andamento'), ...avisosRecomendados(scenario)];
-  const [f, setF] = useState<F>('todos');
+  const [f, setF] = useState<F>('pendente');
   const list = all.filter((a) => f === 'todos' || a.cat === f);
   const groups = [...new Set(list.map((a) => a.group))];
 
