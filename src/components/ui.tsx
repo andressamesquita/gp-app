@@ -60,7 +60,17 @@ export function T({ v = 'body', c = color.ink, style, ...p }: TextProps & { v?: 
 }
 
 /* ---------------- Logo ---------------- */
+const LOGO_COR = require('../../assets/brand/logo-govpi-cor.png');
+const LOGO_RATIO = 480 / 224;
+
 export function Logo({ light = true, size = 17 }: { light?: boolean; size?: number }) {
+  // Sobre fundo claro: logo oficial colorida (Gov.pi com as faixas + Cidadão em azul)
+  if (!light) {
+    const h = Math.round(size * 2.2);
+    return (
+      <Image source={LOGO_COR} style={{ height: h, width: Math.round(h * LOGO_RATIO) }} resizeMode="contain" accessible accessibilityRole="header" accessibilityLabel="Gov.pi Cidadão" />
+    );
+  }
   const c = light ? color.white : color.navy;
   return (
     <View accessible accessibilityRole="header" accessibilityLabel="Gov.pi Cidadão">
