@@ -15,6 +15,17 @@ import { T, tap } from './ui';
 export function BlueBackdrop({ style, tone = 'blue', full, bar: isBar }: { style?: StyleProp<ViewStyle>; tone?: 'blue' | 'green'; /** ondas na tela inteira (telas de fundo azul, como o login) */ full?: boolean; /** fundo da faixa de menu superior: branco quando FAIXA_BRANCA */ bar?: boolean }) {
   if (isBar && FAIXA_BRANCA) return <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: bar.bg, borderBottomWidth: 1, borderBottomColor: bar.line }, style]} />;
   const waves = full ? Array.from({ length: 22 }, (_, i) => -160 + i * 26) : [300, 270, 240, 210, 180, 150, 120, 90];
+  // Telas de fundo azul inteiro (login): azul da logo liso, sem degradê nem brilhos, e linhas num azul discreto
+  if (full && tone === 'blue')
+    return (
+      <View style={[StyleSheet.absoluteFill, { overflow: 'hidden', backgroundColor: color.brand }, style]} pointerEvents="none">
+        <Svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 520" style={StyleSheet.absoluteFill}>
+          {waves.map((y) => (
+            <Path key={y} d={`M-20 ${y + 150}C80 ${y + 90} 150 ${y + 180} 250 ${y + 120}S400 ${y + 40} 540 ${y + 100}`} stroke="#3F7FCB" strokeOpacity={0.45} strokeWidth={1.2} fill="none" />
+          ))}
+        </Svg>
+      </View>
+    );
   // 'green' = mesmo desenho em tons de verde, para o que é do WhatsApp (Zap do Cidadão)
   const g = tone === 'green' ? { c: ['#1FA060', '#0E7A3B', '#075A2B'] as const, a: '#8AF0B4', b: '#2BD27A' } : { c: ['#0B5CBD', '#034EA2', '#023C7E'] as const, a: '#6EBEFF', b: '#00AAE6' };
   return (
