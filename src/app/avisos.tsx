@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Icon, type IconName } from '@/components/Icon';
 import { ask } from '@/components/nav';
@@ -32,11 +32,11 @@ export default function ParaMim() {
       topo={
         all.length ? (
           // Filtros fixos em faixa branca, como em Serviços
-          <View style={styles.chips} accessibilityRole="tablist">
-            <Chip label="Pendentes" on={f === 'pendente'} onPress={() => setF('pendente')} />
-            <Chip label="Recomendados" on={f === 'recomendado'} onPress={() => setF('recomendado')} />
-            <Chip label="Todos" on={f === 'todos'} onPress={() => setF('todos')} />
-          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }} accessibilityRole="tablist">
+            <Chip label="Pendentes" count={all.filter((a) => a.cat === 'pendente').length} on={f === 'pendente'} onPress={() => setF('pendente')} />
+            <Chip label="Recomendados" count={all.filter((a) => a.cat === 'recomendado').length} on={f === 'recomendado'} onPress={() => setF('recomendado')} />
+            <Chip label="Todos" count={all.length} on={f === 'todos'} onPress={() => setF('todos')} />
+          </ScrollView>
         ) : undefined
       }>
       {all.length === 0 ? (
@@ -122,7 +122,7 @@ const KIND: Record<'pendente' | 'andamento' | 'info' | 'recomendado', { icon: Ic
 };
 
 const styles = StyleSheet.create({
-  chips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', paddingHorizontal: 16, paddingVertical: 14, backgroundColor: color.surface, borderBottomWidth: 1, borderBottomColor: color.divider },
+  chips: { flexGrow: 0, paddingVertical: 14, backgroundColor: color.surface, borderBottomWidth: 1, borderBottomColor: color.divider },
   card: { backgroundColor: color.surface, borderRadius: radius.sm, borderWidth: 1, borderColor: color.line, padding: 14, gap: 6 },
   cardUrgente: { borderColor: color.waveYellow, borderWidth: 1.5 },
   ico: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
