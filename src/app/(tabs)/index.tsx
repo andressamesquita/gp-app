@@ -22,6 +22,7 @@ import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
 import { ChatHistorySheet } from '@/components/chat-history';
 import { TopBarRow } from '@/components/top-bar';
+import { EXEMPLOS_ASSISTENTE, useTypingText } from '@/components/typing';
 import { Button, IconButton, T, tap } from '@/components/ui';
 import { PERSON } from '@/data/mock';
 import type { Action, Msg } from '@/state/assistant';
@@ -41,6 +42,8 @@ const CHIP_Q: Record<string, string> = {
  * Assistente Gov.pi: a tela de entrada do app.
  * Vazia, mostra o robô e a pergunta; com mensagens, vira a conversa.
  */
+const FRASES_COMPOSER = ['Pergunte ao Assistente Gov.pi', ...EXEMPLOS_ASSISTENTE];
+
 export default function Assistente() {
   const app = useApp();
   const insets = useSafeAreaInsets();
@@ -326,6 +329,9 @@ function AssistantComposer({
   disabled?: boolean;
 }) {
   const [text, setText] = useState('');
+  const [focado, setFocado] = useState(false);
+  // Placeholder que "se digita" (frase principal e exemplos) enquanto o campo está vazio e sem foco
+  const dica = useTypingText(FRASES_COMPOSER, !text && !focado && !disabled);
   const has = text.trim().length > 0;
   const submit = () => {
     if (!has || disabled) return;
@@ -340,8 +346,10 @@ function AssistantComposer({
         value={text}
         onChangeText={setText}
         editable={!disabled}
-        placeholder="Pergunte ao Assistente Gov.pi"
+        placeholder={focado ? 'Pergunte ao Assistente Gov.pi' : `${dica}|`}
         placeholderTextColor={color.muted}
+        onFocus={() => setFocado(true)}
+        onBlur={() => setFocado(false)}
         onSubmitEditing={submit}
         returnKeyType="send"
         submitBehavior="submit"

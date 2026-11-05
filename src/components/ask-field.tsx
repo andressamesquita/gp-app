@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { FAIXA_BRANCA, color, font, radius } from '@/theme/tokens';
 import { Icon } from './Icon';
 import { ask, askVoice } from './nav';
 import { Robot } from './Robot';
+import { EXEMPLOS_ASSISTENTE, useTypingText } from './typing';
 import { T, tap } from './ui';
 
 const PLACEHOLDER = 'O que você precisa resolver?';
@@ -98,6 +100,14 @@ export function AskField({
       </View>
     );
 
+  return <AskShortcut flat={flat} style={style} mic={mic} />;
+}
+
+const FRASES_CAMPO = [PLACEHOLDER, ...EXEMPLOS_ASSISTENTE];
+
+/** Atalho que abre o Assistente; o texto "se digita" (frase principal e exemplos). */
+function AskShortcut({ flat, style, mic }: { flat?: boolean; style?: StyleProp<ViewStyle>; mic: ReactNode }) {
+  const texto = useTypingText(FRASES_CAMPO);
   return (
     <Pressable
       accessibilityRole="search"
@@ -110,7 +120,10 @@ export function AskField({
       style={({ pressed }) => [styles.box, flat && styles.flat, style, pressed && { borderColor: color.brand }]}>
       <Robot size={28} />
       <T v="body" c={color.muted} style={{ flex: 1, fontSize: 14, lineHeight: 20 }} numberOfLines={1}>
-        {PLACEHOLDER}
+        {texto}
+        <T v="body" c={color.brand} style={{ fontSize: 14, lineHeight: 20 }}>
+          |
+        </T>
       </T>
       {/* Sem seta: o campo inteiro já abre o Assistente (a seta era só desenho) */}
       {mic}
