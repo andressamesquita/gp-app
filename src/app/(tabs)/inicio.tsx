@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ServiceCardCompact } from '@/components/blocks';
 import { AskField } from '@/components/ask-field';
 import { PrismaPromo, ZapPromo } from '@/components/promo-cards';
+import { ChatHistorySheet } from '@/components/chat-history';
 import { TopBarRow } from '@/components/top-bar';
 import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon } from '@/components/Icon';
@@ -44,6 +45,7 @@ export default function Inicio() {
   const [searchY, setSearchY] = useState(400);
   const [stuck, setStuck] = useState(false);
   const [heroY, setHeroY] = useState(0);
+  const [history, setHistory] = useState(false);
   // Com a dobra clara, o campo fica dentro dela (sem margem negativa)
   const stickAt = DOBRA_CLARA ? Math.max(1, heroY + searchY - insets.top - 8) : Math.max(1, searchY - 28 - insets.top - 8); // 28 = margem negativa do campo sobre o topo azul
 
@@ -83,7 +85,7 @@ export default function Inicio() {
         {/* ---------- Topo azul ---------- */}
         <View style={[styles.head, DOBRA_CLARA && styles.headCompact, { paddingTop: insets.top + (DOBRA_CLARA ? 8 : 14) }]}>
           <BlueBackdrop bar />
-          <TopBarRow />
+          <TopBarRow onHistory={() => setHistory(true)} />
           {app.logged && !DOBRA_CLARA ? (
             <T v="h1" c={bar.title} style={{ marginTop: 14 }} accessibilityRole="header">
               Olá, {PERSON.first}!
@@ -202,6 +204,7 @@ export default function Inicio() {
         </View>
       </Animated.View>
 
+      <ChatHistorySheet visible={history} onClose={() => setHistory(false)} />
     </View>
   );
 }

@@ -20,6 +20,7 @@ import { CardView } from '@/components/chat-cards';
 import { Icon } from '@/components/Icon';
 import { Robot } from '@/components/Robot';
 import { useStatusBar } from '@/components/statusbar';
+import { ChatHistorySheet } from '@/components/chat-history';
 import { TopBarRow } from '@/components/top-bar';
 import { Button, IconButton, T, tap } from '@/components/ui';
 import { PERSON } from '@/data/mock';
@@ -47,6 +48,7 @@ export default function Assistente() {
   const scroll = useRef<ScrollViewInstance>(null);
   const lastT = useRef<string | undefined>(undefined);
   const [listening, setListening] = useState(false);
+  const [history, setHistory] = useState(false);
   useStatusBar('light', color.brand);
 
   const listen = (then: () => void) => {
@@ -96,7 +98,7 @@ export default function Assistente() {
         <View style={[styles.appbar, { paddingTop: insets.top + 8 }]}>
           <BlueBackdrop bar />
           <View style={{ flex: 1 }}>
-            <TopBarRow />
+            <TopBarRow onHistory={() => setHistory(true)} />
           </View>
         </View>
       ) : (
@@ -189,6 +191,7 @@ export default function Assistente() {
           <View style={{ height: 28 }} />
         )}
       </View>
+      <ChatHistorySheet visible={history} onClose={() => setHistory(false)} />
     </KeyboardAvoidingView>
   );
 }
