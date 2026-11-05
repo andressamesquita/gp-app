@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 
 import { PAST_CHATS } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color, font, radius } from '@/theme/tokens';
+import { color } from '@/theme/tokens';
 import { ask } from './nav';
 import { Sheet } from './sheet';
-import { Icon } from './Icon';
 import { IconButton, Row, T } from './ui';
 
 /** Verde da bolinha que avisa que há conversas salvas. */
@@ -25,33 +23,25 @@ export function ChatHistoryButton({ onPress }: { onPress: () => void }) {
 }
 
 /**
- * Folha simples, como na web: busca, "Nesta sessão" e, com login, o histórico da conta.
+ * Folha simples, como na web: "Nesta sessão" e, com login, o histórico da conta.
  * Sem login, as conversas ficam guardadas só nesta sessão (não é preciso entrar para conversar).
  */
 export function ChatHistorySheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const app = useApp();
-  const [q, setQ] = useState('');
-  const has = (t: string) => !q.trim() || t.toLowerCase().includes(q.trim().toLowerCase());
   const current = app.messages.find((m) => m.from === 'user');
   const sessao = [
     ...(current ? [{ id: 'atual', title: current.text ?? 'Conversa atual', sub: 'Agora · em andamento' }] : []),
     ...app.sessionChats.map((c) => ({ id: c.id, title: c.title, sub: 'Nesta sessão' })),
-  ].filter((c) => has(c.title));
-  const past = (app.logged ? PAST_CHATS : []).filter((c) => has(c.t));
+  ];
+  const past = app.logged ? PAST_CHATS : [];
   const groups = [...new Set(past.map((c) => c.group))];
   const go = (fn: () => void) => {
     onClose();
-    setQ('');
     fn();
   };
 
   return (
     <Sheet visible={visible} onClose={onClose} title="Conversas">
-      <View style={styles.search}>
-        <Icon name="search" size={18} color={color.ink} />
-        <TextInput value={q} onChangeText={setQ} placeholder="Buscar conversa" placeholderTextColor={color.muted} accessibilityLabel="Buscar conversa" style={styles.input} />
-      </View>
-
       <View>
         <T v="eyebrow" c={color.muted}>
           Conversas nesta sessão
@@ -69,7 +59,7 @@ export function ChatHistorySheet({ visible, onClose }: { visible: boolean; onClo
           ))
         ) : (
           <T v="small" c={color.muted} style={{ paddingVertical: 12 }}>
-            {q.trim() ? 'Nenhuma conversa encontrada.' : 'Nenhuma conversa ainda.'}
+            Nenhuma conversa ainda.
           </T>
         )}
       </View>
@@ -101,8 +91,3 @@ export function ChatHistorySheet({ visible, onClose }: { visible: boolean; onClo
     </Sheet>
   );
 }
-
-const styles = StyleSheet.create({
-  search: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 14, borderRadius: radius.md, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface },
-  input: { flex: 1, fontFamily: font.regular, fontSize: 14, color: color.ink, paddingVertical: 0 },
-});
