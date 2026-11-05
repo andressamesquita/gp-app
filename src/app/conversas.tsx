@@ -38,9 +38,24 @@ export default function Conversas() {
         <Icon name="search" size={20} color={color.muted} />
         <TextInput accessibilityLabel="Buscar conversa" value={q} onChangeText={setQ} placeholder="Buscar conversa" placeholderTextColor={color.muted} style={styles.input} />
       </View>
-      {current && (
-        <Section title="Agora">
-          <Row icon="chat" title={current.text ?? 'Conversa atual'} sub="Em andamento" onPress={() => ask()} last />
+      {(current || app.sessionChats.length > 0) && (
+        <Section title="Nesta sessão">
+          <View>
+            {current ? <Row icon="chat" title={current.text ?? 'Conversa atual'} sub="Agora · em andamento" onPress={() => ask()} last={!app.sessionChats.length} /> : null}
+            {app.sessionChats.map((c, i) => (
+              <Row
+                key={c.id}
+                icon="chats"
+                title={c.title}
+                sub="Nesta sessão"
+                last={i === app.sessionChats.length - 1}
+                onPress={() => {
+                  app.openSessionChat(c.id);
+                  ask();
+                }}
+              />
+            ))}
+          </View>
         </Section>
       )}
       {groups.map((g) => (

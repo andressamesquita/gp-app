@@ -1,49 +1,78 @@
-import { router } from 'expo-router';
-import { View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 import { PAST_CHATS } from '@/data/mock';
 import { useApp } from '@/state/app-state';
-import { color } from '@/theme/tokens';
+import { color, font, radius } from '@/theme/tokens';
 import { ask } from './nav';
 import { Sheet } from './sheet';
-import { Button, Empty, IconButton, LinkText, Row, T } from './ui';
+import { Icon } from './Icon';
+import { IconButton, Row, T } from './ui';
 
 /** Verde da bolinha que avisa que há conversas salvas. */
 export const CHAT_DOT = '#22C55E';
 
-/** Há conversas para mostrar? Deslogado: só a da sessão. Logado: a da sessão e o histórico da conta. */
+/** Há conversas para mostrar? Deslogado: as desta sessão. Logado: as da sessão e o histórico da conta. */
 export function useHasChats() {
-  const { messages, logged } = useApp();
-  return messages.some((m) => m.from === 'user') || (logged && PAST_CHATS.length > 0);
+  const { messages, logged, sessionChats } = useApp();
+  return messages.some((m) => m.from === 'user') || sessionChats.length > 0 || (logged && PAST_CHATS.length > 0);
 }
 
-/** Ícone de conversas para a faixa azul, com bolinha verde quando há conversas salvas. */
+/** Ícone de conversas para a faixa, com bolinha verde quando há conversas salvas. */
 export function ChatHistoryButton({ onPress }: { onPress: () => void }) {
   const has = useHasChats();
   return <IconButton icon="chats" label={has ? 'Conversas, há conversas salvas' : 'Conversas'} tone="bar" badge={has} badgeColor={CHAT_DOT} onPress={onPress} />;
 }
 
-/** Folha com o histórico de conversas: da sessão (sem login) ou da sessão + conta (com login). */
+/**
+ * Folha simples, como na web: busca, "Nesta sessão" e, com login, o histórico da conta.
+ * Sem login, as conversas ficam guardadas só nesta sessão (não é preciso entrar para conversar).
+ */
 export function ChatHistorySheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const app = useApp();
+  const [q, setQ] = useState('');
+  const has = (t: string) => !q.trim() || t.toLowerCase().includes(q.trim().toLowerCase());
   const current = app.messages.find((m) => m.from === 'user');
-  const past = app.logged ? PAST_CHATS : [];
+  const sessao = [
+    ...(current ? [{ id: 'atual', title: current.text ?? 'Conversa atual', sub: 'Agora · em andamento' }] : []),
+    ...app.sessionChats.map((c) => ({ id: c.id, title: c.title, sub: 'Nesta sessão' })),
+  ].filter((c) => has(c.title));
+  const past = (app.logged ? PAST_CHATS : []).filter((c) => has(c.t));
   const groups = [...new Set(past.map((c) => c.group))];
   const go = (fn: () => void) => {
     onClose();
+    setQ('');
     fn();
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} title="Conversas" sub={app.logged ? 'Desta sessão e da sua conta Gov.pi.' : 'Desta sessão. Entre na conta para guardar o histórico.'}>
-      {current ? (
-        <View>
-          <T v="eyebrow" c={color.muted}>
-            Nesta sessão
+    <Sheet visible={visible} onClose={onClose} title="Conversas">
+      <View style={styles.search}>
+        <Icon name="search" size={18} color={color.ink} />
+        <TextInput value={q} onChangeText={setQ} placeholder="Buscar conversa" placeholderTextColor={color.muted} accessibilityLabel="Buscar conversa" style={styles.input} />
+      </View>
+
+      <View>
+        <T v="eyebrow" c={color.muted}>
+          Conversas nesta sessão
+        </T>
+        {sessao.length ? (
+          sessao.map((c, i) => (
+            <Row
+              key={c.id}
+              icon="chats"
+              title={c.title}
+              sub={c.sub}
+              last={i === sessao.length - 1}
+              onPress={() => go(() => (c.id === 'atual' ? ask() : (app.openSessionChat(c.id), ask())))}
+            />
+          ))
+        ) : (
+          <T v="small" c={color.muted} style={{ paddingVertical: 12 }}>
+            {q.trim() ? 'Nenhuma conversa encontrada.' : 'Nenhuma conversa ainda.'}
           </T>
-          <Row icon="chat" title={current.text ?? 'Conversa atual'} sub="Em andamento · toque para continuar" onPress={() => go(() => ask())} last />
-        </View>
-      ) : null}
+        )}
+      </View>
 
       {groups.map((g) => (
         <View key={g}>
@@ -69,27 +98,11 @@ export function ChatHistorySheet({ visible, onClose }: { visible: boolean; onClo
             ))}
         </View>
       ))}
-
-      {!current && !past.length ? (
-        <Empty icon="chats" title="Nenhuma conversa ainda" text="Quando você falar com o Assistente Gov.pi, a conversa aparece aqui." />
-      ) : null}
-
-      <Button
-        icon="edit"
-        label="Nova conversa"
-        kind={current || past.length ? 'secondary' : 'primary'}
-        onPress={() =>
-          go(() => {
-            app.newChat();
-            ask();
-          })
-        }
-      />
-      {!app.logged ? (
-        <View style={{ alignItems: 'center' }}>
-          <LinkText label="Entrar para ver o histórico da conta" icon="right" onPress={() => go(() => router.push('/entrar'))} />
-        </View>
-      ) : null}
     </Sheet>
   );
 }
+
+const styles = StyleSheet.create({
+  search: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 14, borderRadius: radius.md, borderWidth: 1, borderColor: color.line, backgroundColor: color.surface },
+  input: { flex: 1, fontFamily: font.regular, fontSize: 14, color: color.ink, paddingVertical: 0 },
+});

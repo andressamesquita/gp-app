@@ -45,10 +45,16 @@ type AppState = {
   send: (text: string) => void;
   confirm: (msgId: string, id: string) => void;
   newChat: () => void;
+  /** Conversas desta sessão (com ou sem login), guardadas ao começar uma nova; a atual não entra aqui */
+  sessionChats: SessionChat[];
+  /** Volta para uma conversa guardada desta sessão (a atual, se houver, é guardada antes) */
+  openSessionChat: (id: string) => void;
   /* Toast */
   toast: string | null;
   showToast: (t: string) => void;
 };
+
+export type SessionChat = { id: string; title: string; messages: Msg[] };
 
 const Ctx = createContext<AppState | null>(null);
 
@@ -68,6 +74,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [textScale, setTextScale] = useState(1);
   const [posts, setPosts] = useState<Post[]>([]);
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [sessionChats, setSessionChats] = useState<SessionChat[]>([]);
+  const messagesRef = useRef<Msg[]>([]);
+  messagesRef.current = messages;
+  /** Guarda a conversa atual na lista da sessão (se a pessoa chegou a escrever algo) */
+  const archiveCurrent = useCallback(() => {
+    const cur = messagesRef.current;
+    const first = cur.find((m) => m.from === 'user');
+    if (!first) return;
+    setSessionChats((list) => [{ id: mid(), title: first.text ?? 'Conversa', messages: cur.map((m) => ({ ...m, used: true })) }, ...list]);
+  }, []);
   const [thinking, setThinking] = useState<string | null>(null);
   const [thinkStep, setThinkStep] = useState(0);
   const [thinkTotal, setThinkTotal] = useState(0);
@@ -187,7 +203,21 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       newChat: () => {
         timers.current.forEach(clearTimeout);
         timers.current = [];
+        archiveCurrent();
         setMessages([]);
+        setThinking(null);
+        setBusy(false);
+        setThinkStep(0);
+      },
+      sessionChats,
+      openSessionChat: (id: string) => {
+        const chat = sessionChats.find((c) => c.id === id);
+        if (!chat) return;
+        timers.current.forEach(clearTimeout);
+        timers.current = [];
+        archiveCurrent();
+        setSessionChats((list) => list.filter((c) => c.id !== id));
+        setMessages(chat.messages);
         setThinking(null);
         setBusy(false);
         setThinkStep(0);
@@ -195,7 +225,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       toast,
       showToast,
     }),
-    [logged, photo, textScale, posts, scenario, setScenario, cnhStarted, notaResgatada, favorites, prefs, messages, thinking, thinkStep, thinkTotal, busy, resumeAfterLogin, send, confirm, toast, showToast],
+    [logged, photo, textScale, posts, scenario, setScenario, cnhStarted, notaResgatada, favorites, prefs, messages, thinking, thinkStep, thinkTotal, busy, resumeAfterLogin, send, confirm, toast, showToast, sessionChats, archiveCurrent],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
