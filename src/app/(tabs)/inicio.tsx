@@ -177,7 +177,7 @@ export default function Inicio() {
         ) : null}
 
         {/* ---------- Mais acessados ---------- */}
-        <SectionHead title="Mais acessados" action={<LinkText label="Ver todos" onPress={() => router.navigate('/servicos')} />} />
+        <SectionHead title="Mais acessados no Gov.pi" action={<LinkText label="Ver todos" onPress={() => router.navigate('/servicos')} />} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12, paddingBottom: 8 }}>
           {top.map((s) => (
             <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
