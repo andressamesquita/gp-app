@@ -24,7 +24,7 @@ const COPY: Record<string, { title: string; icon: IconName; text: string; perks:
     title: 'Documentos',
     icon: 'wallet',
     text: 'Entre para ter seus documentos digitais no celular e mostrá-los com QR Code quando precisar.',
-    perks: ['CNH Digital, CIN e carteiras do Hemopi, do Estudante e do Idoso', 'Validação por QR Code, mesmo sem internet', 'Compartilhamento seguro com confirmação de identidade'],
+    perks: ['CNH Digital, CIN e carteiras do Hemopi, do Estudante e do Idoso', 'Validação por QR Code', 'Compartilhamento seguro com confirmação de identidade'],
   },
   perfil: {
     title: 'Área do cidadão',
