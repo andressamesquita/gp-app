@@ -5,11 +5,11 @@ import { PERSON } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { FAIXA_BRANCA } from '@/theme/tokens';
 import { ChatHistoryButton } from './chat-history';
-import { Avatar, Button, IconButton, Logo } from './ui';
+import { Avatar, Button, Logo } from './ui';
 
 /**
  * Linha da faixa superior da Início, reaproveitada no Assistente Gov.pi:
- * logo, histórico de conversas e, logado, avisos + avatar; deslogado, "Entrar".
+ * logo, histórico de conversas e, logado, o avatar (sem o sino de avisos); deslogado, "Entrar".
  */
 /** onHistory: abre o histórico de conversas. A folha fica na raiz da tela (senão, na web, ela fica presa dentro da faixa e o conteúdo passa por cima). */
 export function TopBarRow({ onHistory }: { onHistory: () => void }) {
@@ -22,7 +22,6 @@ export function TopBarRow({ onHistory }: { onHistory: () => void }) {
         <ChatHistoryButton onPress={onHistory} />
         {app.logged ? (
           <>
-            <IconButton icon="bell" label="Avisos" tone="bar" badge onPress={() => router.push('/avisos')} />
             <Pressable accessibilityRole="button" accessibilityLabel="Abrir Área do cidadão" onPress={() => router.navigate('/perfil')}>
               <Avatar initials={PERSON.initials} size={38} light={!FAIXA_BRANCA} uri={app.photo} />
             </Pressable>
