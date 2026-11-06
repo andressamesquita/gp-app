@@ -74,7 +74,7 @@ export default function Servicos() {
 
   const otherOrgs = orgsSel;
   const catLabel = cat ? CATEGORIES.find((c) => c.id === cat)?.t ?? 'Categoria' : 'Categoria';
-  const orgLabel = otherOrgs.length > 1 ? `${otherOrgs[0]} +${otherOrgs.length - 1}` : otherOrgs[0] ?? 'Órgão';
+  const orgLabel = otherOrgs[0] ?? 'Órgão';
   const any = !!(cat || orgsSel.length || vistaAtiva !== 'procurados');
   const orgsShown = orgs.filter((o) => !orgQ.trim() || norm(o).includes(norm(orgQ.trim())));
 
@@ -305,20 +305,20 @@ export default function Servicos() {
             style={styles.orgInput}
           />
         </View>
-        <View>
+        <View accessibilityRole="radiogroup">
           {orgsShown.map((o, i) => {
             const on = draft.includes(o);
             const n = SERVICES.filter((s) => s.o === o).length;
             return (
               <Pressable
                 key={o}
-                accessibilityRole="checkbox"
+                accessibilityRole="radio"
                 accessibilityState={{ checked: on }}
                 accessibilityLabel={`${o}, ${n} ${n === 1 ? 'serviço' : 'serviços'}`}
                 onPress={() => {
                   tap();
-                  // Caixa de seleção: dá para marcar mais de um órgão
-                  setDraft((d) => (on ? d.filter((x) => x !== o) : [...d, o]));
+                  // Um órgão por vez: escolher outro troca a escolha; tocar no marcado desmarca
+                  setDraft(on ? [] : [o]);
                 }}
                 style={[styles.orgRow, i < orgsShown.length - 1 && styles.orgLine]}>
                 <View style={[styles.orgBadge, on && { backgroundColor: color.brandTint }]}>
@@ -332,7 +332,7 @@ export default function Servicos() {
                     {n} {n === 1 ? 'serviço' : 'serviços'}
                   </T>
                 </View>
-                <View style={[styles.check, on && styles.checkOn]}>{on ? <Icon name="check" size={16} color={color.white} strokeWidth={3} /> : null}</View>
+                <View style={[styles.radio, on && styles.radioOn]}>{on ? <View style={styles.radioDot} /> : null}</View>
               </Pressable>
             );
           })}
@@ -403,10 +403,8 @@ const styles = StyleSheet.create({
   orgRow: { flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 60, paddingVertical: 8 },
   orgLine: { borderBottomWidth: 1, borderBottomColor: color.line },
   orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
-  check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   radioOn: { borderColor: color.brand },
   radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: color.brand },
-  checkOn: { backgroundColor: color.brand, borderColor: color.brand },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });
