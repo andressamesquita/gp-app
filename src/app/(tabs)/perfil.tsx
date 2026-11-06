@@ -4,20 +4,18 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ForMeCard, MedalGrid, RequestCard, ServiceCardCompact } from '@/components/blocks';
+import { ForMeCard, MedalGrid, RequestCard } from '@/components/blocks';
 import { AskField } from '@/components/ask-field';
 import { BlueBackdrop, LightBackdrop } from '@/components/hero';
 import { Icon, type IconName } from '@/components/Icon';
 import { LoginInvite } from '@/components/login-invite';
 import { ask } from '@/components/nav';
 import { ZapAvisosPromo } from '@/components/promo-cards';
-import { RecentesPaginados } from '@/components/recentes';
 import { useRolou } from '@/components/page';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
-import { CATEGORIES, SERVICES } from '@/data/catalog';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, recentes, recomendados, requests, type Scenario } from '@/data/mock';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, type Scenario } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius, FAIXA_BRANCA, bar, BAR_SHADOW } from '@/theme/tokens';
 
@@ -45,15 +43,9 @@ const MOSTRAR_ZAP = false;
 /**
  * Reorganização (testes antes/depois):
  *   AS_ABRE: o que o avatar (AS) da faixa azul abre. 'conta' = Minha conta (novo) · 'conquistas' = Minhas conquistas (antes)
- *   MOSTRAR_SEUS_SERVICOS: true = bloco "Seus serviços" com Recentes | Favoritos (novo) · false = só "Serviços favoritos" (antes)
+ *   "Seus serviços" e "Acessados recentemente" saíram daqui: ficam no chip "Para você" da aba Serviços.
  */
 const AS_ABRE: 'conta' | 'conquistas' = 'conta';
-const MOSTRAR_SEUS_SERVICOS = true;
-/**
- *   RECENTES_LAYOUT: 'paginas' = lista em páginas de 3 que rolam para o lado, com pontinhos (novo)
- *                    'icones'  = ícones em fileira (antes)
- */
-const RECENTES_LAYOUT: 'paginas' | 'icones' = 'paginas';
 /**
  *   GRADE_ENXUTA: true = só os atalhos de uso frequente (Jornada, Nota, Conversas, Conquistas); Meu perfil, Configurações,
  *   Ajuda, Feed e Sair ficam em Minha conta (no AS) e o Zap fica só no card do topo · false = grade de 8 e "Sair" aqui (antes)
@@ -81,14 +73,6 @@ function AreaLogada() {
   const andamento = all.filter((r) => !/conclu/i.test(r.status));
   const list = all.filter((r) => (filter === 'todas' ? true : filter === 'concluidas' ? /conclu/i.test(r.status) : !/conclu/i.test(r.status)));
   const cards = forMe(scenario, cnhStarted);
-  const favs = SERVICES.filter((s) => app.favorites.includes(s.t));
-  // Últimos acessos: some numa conta nova; "Limpar" esvazia a lista neste aparelho
-  const [recLimpos, setRecLimpos] = useState(false);
-  const recs = recLimpos ? [] : recentes(scenario).map((r) => ({ ...r, s: SERVICES.find((x) => x.t === r.t) })).filter((r) => r.s);
-  const [aba, setAba] = useState<'recomendados' | 'favoritos'>('recomendados');
-  // Recomendados pelo perfil; respeita “Usar meu histórico para sugerir serviços” em Configurações
-  const recomend = app.prefs.historico ? recomendados(scenario).map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x) : [];
-  const abaAtiva = aba;
   const pct = earned.length / MEDALS.length;
   const shareText = 'Renovei minha CNH com o Gov.pi Cidadão! Sem fila e sem sair de casa.';
   // A conquista some da Área do cidadão depois de publicada ou guardada (lixeira); fica em Publicações
@@ -281,95 +265,6 @@ function AreaLogada() {
               <Empty icon="clock" title="Nenhuma solicitação ainda" text="Quando você pedir um serviço, cada etapa aparece aqui." action={{ label: 'Falar com o Assistente', onPress: () => ask() }} />
             )}
           </Section>
-
-          {/* ---------- Seus serviços: Recomendados | Favoritos (MOSTRAR_SEUS_SERVICOS) ---------- */}
-          {MOSTRAR_SEUS_SERVICOS ? (
-            <Section
-              flat
-              title="Seus serviços"
-              action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
-              <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
-                <Chip label="Recomendados" on={abaAtiva === 'recomendados'} onPress={() => setAba('recomendados')} />
-                <Chip label="Favoritos" count={favs.length || undefined} on={abaAtiva === 'favoritos'} onPress={() => setAba('favoritos')} />
-              </View>
-              {abaAtiva === 'recomendados' ? (
-                recomend.length ? (
-                  <>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
-                      {recomend.map((s) => (
-                        <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
-                      ))}
-                    </ScrollView>
-                  </>
-                ) : (
-                  <Empty
-                    icon="spark"
-                    title="Recomendações desligadas"
-                    text="Ligue “Usar meu histórico para sugerir serviços” em Configurações para ver serviços escolhidos para você."
-                    action={{ label: 'Abrir Configurações', onPress: () => router.push('/configuracoes') }}
-                  />
-                )
-              ) : favs.length ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
-                  {favs.map((s) => (
-                    <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
-                  ))}
-                </ScrollView>
-              ) : (
-                <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
-              )}
-            </Section>
-          ) : (
-          <Section flat title="Serviços favoritos" action={{ label: 'Ver serviços', onPress: () => router.navigate('/servicos') }}>
-            {favs.length ? (
-              // Mesmos cards de "Mais acessados" (Início), em carrossel
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 8, paddingBottom: 4 }}>
-                {favs.map((s) => (
-                  <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
-                ))}
-              </ScrollView>
-            ) : (
-              <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
-            )}
-          </Section>
-          )}
-
-          {/* ---------- Acessados recentemente (some numa conta nova ou depois de "Limpar") ---------- */}
-          {recs.length ? (
-            <Section flat title="Acessados recentemente" action={{ label: 'Limpar', onPress: () => { setRecLimpos(true); app.showToast('Últimos acessos apagados deste aparelho.'); } }}>
-              {RECENTES_LAYOUT === 'paginas' ? (
-                <RecentesPaginados itens={recs.map((r) => ({ s: r.s!, quando: r.quando }))} onOpen={(s) => ask(s.q)} />
-              ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20 }} contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}>
-                  {recs.map(({ s, quando }) => {
-                    const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s!.c));
-                    const k = kind[ci % 4];
-                    return (
-                      <Pressable
-                        key={s!.t}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${s!.t}, ${s!.o}, acessado ${quando.toLowerCase()}`}
-                        onPress={() => {
-                          tap();
-                          ask(s!.q);
-                        }}
-                        style={({ pressed }) => [styles.rec, pressed && { opacity: 0.7 }]}>
-                        <View style={[styles.recIco, { backgroundColor: k.bg }]}>
-                          <Icon name={(CATEGORIES[ci]?.icon ?? 'grid') as IconName} size={22} color={k.fg} />
-                        </View>
-                        <T v="smallStrong" numberOfLines={2} style={{ textAlign: 'center', lineHeight: 16 }}>
-                          {s!.t}
-                        </T>
-                        <T v="caption" c={color.muted}>
-                          {quando}
-                        </T>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              )}
-            </Section>
-          ) : null}
 
           {/* ---------- Só para o protótipo ---------- */}
           <View style={styles.proto}>
