@@ -162,11 +162,37 @@ export default function Servicos() {
 
           {!!list.length || !filtering ? null : (
             <View style={styles.none}>
-              <T v="bodyStrong">Não encontramos{q ? ` “${q}”` : ' serviços com esses filtros'}.</T>
-              <T v="small" c={color.muted}>
-                Tente descrever o que você precisa. O assistente entende frases como “perdi meu documento”.
-              </T>
-              <LinkText label="Descrever para o assistente" icon="right" onPress={() => ask(q || undefined)} />
+              {!q.trim() && vistaAtiva !== 'procurados' ? (
+                // "Para você" + Categoria/Órgão sem nenhum serviço em comum
+                <>
+                  <T v="bodyStrong">
+                    {{ recomendados: 'Nenhum recomendado', favoritos: 'Nenhum favorito', recentes: 'Nenhum acesso recente', procurados: '' }[vistaAtiva]}{' '}
+                    {cat ? `em ${CATEGORIES.find((c) => c.id === cat)?.t}` : `de ${orgsSel.join(', ')}`}.
+                  </T>
+                  <T v="small" c={color.muted}>
+                    Escolha outra {cat ? 'categoria' : 'opção de órgão'} ou veja todos os serviços {cat ? 'dessa categoria' : 'desse órgão'}.
+                  </T>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginTop: 4 }}>
+                    <LinkText label={`Ver todos ${cat ? 'da categoria' : 'do órgão'}`} icon="right" onPress={() => setVista('procurados')} />
+                    <LinkText
+                      label="Limpar filtros"
+                      onPress={() => {
+                        setCat(null);
+                        setOrgsSel([]);
+                        setVista('procurados');
+                      }}
+                    />
+                  </View>
+                </>
+              ) : (
+                <>
+                  <T v="bodyStrong">Não encontramos{q ? ` “${q}”` : ' serviços com esses filtros'}.</T>
+                  <T v="small" c={color.muted}>
+                    Tente descrever o que você precisa. O assistente entende frases como “perdi meu documento”.
+                  </T>
+                  <LinkText label="Descrever para o assistente" icon="right" onPress={() => ask(q || undefined)} />
+                </>
+              )}
             </View>
           )}
         </View>
@@ -228,6 +254,11 @@ export default function Servicos() {
                 accessibilityLabel={c.t}
                 onPress={() => {
                   tap();
+                  // Regra: Categoria e Órgão não ficam juntos; vale o último escolhido ("Para você" combina com qualquer um)
+                  if (c.id && orgsSel.length) {
+                    setOrgsSel([]);
+                    app.showToast('Filtro de órgão trocado pela categoria.');
+                  }
                   setCat(c.id);
                   setSheet(null);
                 }}
@@ -252,8 +283,12 @@ export default function Servicos() {
         center
         footer={
           <Button
-            label={draft.length ? `Ver resultados (${SERVICES.filter((s) => draft.includes(s.o) && (!cat || s.c === cat)).length})` : 'Ver todos os serviços'}
+            label={draft.length ? `Ver resultados (${base[vistaAtiva].filter((s) => draft.includes(s.o)).length})` : 'Ver todos os serviços'}
             onPress={() => {
+              if (draft.length && cat) {
+                setCat(null);
+                app.showToast('Filtro de categoria trocado pelo órgão.');
+              }
               setOrgsSel(draft);
               setSheet(null);
             }}
