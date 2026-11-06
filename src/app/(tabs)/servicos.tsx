@@ -4,13 +4,12 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native
 
 import { AskField } from '@/components/ask-field';
 import { CategoryIcon } from '@/components/category-icon';
-import { ServiceCard, ServiceCardCompact, useServiceOpen } from '@/components/blocks';
+import { ServiceCard, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
 import { TabTop, useRolou } from '@/components/page';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
-import { RecentesPaginados } from '@/components/recentes';
 import { Button, Chip, Empty, LinkText, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
 import { recentes, recomendados } from '@/data/mock';
@@ -22,6 +21,14 @@ import { BAR_SHADOW, bar, color, font, radius } from '@/theme/tokens';
 /* Atalhos rápidos, como na web: Detran, Empresas, Servidor.
    Os três são CATEGORIAS (Detran = Transporte e Veículos), então só um fica ativo por vez
    e troca a categoria escolhida no painel. Categoria + órgão podem ficar juntos. */
+type Vista = 'procurados' | 'recomendados' | 'favoritos' | 'recentes';
+const VISTAS: { id: Vista; chip: string; titulo: string }[] = [
+  { id: 'procurados', chip: 'Mais procurados', titulo: 'Mais procurados no Gov.pi' },
+  { id: 'recomendados', chip: 'Recomendados', titulo: 'Recomendados para você' },
+  { id: 'favoritos', chip: 'Favoritos', titulo: 'Seus favoritos' },
+  { id: 'recentes', chip: 'Recentes', titulo: 'Acessados recentemente' },
+];
+
 const QUICK: { label: string; cat?: CategoryId; org?: string }[] = [
   { label: 'Detran', cat: 'transp' },
   { label: 'Empresas', cat: 'empr' },
@@ -38,17 +45,31 @@ export default function Servicos() {
   const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
   const [all, setAll] = useState(false);
   const open = useServiceOpen();
+  const app = useApp();
+  // Qual lista mostrar (logado): todas no mesmo card; busca e filtros valem sobre a lista escolhida
+  const [vista, setVista] = useState<Vista>('procurados');
+  const vistaAtiva: Vista = app.logged ? vista : 'procurados';
+  const quandoDe = useMemo(() => Object.fromEntries(recentes(app.scenario).map((r) => [r.t, r.quando])), [app.scenario]);
+  const base = useMemo(() => {
+    const pega = (ts: string[]) => ts.map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x);
+    return {
+      procurados: SERVICES,
+      recomendados: app.prefs.historico ? pega(recomendados(app.scenario)) : [],
+      favoritos: SERVICES.filter((s) => app.favorites.includes(s.t)),
+      recentes: pega(recentes(app.scenario).map((r) => r.t)),
+    };
+  }, [app.scenario, app.prefs.historico, app.favorites]);
   const insets = useSafeAreaInsets();
   // Sombra quando o título já saiu e a busca está grudada no topo
   const [rolou, onScroll] = useRolou(56);
 
   const list = useMemo(() => {
     const n = norm(q.trim());
-    return SERVICES.filter((s) => (!cat || s.c === cat) && (!orgsSel.length || orgsSel.includes(s.o)) && (!n || norm(`${s.t} ${s.d} ${s.o} ${s.k}`).includes(n)));
-  }, [q, cat, orgsSel]);
+    return base[vistaAtiva].filter((s) => (!cat || s.c === cat) && (!orgsSel.length || orgsSel.includes(s.o)) && (!n || norm(`${s.t} ${s.d} ${s.o} ${s.k}`).includes(n)));
+  }, [q, cat, orgsSel, base, vistaAtiva]);
 
   const filtering = !!(q.trim() || cat || orgsSel.length);
-  const shown = filtering || all ? list : list.slice(0, 5);
+  const shown = filtering || all || vistaAtiva !== 'procurados' ? list : list.slice(0, 5);
 
   const counts = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.id, SERVICES.filter((s) => s.c === c.id).length])), []);
   const orgs = useMemo(() => [...new Set(SERVICES.map((s) => s.o))].sort((a, b) => a.localeCompare(b, 'pt-BR')), []);
@@ -125,12 +146,18 @@ export default function Servicos() {
         </View>
 
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
-          {/* Logado e sem busca/filtro: "Seus serviços" e "Acessados recentemente" (os mesmos da Área do cidadão), recolhidos */}
-          {!filtering && <SeusBlocos />}
+          {/* Logado: escolhe a lista (mesmos dados de "Seus serviços" e "Acessados recentemente" da Área do cidadão) */}
+          {app.logged && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }} contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingTop: 4 }} accessibilityRole="tablist">
+              {VISTAS.map((v) => (
+                <Chip key={v.id} label={v.chip} count={base[v.id].length} on={vistaAtiva === v.id} onPress={() => { setVista(v.id); setAll(false); }} />
+              ))}
+            </ScrollView>
+          )}
 
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
-              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : 'Mais procurados no Gov.pi'}
+              {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : VISTAS.find((v) => v.id === vistaAtiva)!.titulo}
             </T>
             <T v="caption" c={color.muted} accessibilityLiveRegion="polite">
               {shown.length < list.length ? `${shown.length} de ${list.length} serviços` : `${list.length} ${list.length === 1 ? 'serviço' : 'serviços'}`}
@@ -138,7 +165,7 @@ export default function Servicos() {
           </View>
 
           {shown.map((s) => (
-            <ServiceCard key={s.t} s={s} onPress={() => open(s)} />
+            <ServiceCard key={s.t} s={s} quando={vistaAtiva === 'recentes' ? quandoDe[s.t] : undefined} onPress={() => open(s)} />
           ))}
 
           {/* Sem busca nem filtro, mostra só os 5 mais procurados */}
@@ -146,7 +173,20 @@ export default function Servicos() {
             <Button kind="secondary" label={`Ver todos os ${list.length} serviços`} onPress={() => setAll(true)} />
           ) : null}
 
-          {!list.length && (
+          {!list.length && !filtering && vistaAtiva === 'recomendados' ? (
+            <Empty
+              icon="spark"
+              title="Recomendações desligadas"
+              text="Ligue “Usar meu histórico para sugerir serviços” em Configurações para ver serviços escolhidos para você."
+              action={{ label: 'Abrir Configurações', onPress: () => router.push('/configuracoes') }}
+            />
+          ) : !list.length && !filtering && vistaAtiva === 'favoritos' ? (
+            <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
+          ) : !list.length && !filtering && vistaAtiva === 'recentes' ? (
+            <Empty icon="clock" title="Nenhum acesso recente" text="Os serviços que você abrir aparecem aqui." />
+          ) : null}
+
+          {!!list.length || !filtering ? null : (
             <View style={styles.none}>
               <T v="bodyStrong">Não encontramos{q ? ` “${q}”` : ' serviços com esses filtros'}.</T>
               <T v="small" c={color.muted}>
@@ -255,89 +295,6 @@ export default function Servicos() {
   );
 }
 
-/** Blocos da Área do cidadão em versão sanfona: o título fica visível e o conteúdo abre ao tocar. */
-function SeusBlocos() {
-  const app = useApp();
-  const [aberto, setAberto] = useState<'seus' | 'recentes' | null>(null);
-  const [aba, setAba] = useState<'recomendados' | 'favoritos'>('recomendados');
-  if (!app.logged) return null;
-  const favs = SERVICES.filter((s) => app.favorites.includes(s.t));
-  const recomend = app.prefs.historico ? recomendados(app.scenario).map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x) : [];
-  const recs = recentes(app.scenario)
-    .map((r) => ({ s: SERVICES.find((x) => x.t === r.t)!, quando: r.quando }))
-    .filter((r) => r.s);
-  const lista = aba === 'recomendados' ? recomend : favs;
-
-  return (
-    <View style={{ gap: 12, marginBottom: 12 }}>
-      <Sanfona
-        title="Seus serviços"
-        resumo={`${recomend.length} recomendados · ${favs.length} ${favs.length === 1 ? 'favorito' : 'favoritos'}`}
-        aberto={aberto === 'seus'}
-        onToggle={() => setAberto(aberto === 'seus' ? null : 'seus')}>
-        <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
-          <Chip label="Recomendados" on={aba === 'recomendados'} onPress={() => setAba('recomendados')} />
-          <Chip label="Favoritos" count={favs.length || undefined} on={aba === 'favoritos'} onPress={() => setAba('favoritos')} />
-        </View>
-        {lista.length ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }} contentContainerStyle={{ gap: 12, paddingHorizontal: 16, paddingBottom: 4 }}>
-            {lista.map((s) => (
-              <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
-            ))}
-          </ScrollView>
-        ) : aba === 'recomendados' ? (
-          <Empty
-            icon="spark"
-            title="Recomendações desligadas"
-            text="Ligue “Usar meu histórico para sugerir serviços” em Configurações para ver serviços escolhidos para você."
-            action={{ label: 'Abrir Configurações', onPress: () => router.push('/configuracoes') }}
-          />
-        ) : (
-          <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
-        )}
-      </Sanfona>
-
-      {recs.length ? (
-        <Sanfona
-          title="Acessados recentemente"
-          resumo={`${recs.length} ${recs.length === 1 ? 'serviço' : 'serviços'}`}
-          aberto={aberto === 'recentes'}
-          onToggle={() => setAberto(aberto === 'recentes' ? null : 'recentes')}>
-          <RecentesPaginados itens={recs} onOpen={(s) => ask(s.q)} />
-        </Sanfona>
-      ) : null}
-    </View>
-  );
-}
-
-function Sanfona({ title, resumo, aberto, onToggle, children }: { title: string; resumo: string; aberto: boolean; onToggle: () => void; children: React.ReactNode }) {
-  return (
-    <View style={styles.sanfona}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ expanded: aberto }}
-        accessibilityLabel={`${title}, ${resumo}`}
-        accessibilityHint={aberto ? 'Recolhe a lista' : 'Mostra a lista'}
-        onPress={() => {
-          tap();
-          onToggle();
-        }}
-        style={({ pressed }) => [styles.sanfonaHead, pressed && { backgroundColor: color.bg }]}>
-        <View style={{ flex: 1, gap: 2 }}>
-          <T v="h3">{title}</T>
-          <T v="caption" c={color.muted}>
-            {resumo}
-          </T>
-        </View>
-        <View style={{ transform: [{ rotate: aberto ? '180deg' : '0deg' }] }}>
-          <Icon name="down" size={22} color={color.brand} />
-        </View>
-      </Pressable>
-      {aberto ? <View style={styles.sanfonaBody}>{children}</View> : null}
-    </View>
-  );
-}
-
 function FilterChip({ label, on, caret, icon, onPress }: { label: string; on?: boolean; caret?: boolean; icon?: IconName; onPress: () => void }) {
   return (
     <Pressable
@@ -396,8 +353,5 @@ const styles = StyleSheet.create({
   orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
   check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   checkOn: { backgroundColor: color.brand, borderColor: color.brand },
-  sanfona: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, overflow: 'hidden' },
-  sanfonaHead: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 64, paddingHorizontal: 16, paddingVertical: 12 },
-  sanfonaBody: { paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });

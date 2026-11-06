@@ -347,7 +347,7 @@ export function Timeline({ steps, fin }: { steps: Request['steps']; fin?: boolea
 /* =========================================================
    Cartão de serviço (catálogo)
    ========================================================= */
-export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void }) {
+export function ServiceCard({ s, onPress, quando }: { s: Service; onPress: () => void; /** Lista de recentes: quando foi acessado. */ quando?: string }) {
   const { favorites, toggleFavorite, showToast, logged } = useApp();
   const ci = Math.max(0, CATEGORIES.findIndex((c) => c.id === s.c));
   const cat = CATEGORIES[ci];
@@ -367,7 +367,7 @@ export function ServiceCard({ s, onPress }: { s: Service; onPress: () => void })
           <Icon name={(cat?.icon ?? 'grid') as IconName} size={18} color={k.fg} />
         </View>
         <T v="caption" c={color.muted} style={{ flex: 1 }} numberOfLines={1}>
-          {cat?.t}
+          {quando ? `${cat?.t} · Acessado ${quando.toLowerCase()}` : cat?.t}
         </T>
         {/* Favoritar só com login */}
         {logged && (
