@@ -4,14 +4,18 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native
 
 import { AskField } from '@/components/ask-field';
 import { CategoryIcon } from '@/components/category-icon';
-import { ServiceCard, useServiceOpen } from '@/components/blocks';
+import { ServiceCard, ServiceCardCompact, useServiceOpen } from '@/components/blocks';
 import { Icon, type IconName } from '@/components/Icon';
 import { TabTop, useRolou } from '@/components/page';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
-import { Button, LinkText, T, tap } from '@/components/ui';
+import { RecentesPaginados } from '@/components/recentes';
+import { Button, Chip, Empty, LinkText, T, tap } from '@/components/ui';
 import { CATEGORIES, SERVICES, type CategoryId } from '@/data/catalog';
+import { recentes, recomendados } from '@/data/mock';
+import { useApp } from '@/state/app-state';
+import { router } from 'expo-router';
 import { norm } from '@/state/assistant';
 import { BAR_SHADOW, bar, color, font, radius } from '@/theme/tokens';
 
@@ -121,6 +125,9 @@ export default function Servicos() {
         </View>
 
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
+          {/* Logado e sem busca/filtro: "Seus serviços" e "Acessados recentemente" (os mesmos da Área do cidadão), recolhidos */}
+          {!filtering && <SeusBlocos />}
+
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
               {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : 'Mais procurados no Gov.pi'}
@@ -248,6 +255,89 @@ export default function Servicos() {
   );
 }
 
+/** Blocos da Área do cidadão em versão sanfona: o título fica visível e o conteúdo abre ao tocar. */
+function SeusBlocos() {
+  const app = useApp();
+  const [aberto, setAberto] = useState<'seus' | 'recentes' | null>(null);
+  const [aba, setAba] = useState<'recomendados' | 'favoritos'>('recomendados');
+  if (!app.logged) return null;
+  const favs = SERVICES.filter((s) => app.favorites.includes(s.t));
+  const recomend = app.prefs.historico ? recomendados(app.scenario).map((t) => SERVICES.find((x) => x.t === t)).filter((x): x is (typeof SERVICES)[number] => !!x) : [];
+  const recs = recentes(app.scenario)
+    .map((r) => ({ s: SERVICES.find((x) => x.t === r.t)!, quando: r.quando }))
+    .filter((r) => r.s);
+  const lista = aba === 'recomendados' ? recomend : favs;
+
+  return (
+    <View style={{ gap: 12, marginBottom: 12 }}>
+      <Sanfona
+        title="Seus serviços"
+        resumo={`${recomend.length} recomendados · ${favs.length} ${favs.length === 1 ? 'favorito' : 'favoritos'}`}
+        aberto={aberto === 'seus'}
+        onToggle={() => setAberto(aberto === 'seus' ? null : 'seus')}>
+        <View style={{ flexDirection: 'row', gap: 8 }} accessibilityRole="tablist">
+          <Chip label="Recomendados" on={aba === 'recomendados'} onPress={() => setAba('recomendados')} />
+          <Chip label="Favoritos" count={favs.length || undefined} on={aba === 'favoritos'} onPress={() => setAba('favoritos')} />
+        </View>
+        {lista.length ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }} contentContainerStyle={{ gap: 12, paddingHorizontal: 16, paddingBottom: 4 }}>
+            {lista.map((s) => (
+              <ServiceCardCompact key={s.t} s={s} onPress={() => ask(s.q)} />
+            ))}
+          </ScrollView>
+        ) : aba === 'recomendados' ? (
+          <Empty
+            icon="spark"
+            title="Recomendações desligadas"
+            text="Ligue “Usar meu histórico para sugerir serviços” em Configurações para ver serviços escolhidos para você."
+            action={{ label: 'Abrir Configurações', onPress: () => router.push('/configuracoes') }}
+          />
+        ) : (
+          <Empty icon="star" title="Você ainda não tem favoritos" text="Toque na estrela de um serviço para ele aparecer aqui." />
+        )}
+      </Sanfona>
+
+      {recs.length ? (
+        <Sanfona
+          title="Acessados recentemente"
+          resumo={`${recs.length} ${recs.length === 1 ? 'serviço' : 'serviços'}`}
+          aberto={aberto === 'recentes'}
+          onToggle={() => setAberto(aberto === 'recentes' ? null : 'recentes')}>
+          <RecentesPaginados itens={recs} onOpen={(s) => ask(s.q)} />
+        </Sanfona>
+      ) : null}
+    </View>
+  );
+}
+
+function Sanfona({ title, resumo, aberto, onToggle, children }: { title: string; resumo: string; aberto: boolean; onToggle: () => void; children: React.ReactNode }) {
+  return (
+    <View style={styles.sanfona}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: aberto }}
+        accessibilityLabel={`${title}, ${resumo}`}
+        accessibilityHint={aberto ? 'Recolhe a lista' : 'Mostra a lista'}
+        onPress={() => {
+          tap();
+          onToggle();
+        }}
+        style={({ pressed }) => [styles.sanfonaHead, pressed && { backgroundColor: color.bg }]}>
+        <View style={{ flex: 1, gap: 2 }}>
+          <T v="h3">{title}</T>
+          <T v="caption" c={color.muted}>
+            {resumo}
+          </T>
+        </View>
+        <View style={{ transform: [{ rotate: aberto ? '180deg' : '0deg' }] }}>
+          <Icon name="down" size={22} color={color.brand} />
+        </View>
+      </Pressable>
+      {aberto ? <View style={styles.sanfonaBody}>{children}</View> : null}
+    </View>
+  );
+}
+
 function FilterChip({ label, on, caret, icon, onPress }: { label: string; on?: boolean; caret?: boolean; icon?: IconName; onPress: () => void }) {
   return (
     <Pressable
@@ -306,5 +396,8 @@ const styles = StyleSheet.create({
   orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
   check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
   checkOn: { backgroundColor: color.brand, borderColor: color.brand },
+  sanfona: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, overflow: 'hidden' },
+  sanfonaHead: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 64, paddingHorizontal: 16, paddingVertical: 12 },
+  sanfonaBody: { paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });
