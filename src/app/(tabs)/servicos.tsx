@@ -18,15 +18,13 @@ import { router } from 'expo-router';
 import { norm } from '@/state/assistant';
 import { BAR_SHADOW, bar, color, font, radius } from '@/theme/tokens';
 
-/* Atalhos rápidos, como na web: Detran, Empresas, Servidor.
-   Os três são CATEGORIAS (Detran = Transporte e Veículos), então só um fica ativo por vez
-   e troca a categoria escolhida no painel. Categoria + órgão podem ficar juntos. */
 type Vista = 'procurados' | 'recomendados' | 'favoritos' | 'recentes';
-const VISTAS: { id: Vista; chip: string; titulo: string }[] = [
-  { id: 'procurados', chip: 'Mais procurados', titulo: 'Mais procurados no Gov.pi' },
-  { id: 'recomendados', chip: 'Recomendados', titulo: 'Recomendados para você' },
-  { id: 'favoritos', chip: 'Favoritos', titulo: 'Seus favoritos' },
-  { id: 'recentes', chip: 'Recentes', titulo: 'Acessados recentemente' },
+// Opções do chip "Para você" (mesmo padrão dos chips Categoria e Órgão)
+const VISTAS: { id: Vista; chip: string; titulo: string; icon: IconName; d: string }[] = [
+  { id: 'procurados', chip: 'Para você', titulo: 'Mais procurados no Gov.pi', icon: 'chart', d: 'Os serviços mais usados por todos' },
+  { id: 'recentes', chip: 'Recentes', titulo: 'Acessados recentemente', icon: 'clock', d: 'O que você abriu nos últimos dias' },
+  { id: 'recomendados', chip: 'Recomendados', titulo: 'Recomendados para você', icon: 'spark', d: 'Escolhidos pelo seu perfil' },
+  { id: 'favoritos', chip: 'Favoritos', titulo: 'Seus favoritos', icon: 'star', d: 'Os que você marcou com estrela' },
 ];
 
 const QUICK: { label: string; cat?: CategoryId; org?: string }[] = [
@@ -42,7 +40,7 @@ export default function Servicos() {
   const [orgsSel, setOrgsSel] = useState<string[]>([]);
   const [draft, setDraft] = useState<string[]>([]);
   const [orgQ, setOrgQ] = useState('');
-  const [sheet, setSheet] = useState<'cat' | 'org' | null>(null);
+  const [sheet, setSheet] = useState<'cat' | 'org' | 'vista' | null>(null);
   const [all, setAll] = useState(false);
   const open = useServiceOpen();
   const app = useApp();
@@ -74,12 +72,10 @@ export default function Servicos() {
   const counts = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.id, SERVICES.filter((s) => s.c === c.id).length])), []);
   const orgs = useMemo(() => [...new Set(SERVICES.map((s) => s.o))].sort((a, b) => a.localeCompare(b, 'pt-BR')), []);
 
-  const quickCat = QUICK.some((x) => x.cat && x.cat === cat);
-  const quickOrgs = QUICK.filter((x) => x.org).map((x) => x.org as string);
-  const otherOrgs = orgsSel.filter((o) => !quickOrgs.includes(o));
-  const catLabel = cat && !quickCat ? CATEGORIES.find((c) => c.id === cat)?.t ?? 'Categoria' : 'Categoria';
+  const otherOrgs = orgsSel;
+  const catLabel = cat ? CATEGORIES.find((c) => c.id === cat)?.t ?? 'Categoria' : 'Categoria';
   const orgLabel = otherOrgs.length > 1 ? `${otherOrgs[0]} +${otherOrgs.length - 1}` : otherOrgs[0] ?? 'Órgão';
-  const any = !!(cat || orgsSel.length);
+  const any = !!(cat || orgsSel.length || vistaAtiva !== 'procurados');
   const orgsShown = orgs.filter((o) => !orgQ.trim() || norm(o).includes(norm(orgQ.trim())));
 
   return (
@@ -104,7 +100,8 @@ export default function Servicos() {
           {/* Filtros em chips, como na web */}
           <View style={styles.cats}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
-              <FilterChip label={catLabel} on={!!cat && !quickCat} caret onPress={() => setSheet('cat')} />
+              <FilterChip label={VISTAS.find((v) => v.id === vistaAtiva)!.chip} on={vistaAtiva !== 'procurados'} caret onPress={() => setSheet('vista')} />
+              <FilterChip label={catLabel} on={!!cat} caret onPress={() => setSheet('cat')} />
               <FilterChip
                 label={orgLabel}
                 on={otherOrgs.length > 0}
@@ -115,21 +112,6 @@ export default function Servicos() {
                   setSheet('org');
                 }}
               />
-              {QUICK.map((x) => {
-                const on = x.cat ? cat === x.cat : orgsSel.includes(x.org as string);
-                return (
-                  <FilterChip
-                    key={x.label}
-                    label={x.label}
-                    on={on}
-                    onPress={() => {
-                      if (x.cat) setCat(on ? null : x.cat);
-                      // Regra: no máximo 1 categoria e 1 órgão ao mesmo tempo (atalhos trocam a escolha anterior)
-                      if (x.org) setOrgsSel(on ? [] : [x.org as string]);
-                    }}
-                  />
-                );
-              })}
               {any ? (
                 <FilterChip
                   label="Limpar filtros"
@@ -137,6 +119,7 @@ export default function Servicos() {
                   onPress={() => {
                     setCat(null);
                     setOrgsSel([]);
+                    setVista('procurados');
                   }}
                 />
               ) : null}
@@ -146,15 +129,6 @@ export default function Servicos() {
         </View>
 
         <View style={{ padding: 16, paddingTop: 8, gap: 12 }}>
-          {/* Logado: escolhe a lista (mesmos dados de "Seus serviços" e "Acessados recentemente" da Área do cidadão) */}
-          {app.logged && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }} contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingTop: 4 }} accessibilityRole="tablist">
-              {VISTAS.map((v) => (
-                <Chip key={v.id} label={v.chip} count={base[v.id].length} on={vistaAtiva === v.id} onPress={() => { setVista(v.id); setAll(false); }} />
-              ))}
-            </ScrollView>
-          )}
-
           <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <T v="h2" accessibilityRole="header">
               {q ? 'Resultados' : cat ? CATEGORIES.find((c) => c.id === cat)?.t : orgsSel.length ? orgsSel.join(', ') : VISTAS.find((v) => v.id === vistaAtiva)!.titulo}
@@ -197,6 +171,49 @@ export default function Servicos() {
           )}
         </View>
       </ScrollView>
+
+      {/* Para você: qual lista mostrar; escolha única, fecha ao tocar */}
+      <Sheet visible={sheet === 'vista'} onClose={() => setSheet(null)} title="Para você">
+        <View accessibilityRole="radiogroup">
+          {VISTAS.map((v, i) => {
+            const on = vistaAtiva === v.id;
+            const bloqueado = !app.logged && v.id !== 'procurados';
+            const n = base[v.id].length;
+            return (
+              <Pressable
+                key={v.id}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: on }}
+                accessibilityLabel={bloqueado ? `${v.titulo}. Entre com sua conta para ver` : `${v.titulo}, ${n} ${n === 1 ? 'serviço' : 'serviços'}`}
+                onPress={() => {
+                  tap();
+                  setSheet(null);
+                  if (bloqueado) return router.push({ pathname: '/entrar', params: { from: 'servicos' } });
+                  setVista(v.id);
+                  setAll(false);
+                }}
+                style={[styles.orgRow, i < VISTAS.length - 1 && styles.orgLine]}>
+                <View style={[styles.orgBadge, on && { backgroundColor: color.brandTint }]}>
+                  <Icon name={v.icon} size={18} color={on ? color.brand : color.muted} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <T v="h3" style={{ fontFamily: on ? font.semibold : font.medium }}>
+                    {v.titulo}
+                  </T>
+                  <T v="caption" c={color.muted}>
+                    {bloqueado ? 'Entre com sua conta para ver' : `${n} ${n === 1 ? 'serviço' : 'serviços'} · ${v.d}`}
+                  </T>
+                </View>
+                {bloqueado ? (
+                  <Icon name="lock" size={18} color={color.muted} />
+                ) : (
+                  <View style={[styles.radio, on && styles.radioOn]}>{on ? <View style={styles.radioDot} /> : null}</View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+      </Sheet>
 
       {/* Categoria: grade de opções em círculo, escolha única (referência: "Ordenação por" do iFood) */}
       <Sheet visible={sheet === 'cat'} onClose={() => setSheet(null)} title="Escolha a categoria do serviço">
@@ -352,6 +369,9 @@ const styles = StyleSheet.create({
   orgLine: { borderBottomWidth: 1, borderBottomColor: color.line },
   orgBadge: { width: 36, height: 36, borderRadius: radius.sm, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' },
   check: { width: 24, height: 24, borderRadius: 6, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
+  radio: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
+  radioOn: { borderColor: color.brand },
+  radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: color.brand },
   checkOn: { backgroundColor: color.brand, borderColor: color.brand },
   none: { backgroundColor: color.surface, borderRadius: radius.lg, borderWidth: 1, borderColor: color.line, borderStyle: 'dashed', padding: 16, gap: 6 },
 });
