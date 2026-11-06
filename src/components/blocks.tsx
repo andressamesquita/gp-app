@@ -240,10 +240,9 @@ export function RequestCard({ r, open: openInit = false, showActions = true }: {
         }}
         style={styles.rqHead}>
         <View style={{ flex: 1, gap: 4 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <T v="h3">
-              {r.title}
-            </T>
+          {/* Três linhas: título, status e etapa; o chevron fica centralizado à direita */}
+          <T v="h3">{r.title}</T>
+          <View style={{ flexDirection: 'row' }}>
             <Tag label={r.status} tone={statusTone(r.status)} />
           </View>
           <T v="small" c={open ? color.brand : color.muted} style={open ? { fontFamily: font.semibold } : undefined}>
