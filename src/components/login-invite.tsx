@@ -59,7 +59,8 @@ export function LoginInvite({ kind }: { kind: keyof typeof COPY }) {
               </View>
             ))}
           </View>
-          <Button label="Entrar" icon="lock" onPress={() => router.push('/entrar')} />
+          {/* Respiro maior entre a lista de vantagens e os botões */}
+          <Button label="Entrar" icon="lock" onPress={() => router.push('/entrar')} style={{ marginTop: 14 }} />
           <Button kind="secondary" label="Criar conta" onPress={() => router.push('/cadastro')} />
         </View>
         <View style={{ alignItems: 'center', marginTop: 16 }}>
