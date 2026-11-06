@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/Icon';
+import { ModoPrototipo } from '@/components/modo-prototipo';
 import { Page } from '@/components/page';
 import { Avatar, Button, LinkText, Row, Section, T, tap } from '@/components/ui';
 import { MEDALS, PERSON, earnedMedals } from '@/data/mock';
@@ -84,6 +85,11 @@ export default function MinhaConta() {
         </View>
       </Section>
 
+      {/* ---------- Só para o protótipo ---------- */}
+      <View style={styles.protoWrap}>
+        <ModoPrototipo />
+      </View>
+
       {/* ---------- Sair ---------- */}
       <View style={styles.out}>
         <Button
@@ -109,5 +115,6 @@ const styles = StyleSheet.create({
   fill: { height: '100%', borderRadius: 4, backgroundColor: color.waveYellow },
   next: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingTop: 4 },
   trophy: { width: 40, height: 40, borderRadius: radius.md, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
+  protoWrap: { marginHorizontal: -16, paddingHorizontal: 20, paddingVertical: 20, borderTopWidth: 1, borderTopColor: color.divider },
   out: { marginHorizontal: -16, paddingHorizontal: 20, paddingTop: 20, borderTopWidth: 1, borderTopColor: color.divider },
 });

@@ -15,15 +15,10 @@ import { useRolou } from '@/components/page';
 import { Sheet } from '@/components/sheet';
 import { useStatusBar } from '@/components/statusbar';
 import { Avatar, Button, Chip, Empty, IconButton, Row, Section, T, tap } from '@/components/ui';
-import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests, type Scenario } from '@/data/mock';
+import { MEDALS, PERSON, SALDO, earnedMedals, forMe, requests } from '@/data/mock';
 import { useApp } from '@/state/app-state';
 import { color, font, kind, radius, FAIXA_BRANCA, bar, BAR_SHADOW } from '@/theme/tokens';
 
-const SCENARIOS: { id: Scenario; t: string; d: string }[] = [
-  { id: 'padrao', t: 'Com histórico', d: 'Solicitações em andamento e carteiras' },
-  { id: 'novo', t: 'Conta nova', d: 'Tudo vazio: veja os estados sem conteúdo' },
-  { id: 'concluida', t: 'Após concluir', d: 'CNH renovada e conquista para compartilhar' },
-];
 
 /**
  * Fundo dos quadrados dos atalhos (teste A/B).
@@ -266,46 +261,6 @@ function AreaLogada() {
             )}
           </Section>
 
-          {/* ---------- Só para o protótipo ---------- */}
-          <View style={styles.proto}>
-            <T v="eyebrow" c={color.muted}>
-              Modo protótipo
-            </T>
-            <T v="small" c={color.muted}>
-              Escolha o estado da conta para ver as telas em cada situação.
-            </T>
-            {SCENARIOS.map((s) => {
-              const on = app.scenario === s.id;
-              return (
-                <Pressable
-                  key={s.id}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: on }}
-                  onPress={() => {
-                    tap();
-                    app.setScenario(s.id);
-                    app.showToast(`Estado: ${s.t}`);
-                  }}
-                  style={[styles.opt, on && { borderColor: color.brand, backgroundColor: color.brandTint }]}>
-                  <View style={[styles.radio, on && { borderColor: color.brand }]}>{on && <View style={styles.radioIn} />}</View>
-                  <View style={{ flex: 1 }}>
-                    <T v="bodyStrong">
-                      {s.t}
-                    </T>
-                    <T v="caption" c={color.muted}>
-                      {s.d}
-                    </T>
-                  </View>
-                </Pressable>
-              );
-            })}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-              <Button small kind="ghost" label="WhatsApp" href="/whatsapp" />
-              <Button small kind="ghost" label="Faltam dados" href="/faltam-dados" />
-              <Button small kind="ghost" label="Erro do serviço" href="/erro" />
-            </View>
-          </View>
-
           {!GRADE_ENXUTA && (
           <Button
             kind="danger"
@@ -437,10 +392,6 @@ const styles = StyleSheet.create({
   saldoBox: { backgroundColor: color.goodBg, borderRadius: radius.lg, padding: 18, gap: 4 },
   finger: { width: 80, height: 80, borderRadius: 40, backgroundColor: color.brandTint, alignItems: 'center', justifyContent: 'center' },
   qr: { padding: 12, backgroundColor: color.white, borderRadius: radius.md, borderWidth: 1, borderColor: color.line },
-  proto: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: color.lineStrong, borderRadius: radius.lg, padding: 16, gap: 10, marginTop: 16 },
-  opt: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 56, padding: 12, borderRadius: radius.md, borderWidth: 1.5, borderColor: color.line, backgroundColor: color.surface },
-  radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: color.lineStrong, alignItems: 'center', justifyContent: 'center' },
-  radioIn: { width: 10, height: 10, borderRadius: 5, backgroundColor: color.brand },
 });
 
 /** Ícone do Instagram (gradiente da marca), só para o botão de publicar. */
