@@ -91,7 +91,7 @@ export default function Servicos() {
         contentContainerStyle={{ paddingBottom: 44 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <TabTop title="Serviços para você" noInset />
+        <TabTop title="Serviços" noInset />
 
         <View style={[{ backgroundColor: bar.bg, zIndex: 5 }, rolou && BAR_SHADOW]}>
           <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 12, backgroundColor: bar.bg }}>
