@@ -21,7 +21,7 @@ import { BAR_SHADOW, bar, color, font, radius } from '@/theme/tokens';
 type Vista = 'procurados' | 'recomendados' | 'favoritos' | 'recentes';
 // Opções do chip "Para você" (mesmo padrão dos chips Categoria e Órgão)
 const VISTAS: { id: Vista; chip: string; titulo: string; icon: IconName; d: string }[] = [
-  { id: 'procurados', chip: 'Para você', titulo: 'Mais procurados no Gov.pi', icon: 'chart', d: 'Os serviços mais usados por todos' },
+  { id: 'procurados', chip: 'Para você', titulo: 'Mais acessados no Gov.pi', icon: 'chart', d: 'Os serviços mais usados por todos' },
   { id: 'recentes', chip: 'Recentes', titulo: 'Acessados recentemente', icon: 'clock', d: 'O que você abriu nos últimos dias' },
   { id: 'recomendados', chip: 'Recomendados', titulo: 'Recomendados para você', icon: 'spark', d: 'Escolhidos pelo seu perfil' },
   { id: 'favoritos', chip: 'Favoritos', titulo: 'Seus favoritos', icon: 'star', d: 'Os que você marcou com estrela' },
