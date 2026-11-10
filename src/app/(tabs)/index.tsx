@@ -328,6 +328,7 @@ function AssistantComposer({
   onAttach: () => void;
   disabled?: boolean;
 }) {
+  const app = useApp();
   const [text, setText] = useState('');
   const [focado, setFocado] = useState(false);
   // Placeholder que "se digita" (frase principal e exemplos) enquanto o campo está vazio e sem foco
@@ -357,12 +358,15 @@ function AssistantComposer({
         style={styles.input}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Anexar foto ou arquivo" disabled={disabled} onPress={onAttach} style={styles.attach}>
-          <Icon name="plus" size={18} color={color.ink} />
-          <T v="smallStrong">
-            Anexar
-          </T>
-        </Pressable>
+        {/* Anexar só com a conta logada */}
+        {app.logged ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Anexar foto ou arquivo" disabled={disabled} onPress={onAttach} style={styles.attach}>
+            <Icon name="plus" size={18} color={color.ink} />
+            <T v="smallStrong">
+              Anexar
+            </T>
+          </Pressable>
+        ) : null}
         <View style={{ flex: 1 }} />
         <Pressable
           accessibilityRole="button"
