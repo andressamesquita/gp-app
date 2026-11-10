@@ -372,15 +372,18 @@ function AssistantComposer({
           style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="mic" size={22} color={color.ink} />
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel={has ? 'Enviar' : 'Falar com o assistente'} disabled={disabled} onPress={has ? submit : onTalk} style={({ pressed }) => [styles.talk, pressed && { opacity: 0.85 }]}>
-          <LinearGradient colors={['#2F7FE6', '#034EA2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-          <View style={{ zIndex: 1 }}>
-            <Icon name={has ? 'send' : 'wave'} size={20} color={color.white} strokeWidth={2.4} />
-          </View>
-          <T v="bodyStrong" c={color.white}>
-            {has ? 'Enviar' : 'Fale'}
-          </T>
-        </Pressable>
+        {/* Sem o botão "Fale": o microfone já faz isso. O botão aparece só para enviar o que foi digitado */}
+        {has ? (
+          <Pressable accessibilityRole="button" accessibilityLabel="Enviar" disabled={disabled} onPress={submit} style={({ pressed }) => [styles.talk, pressed && { opacity: 0.85 }]}>
+            <LinearGradient colors={['#2F7FE6', '#034EA2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+            <View style={{ zIndex: 1 }}>
+              <Icon name="send" size={20} color={color.white} strokeWidth={2.4} />
+            </View>
+            <T v="bodyStrong" c={color.white}>
+              Enviar
+            </T>
+          </Pressable>
+        ) : null}
       </View>
     </View>
   );
